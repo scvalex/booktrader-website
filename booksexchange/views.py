@@ -21,13 +21,6 @@ def view_users(context, request):
     return {'users': list(context)}
 
 
-def already_logged_in(request):
-    # If the user is logged in already, redirect
-    if authenticated_userid(request):
-        request.session.flash('You are already logged in.')
-        
-        return HTTPFound(location = resource_url(context, request))
-
 @view_config(context=Forbidden)
 def view_forbidden(request):
     if authenticated_userid(request):
@@ -35,6 +28,15 @@ def view_forbidden(request):
     
     return HTTPFound(location = resource_url(request.root['users']['login']))
 
+
+def already_logged_in(request):
+    # If the user is logged in already, redirect
+    if authenticated_userid(request):
+        request.session.flash('You are already logged in.')
+        
+        return HTTPFound(location = resource_url(context, request))
+
+    
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def view_login(context, request):
 
@@ -77,34 +79,26 @@ def view_register(context, request):
 
     already_logged_in(request)
 
-    class UserValidator(colander.Length):
-        def __init__(self, *args, **kwargs):
-            super(UserValidator, self).__init__(*args, **kwargs)
-        
-        def __call__(self, node, value):
-            super(UserValidator, self).__call__(node, value)
-            
-            if context.query(Eq('username', value))[0] != 0:
-                raise colander.Invalid(node, '"' + value + '" is already taken.')
+    def validate_user(node, value):
+        colander.Length(min=5, max=200)(node, value)
 
-    class EmailValidator(colander.Email):
-        def __init__(self, *args, **kwargs):
-            super(EmailValidator, self).__init__(*args, **kwargs)
+        if context.query(Eq('username', value))[0] != 0:
+            raise colander.Invalid(node, '"' + value + '" is already taken.')
+    
+    def validate_email(node, value):
+        colander.Email()(node, value)
 
-        def __call__(self, node, value):
-            super(EmailValidator, self).__call__(node, value)
-            
-            if context.query(Eq('email', value))[0] != 0:
-                raise colander.Invalid(node, 'The email you inserted is already present.')
+        if context.query(Eq('email', value))[0] != 0:
+            raise colander.Invalid(node, 'The email you inserted is already present.')
 
     class RegisterSchema(colander.Schema):
         username = colander.SchemaNode(colander.String(),
-                                       validator = UserValidator())
+                                       validator = validate_user)
         password = colander.SchemaNode(colander.String(),
-                                       validator = colander.Length(min=5, max=200),
+                                       validator = colander.Length(min=5, max=100),
                                        widget    = deform.widget.CheckedPasswordWidget(size=20))
         email    = colander.SchemaNode(colander.String(),
-                                       validator = EmailValidator())
+                                       validator = validate_email)
         
 
     schema = RegisterSchema()
