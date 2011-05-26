@@ -18,7 +18,6 @@ if __name__ == "__main__":
 
         # Set up *bookexchange* paths
 	sys.path.append(os.path.join(cwd, 'booksexchange'))
-	path_to_config = os.path.join(cwd, 'booksexchange/DoC.ini')
 
         # WSGI appears to break down if this is missing
 	os.environ['SERVER_NAME'] = "www.doc.ic.ac.uk"
@@ -27,7 +26,7 @@ if __name__ == "__main__":
 
         # Load booksexchange application
 	from paste.deploy import loadapp
-	app = loadapp('config:' + path_to_config, relative_to = cwd) 
+	app = loadapp('config:booksexchange/DoC.ini', relative_to = cwd) 
 
         # And run it
 	wsgiref.handlers.CGIHandler().run(app)
