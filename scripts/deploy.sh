@@ -14,3 +14,5 @@ chmod g+w booksexchange
 
 echo -e "* \033[38;5;148mDeploy CGI runners\033[39m"
 cp booksexchange/scripts/*cgi .
+
+echo -e "* \033[38;5;148mFinished local deployment\033[39m"
