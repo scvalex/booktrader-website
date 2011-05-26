@@ -34,13 +34,14 @@ def already_logged_in(request):
     if authenticated_userid(request):
         request.session.flash('You are already logged in.')
         
-        return HTTPFound(location = resource_url(context, request))
-
+        return True
+    return False
     
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def view_login(context, request):
 
-    already_logged_in(request)
+    if already_logged_in(request):
+        return HTTPFound(location = '/')
 
     referrer  = request.url
     
@@ -77,7 +78,8 @@ def view_logout(context, request):
 @view_config(context=Users, name='register', renderer='users/register.mak')
 def view_register(context, request):
 
-    already_logged_in(request)
+    if already_logged_in(request):
+        return HTTPFound(location = '/')
 
     def validate_user(node, value):
         colander.Length(min=5, max=200)(node, value)

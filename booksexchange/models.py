@@ -5,13 +5,11 @@ from pyramid.traversal            import resource_path
 from persistent                   import Persistent
 from persistent.mapping           import PersistentMapping
 
-from repoze.folder                import Folder
-from repoze.catalog.catalog       import Catalog
 from repoze.catalog.indexes.field import CatalogFieldIndex
-from repoze.catalog.document      import DocumentMap
+
+from booksexchange.utils          import IndexFolder
 
 import bcrypt
-
 
 class App(PersistentMapping):
     __name__   = None
@@ -22,46 +20,15 @@ class App(PersistentMapping):
         self['users'] = Users()
 
 
-class Users(Folder):
+class Users(IndexFolder):
     def __init__(self):
-        super(Users, self).__init__()
-
-        self._docmap  = DocumentMap()
-
-        self._catalog = Catalog()
-        self._catalog['email']    = CatalogFieldIndex('email')
-        self._catalog['username'] = CatalogFieldIndex('username')
-        
+        super(Users, self).__init__(email    = CatalogFieldIndex('email'),
+                                    username = CatalogFieldIndex('username'))
        
         self.new_user(User('francesco', 'blah@foo.com', 'friday'))
 
-    def add(self, name, user, *args, **kwargs):
-        super(Users, self).add(name, user, *args, **kwargs)
-
-        # Gets the id from the docmap and updates the internal
-        # catalog. Index the user in the docmap by its resource, so
-        # that we can remove it when we need to.
-        docid = self._docmap.add(resource_path(user))
-        self._catalog.index_doc(docid, user)
-
-    def remove(self, name, *args, **kwargs):
-        user = self[name]
-        
-        docid = self._docmap.docid_for_address(resource_path(user))
-        self._docmap.remove_docid(docid)
-        self._catalog.unindex_doc(docid)
-        
-        super(Users, self).remove(name, *args, **kwargs)
-
-    def query(self, *args, **kwargs):
-        return self._catalog.query(*args, **kwargs)
-    
     def new_user(self, user):
         self[user.username] = user
-
-    def update_user(self, user):
-        self._catalog.reindex_doc(self._docmap.docid_for_address(resource_url(user)),
-                                  user)
 
 
 class User(Persistent):
