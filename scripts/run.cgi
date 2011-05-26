@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
         # Set up *bookexchange* paths
 	sys.path.append(os.path.join(cwd, 'booksexchange'))
-	path_to_config = os.path.join(cwd, 'booksexchange/development.ini')
+	path_to_config = os.path.join(cwd, 'booksexchange/DoC.ini')
 
         # WSGI appears to break down if this is missing
 	os.environ['SERVER_NAME'] = "www.doc.ic.ac.uk"
