@@ -35,8 +35,8 @@ class Users(Folder):
        
         self.new_user(User('francesco', 'blah@foo.com', 'friday'))
 
-    def add(self, name, user, **kwargs):
-        super(Users, self).add(name, user, **kwargs)
+    def add(self, name, user, *args, **kwargs):
+        super(Users, self).add(name, user, *args, **kwargs)
 
         # Gets the id from the docmap and updates the internal
         # catalog. Index the user in the docmap by its resource, so
@@ -44,14 +44,14 @@ class Users(Folder):
         docid = self._docmap.add(resource_path(user))
         self._catalog.index_doc(docid, user)
 
-    def remove(self, name, **kwargs):
+    def remove(self, name, *args, **kwargs):
         user = self[name]
         
         docid = self._docmap.docid_for_address(resource_path(user))
         self._docmap.remove_docid(docid)
         self._catalog.unindex_doc(docid)
         
-        super(Users, self).remove(name, **kwargs)
+        super(Users, self).remove(name, *args, **kwargs)
 
     def query(self, *args, **kwargs):
         return self._catalog.query(*args, **kwargs)

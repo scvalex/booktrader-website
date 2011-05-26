@@ -2,7 +2,7 @@ from pyramid.view           import view_config
 from pyramid.url            import resource_url
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 from repoze.catalog.query   import Eq
 
@@ -20,13 +20,25 @@ def view_home(context, request):
 def view_users(context, request):
     return {'users': list(context)}
 
-@view_config(context=Users, name='login', renderer='users/login.mak')
-@view_config(context=Forbidden, renderer='users/login.mak')
-def view_login(context, request):
 
+def already_logged_in(request):
     # If the user is logged in already, redirect
     if authenticated_userid(request):
+        request.session.flash('You are already logged in.')
+        
         return HTTPFound(location = resource_url(context, request))
+
+@view_config(context=Forbidden)
+def view_forbidden(request):
+    if authenticated_userid(request):
+        return HTTPForbidden()
+    
+    return HTTPFound(location = resource_url(request.root['users']['login']))
+
+@view_config(context=Users, name='login', renderer='users/login.mak')
+def view_login(context, request):
+
+    already_logged_in(request)
 
     referrer  = request.url
     
@@ -62,6 +74,8 @@ def view_logout(context, request):
 
 @view_config(context=Users, name='register', renderer='users/register.mak')
 def view_register(context, request):
+
+    already_logged_in(request)
 
     class UserValidator(colander.Length):
         def __init__(self, *args, **kwargs):

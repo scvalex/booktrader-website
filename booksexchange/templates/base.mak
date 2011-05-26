@@ -16,6 +16,8 @@
   </head>
 
   <body>
+    
+    <h1>BooksExchange</h1>
 
     <% flashes = request.session.pop_flash() %>
     % for flash in flashes:
