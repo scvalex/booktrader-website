@@ -1,4 +1,5 @@
 CHANGES.txt
+DoC.ini
 MANIFEST.in
 README.txt
 development.ini
@@ -9,6 +10,7 @@ booksexchange/__init__.py
 booksexchange/models.py
 booksexchange/security.py
 booksexchange/tests.py
+booksexchange/utils.py
 booksexchange/views.py
 booksexchange.egg-info/PKG-INFO
 booksexchange.egg-info/SOURCES.txt
@@ -18,15 +20,6 @@ booksexchange.egg-info/not-zip-safe
 booksexchange.egg-info/paster_plugins.txt
 booksexchange.egg-info/requires.txt
 booksexchange.egg-info/top_level.txt
-booksexchange/static/favicon.ico
-booksexchange/static/footerbg.png
-booksexchange/static/headerbg.png
-booksexchange/static/ie6.css
-booksexchange/static/middlebg.png
-booksexchange/static/pylons.css
-booksexchange/static/pyramid-small.png
-booksexchange/static/pyramid.png
-booksexchange/static/transparent.gif
 booksexchange/templates/base.mak
 booksexchange/templates/home.mak
 booksexchange/templates/users.mak
