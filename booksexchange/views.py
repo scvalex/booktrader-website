@@ -2,7 +2,7 @@ from pyramid.view           import view_config
 from pyramid.url            import resource_url
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPInternalServerError
 
 from repoze.catalog.query   import Eq
 
@@ -10,7 +10,7 @@ import colander
 import deform
 import json
 
-from booksexchange.models   import App, Users, User, Books
+from booksexchange.models   import App, Users, User, Books, Book
 
 
 @view_config(context=App, renderer='home.mak')
@@ -180,8 +180,20 @@ def search(context, request):
         try:
             books = ResultSchema().deserialize(books)
         except colander.Invalid, e:
-            return {'form': str(e.asdict()) + str(books)}
+            return HTTPInternalServerError(str(e.asdict()) + str(books))
 
-        return {'form': str(books)}
+        def bookToBook(b):
+            b = b['volumeInfo']
+            authors =b['authors']
+            identifiers = [[i['type'], i['identifier']]
+                           for i in b['industryIdentifiers']]
+            return Book(b['title'], b['subtitle'], authors, b['publisher'],
+                        identifiers, b['description'])
 
-    return {'form': searchForm.render()}
+        books = [bookToBook(vi) for vi in books['items']]
+
+        return {'form': searchForm.render(),
+                'result': books}
+
+    return {'form': searchForm.render(),
+            'result': []}
