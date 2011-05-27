@@ -147,6 +147,8 @@ def view_search(context, request):
         except deform.ValidationFailure, e:
             return {'form': e.render()}
 
-        return {'form': query}
+        rsp = context.catalogue.query(query['query'])
+
+        return {'form': rsp}
 
     return {'form': form.render()}

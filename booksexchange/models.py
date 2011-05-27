@@ -7,7 +7,7 @@ from persistent.mapping           import PersistentMapping
 
 from repoze.catalog.indexes.field import CatalogFieldIndex
 
-from booksexchange.utils          import IndexFolder
+from booksexchange.utils          import IndexFolder, GoogleBooksCatalogue
 
 import bcrypt
 
@@ -45,6 +45,8 @@ class User(Persistent):
 class Books(IndexFolder):
     def __init__(self):
         super(Books, self).__init__(isbn = CatalogFieldIndex('isbn'))
+
+        self.catalogue = GoogleBooksCatalogue()
 
 class Book(Persistent):
     def __init__(self, title, subtitle, authors, publisher, isbn, description):
