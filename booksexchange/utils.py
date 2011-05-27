@@ -30,13 +30,13 @@ class IndexFolder(Folder):
         self._docmap.remove_docid(docid)
         self._catalog.unindex_doc(docid)
         
-        super(Users, self).remove(name, *args, **kwargs)
+        super(IndexFolder, self).remove(name, *args, **kwargs)
 
     def query(self, *args, **kwargs):
         return self._catalog.query(*args, **kwargs)
 
     def update(self, obj):
-        self._catalog.reindex_doc(self._docmap.docid_for_address(resource_url(obj)),
+        self._catalog.reindex_doc(self._docmap.docid_for_address(resource_path(obj)),
                                   obj)
 
 class GoogleBooksCatalogue:

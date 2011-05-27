@@ -14,7 +14,7 @@ from booksexchange.models   import App, Users, User, Books
 
 
 @view_config(context=App, renderer='home.mak')
-def view_home(context, request):
+def home(context, request):
     return {'blah': 'bloh'}
 
 @view_config(context=Users, renderer='users.mak')
@@ -23,7 +23,7 @@ def view_users(context, request):
 
 
 @view_config(context=Forbidden)
-def view_forbidden(request):
+def forbidden(request):
     if authenticated_userid(request):
         return HTTPForbidden()
     
@@ -39,7 +39,7 @@ def already_logged_in(request):
     return False
     
 @view_config(context=Users, name='login', renderer='users/login.mak')
-def view_login(context, request):
+def login(context, request):
 
     if already_logged_in(request):
         return HTTPFound(location = '/')
@@ -54,7 +54,7 @@ def view_login(context, request):
     username = ''
 
     # If the request is post, try to authenticate
-    if request.method == 'POST':
+    if 'form.submitted' in request.params:
         username = request.params['username']
         password = request.params['password']
 
@@ -66,18 +66,18 @@ def view_login(context, request):
         request.session.flash('Invalid username/password.')
 
     
-    return dict(came_from   = came_from,
-                username    = username)
+    return dict(came_from = came_from,
+                username  = username)
 
 @view_config(context=Users, name='logout')
-def view_logout(context, request):
+def logout(context, request):
     headers = forget(request)
     return HTTPFound(location = resource_url(context, request),
                      headers = headers)
 
 
 @view_config(context=Users, name='register', renderer='users/register.mak')
-def view_register(context, request):
+def register(context, request):
 
     if already_logged_in(request):
         return HTTPFound(location = '/')
