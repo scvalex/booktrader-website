@@ -15,10 +15,15 @@ class App(PersistentMapping):
     __name__   = None
     __parent__ = None
 
+    def setchild(self, name, obj):
+        self[name]     = obj
+        obj.__name__   = name
+        obj.__parent__ = self
+
     def __init__(self):
         super(App, self).__init__()
-        self['users'] = Users()
-        self['books'] = Books()
+        self.setchild('users', Users())
+        self.setchild('books', Books())
 
 
 class Users(IndexFolder):
