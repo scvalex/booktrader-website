@@ -9,7 +9,7 @@ from repoze.catalog.query   import Eq
 import colander
 import deform
 
-from booksexchange.models   import App, Users, User
+from booksexchange.models   import App, Users, User, Books
 
 
 @view_config(context=App, renderer='home.mak')
@@ -125,4 +125,18 @@ def view_register(context, request):
         return HTTPFound(location = '/',
                          headers  = remember(request, new_user.username))
     
+    return {'form': form.render()}
+
+@view_config(context=Books, renderer='books.mak')
+def view_browse(context, request):
+    return {"supdog": "browsing around"}
+
+@view_config(context=Books, name='search', renderer='books/search.mak')
+def view_search(context, request):
+    class SearchSchema(colander.Schema):
+        query = colander.SchemaNode(colander.String())
+
+    schema = SearchSchema()
+    form   = deform.Form(schema, buttons=('Search',))
+
     return {'form': form.render()}

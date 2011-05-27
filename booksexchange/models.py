@@ -18,6 +18,7 @@ class App(PersistentMapping):
     def __init__(self):
         super(App, self).__init__()
         self['users'] = Users()
+        self['books'] = Books()
 
 
 class Users(IndexFolder):
@@ -40,6 +41,19 @@ class User(Persistent):
 
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self.password) == self.password
+
+class Books(IndexFolder):
+    def __init__(self):
+        super(Books, self).__init__(isbn = CatalogFieldIndex('isbn'))
+
+class Book(Persistent):
+    def __init__(self, title, subtitle, authors, publisher, isbn, description):
+        self.title       = title
+        self.subtitle    = subtitle
+        self.authors     = authors
+        self.publisher   = publisher
+        self.isbn        = isbn
+        self.description = description
 
 def appmaker(zodb_root):
     if not 'app_root' in zodb_root:
