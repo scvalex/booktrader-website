@@ -131,28 +131,29 @@ def register(context, request):
 
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
+    utf8_string = lambda: colander.String(encoding="utf-8")
+
     class SearchSchema(colander.Schema):
-        query = colander.SchemaNode(colander.String())
+        query = colander.SchemaNode(utf8_string())
 
     class AuthorsSchema(colander.SequenceSchema):
-        author = colander.SchemaNode(colander.String())
+        author = colander.SchemaNode(utf8_string())
 
     class IndustryIdentifierSchema(colander.MappingSchema):
-        type       = colander.SchemaNode(colander.String(), name = "type")
-        identifier = colander.SchemaNode(colander.String())
+        type       = colander.SchemaNode(utf8_string(), name = "type")
+        identifier = colander.SchemaNode(utf8_string())
 
     class IndustryIdentifiersSchema(colander.SequenceSchema):
         identifier = IndustryIdentifierSchema()
 
     class VolumeInfoSchema(colander.MappingSchema):
-        title       = colander.SchemaNode(colander.String())
-        subtitle    = colander.SchemaNode(colander.String(),
-                                          missing="")
+        title       = colander.SchemaNode(utf8_string())
+        subtitle    = colander.SchemaNode(utf8_string(), missing="")
         authors     = AuthorsSchema()
-        publisher   = colander.SchemaNode(colander.String(encoding="utf-8"),
-                                          missing="")
+        publisher   = colander.SchemaNode(utf8_string(), missing="")
         industryIdentifiers = IndustryIdentifiersSchema()
-        description = colander.SchemaNode(colander.String(), missing="")
+        description = colander.SchemaNode(utf8_string(), missing="")
+        publishedDate = colander.SchemaNode(utf8_string(), missing="")
 
     class BookSchema(colander.MappingSchema):
         volumeInfo = VolumeInfoSchema()
@@ -189,7 +190,7 @@ def search(context, request):
             identifiers = [[i['type'], i['identifier']]
                            for i in b['industryIdentifiers']]
             return Book(b['title'], b['subtitle'], authors, b['publisher'],
-                        identifiers, b['description'])
+                        b['publishedDate'], identifiers, b['description'])
 
         books = [book_to_book(vi) for vi in books['items']]
 
