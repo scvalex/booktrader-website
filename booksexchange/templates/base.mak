@@ -5,12 +5,21 @@
   <head>
 
     <link rel="stylesheet"
-          href="${request.static_url('deform:static/css/form.css')}"
-          type="text/css" />
-    <link rel="stylesheet"
-          href="${request.static_url('deform:static/css/theme.css')}"
+          href="${request.static_url('booksexchange:static/css/reset.css')}"
           type="text/css" />
 
+    <link href="http://fonts.googleapis.com/css?family=Cabin:regular,regularitalic,bold"
+          rel="stylesheet"
+          type="text/css">
+    
+    <link rel="stylesheet"
+          href="${request.static_url('deform:static/css/form.css')}"
+          type="text/css" />
+    
+    <link rel="stylesheet"
+          href="${request.static_url('booksexchange:static/css/style.css')}"
+          type="text/css" />
+    
     ${self.head()}
 
     <title>${self.title()}</title>
@@ -18,19 +27,35 @@
   </head>
 
   <body>
-    
-    <h1>BooksExchange</h1>
+    <div id="wrapper">
 
-    <% flashes = request.session.pop_flash() %>
-    % for flash in flashes:
-        <div id="flash">
-          <span class="message">${flash}</span>
+      <div id="header">
+        <div id="user">
+          login register etc
         </div>
-    % endfor
 
-    ${next.body()}
+        <h1><a href="${request.resource_url(request.root)}">BooksExchange</a></h1>
+      </div>
 
-    <div id="footer">${self.footer()}</div>
+      <div id="menu">
+        menu
+      </div>
+      
+      <div id="searchbar">
+        searchbar
+      </div>
+      
+      
+      <% flashes = request.session.pop_flash() %>
+      % for flash in flashes:
+          <div id="flash">${flash}</div>
+      % endfor
+
+      ${next.body()}
+
+      <div id="footer">${self.footer()}</div>
+
+    </div>
   </body>
 </html>
 
