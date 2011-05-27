@@ -87,6 +87,7 @@ class Book(Persistent):
         self.identifiers = identifiers
         self.description = description
 
+        self.googleId    = None
         self.identifier  = self.make_identifier()
 
     def make_identifier(self):

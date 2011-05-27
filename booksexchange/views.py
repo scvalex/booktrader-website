@@ -201,6 +201,7 @@ def search(context, request):
         publishedDate = colander.SchemaNode(utf8_string(), missing="")
 
     class BookSchema(colander.MappingSchema):
+        id         = colander.SchemaNode(utf8_string())
         volumeInfo = VolumeInfoSchema()
 
     class BooksSchema(colander.SequenceSchema):
@@ -230,12 +231,15 @@ def search(context, request):
             raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
         def book_to_book(b):
+            id = b['id']
             b = b['volumeInfo']
             authors =b['authors']
             identifiers = [[i['type'], i['identifier']]
                            for i in b['industryIdentifiers']]
-            return Book(b['title'], b['subtitle'], authors, b['publisher'],
+            book = Book(b['title'], b['subtitle'], authors, b['publisher'],
                         b['publishedDate'], identifiers, b['description'])
+            book.googleId = id
+            return book
 
         books = [book_to_book(vi) for vi in books['items']]
 
