@@ -4,10 +4,12 @@
 
   <head>
 
-    <script type="text/javascript" src="${request.static_url('deform:static/scripts/deform.js')}"></script>
-
-    <link rel="stylesheet" href="${request.static_url('deform:static/css/form.css')}" type="text/css" />
-    <link rel="stylesheet" href="${request.static_url('deform:static/css/theme.css')}" type="text/css" />
+    <link rel="stylesheet"
+          href="${request.static_url('deform:static/css/form.css')}"
+          type="text/css" />
+    <link rel="stylesheet"
+          href="${request.static_url('deform:static/css/theme.css')}"
+          type="text/css" />
 
     ${self.head()}
 
