@@ -41,7 +41,6 @@ def already_logged_in(request):
     
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def login(context, request):
-
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
@@ -87,7 +86,6 @@ def logout(context, request):
 
 @view_config(context=Users, name='register', renderer='users/register.mak')
 def register(context, request):
-
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
@@ -157,7 +155,6 @@ def generate_token(context, request):
 
 @view_config(context=User, name='confirm')
 def confirm_user(context, request):
-
     if not 'token' in request.params or context.confirmed:
         print request.resource_url(context, 'confirm')
         return Forbidden()
@@ -251,6 +248,10 @@ def search(context, request):
 
 @view_config(context=Books, name='add', renderer='books/add.mak')
 def add_book(context, request):
+    id = request.path.split('/')[-1]    # probably a bad idea
+
+    print id
+
     return {'status': 'ok'}
 
 @view_config(context=Books, name='list', renderer='books/list.mak')
