@@ -11,6 +11,7 @@ from booksexchange.utils          import IndexFolder, GoogleBooksCatalogue
 
 import bcrypt
 import hashlib
+import uuid
 
 class App(PersistentMapping):
     __name__   = None
@@ -38,16 +39,33 @@ class Users(IndexFolder):
 
 class User(Persistent):
     def __init__(self, username, email, password):
-        self.username  = username
-        self.email     = email
-        self._password = bcrypt.hashpw(password, bcrypt.gensalt())
-        self.created   = datetime.datetime.utcnow()
+        self.username   = username
+        self.email      = email
+        self._password  = bcrypt.hashpw(password, bcrypt.gensalt())
+        self.created    = datetime.datetime.utcnow()
+
+        self.confirmed = False
 
         self.owned     = PersistentList()
 
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
 
+    def generate_token(self):
+        token = str(uuid.uuid4())
+        self._token = token
+        return token
+    
+    def confirm(self, token):
+        if not hasattr(self, '_token'):
+            return False
+
+        if self._token == token:
+            self.confirmed = True
+            return True
+
+        return False
+    
 
 class Books(IndexFolder):
     def __init__(self):
@@ -90,6 +108,7 @@ def appmaker(zodb_root):
         zodb_root['app_root'] = app_root
 
         app_root['users'].new_user(User('francesco', 'f@mazzo.li', 'francesco'))
+        app_root['users']['francesco'].confirmed = True
         
         import transaction
         transaction.commit()
