@@ -203,3 +203,7 @@ def search(context, request):
 @view_config(context=Books, name='add', renderer='books/add.mak')
 def add_book(context, request):
     return {'status': 'ok'}
+
+@view_config(context=Books, name='list', renderer='books/list.mak')
+def list_book(context, request):
+    return {}
