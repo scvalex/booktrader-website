@@ -3,14 +3,15 @@ from pyramid.url            import resource_url
 from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPInternalServerError
 
 from repoze.catalog.query   import Eq
 
 import colander
 import deform
+import json
 
-from booksexchange.models   import App, Users, User
+from booksexchange.models   import App, Users, User, Books, Book
 
 
 @view_config(context=App, renderer='home.mak')
@@ -127,3 +128,73 @@ def register(context, request):
                          headers  = remember(request, new_user.username))
     
     return {'form': form.render()}
+
+@view_config(context=Books, name='search', renderer='books/search.mak')
+def search(context, request):
+    class SearchSchema(colander.Schema):
+        query = colander.SchemaNode(colander.String())
+
+    class AuthorsSchema(colander.SequenceSchema):
+        author = colander.SchemaNode(colander.String())
+
+    class IndustryIdentifierSchema(colander.MappingSchema):
+        type       = colander.SchemaNode(colander.String(), name = "type")
+        identifier = colander.SchemaNode(colander.String())
+
+    class IndustryIdentifiersSchema(colander.SequenceSchema):
+        identifier = IndustryIdentifierSchema()
+
+    class VolumeInfoSchema(colander.MappingSchema):
+        title       = colander.SchemaNode(colander.String())
+        subtitle    = colander.SchemaNode(colander.String(),
+                                          missing="")
+        authors     = AuthorsSchema()
+        publisher   = colander.SchemaNode(colander.String(encoding="utf-8"),
+                                          missing="")
+        industryIdentifiers = IndustryIdentifiersSchema()
+        description = colander.SchemaNode(colander.String(), missing="")
+
+    class BookSchema(colander.MappingSchema):
+        volumeInfo = VolumeInfoSchema()
+
+    class BooksSchema(colander.SequenceSchema):
+        book = BookSchema()
+
+    class ResultSchema(colander.MappingSchema):
+        items = BooksSchema()
+
+    search_form = deform.Form(SearchSchema(), buttons=('Search',))
+
+    if 'Search' in request.POST:
+        query = request.POST.items()
+
+        try:
+            query = search_form.validate(query)
+        except deform.ValidationFailure, e:
+            return {'form': e.render()}
+
+        rsp = context.catalogue.query(query['query'])
+        if not rsp:
+            return {'form': rsp}
+
+        books = json.load(rsp)
+        try:
+            books = ResultSchema().deserialize(books)
+        except colander.Invalid, e:
+            return HTTPInternalServerError(str(e.asdict()) + str(books))
+
+        def book_to_book(b):
+            b = b['volumeInfo']
+            authors =b['authors']
+            identifiers = [[i['type'], i['identifier']]
+                           for i in b['industryIdentifiers']]
+            return Book(b['title'], b['subtitle'], authors, b['publisher'],
+                        identifiers, b['description'])
+
+        books = [book_to_book(vi) for vi in books['items']]
+
+        return {'form': search_form.render(),
+                'result': books}
+
+    return {'form': search_form.render(),
+            'result': []}

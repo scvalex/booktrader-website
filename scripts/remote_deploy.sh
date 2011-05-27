@@ -3,12 +3,17 @@
 set -e -x
 
 PROJECT_DIR=/vol/project/2010/271/g1027114
-ENTRY_SERVER=shell1.doc.ic.ac.uk
 USERNAME=$1
 
 if [ -z $USERNAME ]; then
     echo "USAGE: $0 <username>"
     exit 1
+fi
+
+ENTRY_SERVER=$2
+
+if [ -z $PROJECT_DIR ]; then
+    ENTRY_SERVER=shell1.doc.ic.ac.uk
 fi
 
 echo -e "* \033[38;5;148mRemote deploy\033[39m"

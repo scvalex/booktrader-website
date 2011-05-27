@@ -4,6 +4,8 @@ from repoze.folder           import Folder
 from repoze.catalog.catalog  import Catalog
 from repoze.catalog.document import DocumentMap
 
+from urllib2                 import urlopen, URLError
+
 class IndexFolder(Folder):
     def __init__(self, **kwargs):
         super(IndexFolder, self).__init__()
@@ -37,3 +39,13 @@ class IndexFolder(Folder):
         self._catalog.reindex_doc(self._docmap.docid_for_address(resource_path(obj)),
                                   obj)
 
+class GoogleBooksCatalogue(object):
+    key = 'AIzaSyCwMw-h8bLntjsRydO8AXjwinfD5HnGpz4' # scvalex
+    base_url = 'https://www.googleapis.com/books/v1/volumes'
+
+    def query(self, qstr):
+        url = "%s?q=%s" % (GoogleBooksCatalogue.base_url, qstr)
+        try:
+            return urlopen(url, timeout=10)
+        except URLError, e:
+            return (str(e) + ": " + url)
