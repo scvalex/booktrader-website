@@ -1,5 +1,4 @@
 from pyramid.view           import view_config
-from pyramid.url            import resource_url
 from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
@@ -11,6 +10,7 @@ import colander
 import deform
 
 from booksexchange.models   import App, Users, User
+from booksexchange.utils    import send_email
 
 
 @view_config(context=App, renderer='home.mak')
@@ -72,7 +72,15 @@ def login(context, request):
 @view_config(context=Users, name='logout')
 def logout(context, request):
     headers = forget(request)
-    return HTTPFound(location = resource_url(context, request),
+
+    referrer = request.url
+
+    if referrer == request.path_url:
+        referrer = '/'
+
+    request.session.flash('You are now logged out.')
+    
+    return HTTPFound(location = referrer,
                      headers = headers)
 
 
@@ -97,9 +105,10 @@ def register(context, request):
     class RegisterSchema(colander.Schema):
         username = colander.SchemaNode(colander.String(),
                                        validator = validate_user)
-        password = colander.SchemaNode(colander.String(),
-                                       validator = colander.Length(min=5, max=100),
-                                       widget    = deform.widget.CheckedPasswordWidget(size=20))
+        password = colander.SchemaNode(
+            colander.String(),
+            validator = colander.Length(min=5, max=100),
+            widget    = deform.widget.CheckedPasswordWidget(size=20))
         email    = colander.SchemaNode(colander.String(),
                                        validator = validate_email)
         
@@ -121,9 +130,45 @@ def register(context, request):
         
         context.new_user(new_user)
 
-        request.session.flash('Your registration was successfull, enjoy BooksExchange!')
-
-        return HTTPFound(location = '/',
-                         headers  = remember(request, new_user.username))
+        return HTTPFound(location = request.resource_url(new_user, 'generate_token'))
     
     return {'form': form.render()}
+                         
+
+@view_config(context=User, name='generate_token', renderer='users/generate_token.mak')
+def generate_token(context, request):
+    token = context.generate_token()
+
+    confirm_url = request.resource_url(context, 'confirm',
+                                       query = {'token': token})
+    
+    email_body = "Dear " + context.username + ",\n\n" + \
+                 "To activate your account " + \
+                 "please click visit this link: " + confirm_url + ".\n\n" + \
+                 "The BooksExchange team."
+
+
+    send_email(email_body, 'BooksExchange account activation.',
+               [context.email], request.registry.settings)
+
+    return {'wrong_token': ('wrong' in request.params)}
+                         
+
+@view_config(context=User, name='confirm')
+def confirm_user(context, request):
+
+    if not 'token' in request.params or context.confirmed:
+        print request.resource_url(context, 'confirm')
+        return Forbidden()
+
+    token = request.params['token']
+
+    if context.confirm(token):
+        request.session.flash('Your accound was verified, enjoy BooksExchange!')
+
+        return HTTPFound(location = '/',
+                         headers  = remember(request, context.username))
+
+    return HTTPFound(location = request.resource_url(context,
+                                                     'generate_token',
+                                                     query = {'wrong':True}))
