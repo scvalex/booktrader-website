@@ -3,6 +3,7 @@ import datetime
 from pyramid.traversal            import resource_path
 
 from persistent                   import Persistent
+from persistent.list              import PersistentList
 from persistent.mapping           import PersistentMapping
 
 from repoze.catalog.indexes.field import CatalogFieldIndex
