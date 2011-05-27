@@ -128,12 +128,8 @@ def register(context, request):
     
     return {'form': form.render()}
 
-@view_config(context=Books, renderer='books.mak')
-def view_browse(context, request):
-    return {"supdog": "browsing around"}
-
 @view_config(context=Books, name='search', renderer='books/search.mak')
-def view_search(context, request):
+def search(context, request):
     class SearchSchema(colander.Schema):
         query = colander.SchemaNode(colander.String())
 
