@@ -11,6 +11,7 @@ import deform
 import json
 
 from booksexchange.models   import App, Users, User, Books, Book
+from booksexchange.schemas  import SearchSchema, utf8_string
 from booksexchange.utils    import send_email
 
 
@@ -173,11 +174,6 @@ def confirm_user(context, request):
 
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
-    utf8_string = lambda: colander.String(encoding="utf-8")
-
-    class SearchSchema(colander.Schema):
-        query = colander.SchemaNode(utf8_string())
-
     class AuthorsSchema(colander.SequenceSchema):
         author = colander.SchemaNode(utf8_string())
 
