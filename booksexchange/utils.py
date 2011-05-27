@@ -39,7 +39,7 @@ class IndexFolder(Folder):
         self._catalog.reindex_doc(self._docmap.docid_for_address(resource_path(obj)),
                                   obj)
 
-class GoogleBooksCatalogue:
+class GoogleBooksCatalogue(object):
     key = 'AIzaSyCwMw-h8bLntjsRydO8AXjwinfD5HnGpz4' # scvalex
     base_url = 'https://www.googleapis.com/books/v1/volumes'
 

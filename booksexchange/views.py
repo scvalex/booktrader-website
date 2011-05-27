@@ -162,13 +162,13 @@ def search(context, request):
     class ResultSchema(colander.MappingSchema):
         items = BooksSchema()
 
-    searchForm = deform.Form(SearchSchema(), buttons=('Search',))
+    search_form = deform.Form(SearchSchema(), buttons=('Search',))
 
     if 'Search' in request.POST:
         query = request.POST.items()
 
         try:
-            query = searchForm.validate(query)
+            query = search_form.validate(query)
         except deform.ValidationFailure, e:
             return {'form': e.render()}
 
@@ -182,7 +182,7 @@ def search(context, request):
         except colander.Invalid, e:
             return HTTPInternalServerError(str(e.asdict()) + str(books))
 
-        def bookToBook(b):
+        def book_to_book(b):
             b = b['volumeInfo']
             authors =b['authors']
             identifiers = [[i['type'], i['identifier']]
@@ -190,10 +190,10 @@ def search(context, request):
             return Book(b['title'], b['subtitle'], authors, b['publisher'],
                         identifiers, b['description'])
 
-        books = [bookToBook(vi) for vi in books['items']]
+        books = [book_to_book(vi) for vi in books['items']]
 
-        return {'form': searchForm.render(),
+        return {'form': search_form.render(),
                 'result': books}
 
-    return {'form': searchForm.render(),
+    return {'form': search_form.render(),
             'result': []}
