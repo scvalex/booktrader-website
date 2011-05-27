@@ -2,7 +2,7 @@ from pyramid.view           import view_config
 from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPInternalServerError
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPInternalServerError, HTTPBadRequest
 
 from repoze.catalog.query   import Eq
 
@@ -11,6 +11,7 @@ import deform
 import json
 
 from booksexchange.models   import App, Users, User, Books, Book
+from booksexchange.schemas  import SearchSchema, utf8_string
 from booksexchange.utils    import send_email
 
 
@@ -41,7 +42,6 @@ def already_logged_in(request):
     
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def login(context, request):
-
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
@@ -87,7 +87,6 @@ def logout(context, request):
 
 @view_config(context=Users, name='register', renderer='users/register.mak')
 def register(context, request):
-
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
@@ -157,7 +156,6 @@ def generate_token(context, request):
 
 @view_config(context=User, name='confirm')
 def confirm_user(context, request):
-
     if not 'token' in request.params or context.confirmed:
         print request.resource_url(context, 'confirm')
         return Forbidden()
@@ -176,30 +174,27 @@ def confirm_user(context, request):
 
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
-    class SearchSchema(colander.Schema):
-        query = colander.SchemaNode(colander.String())
-
     class AuthorsSchema(colander.SequenceSchema):
-        author = colander.SchemaNode(colander.String())
+        author = colander.SchemaNode(utf8_string())
 
     class IndustryIdentifierSchema(colander.MappingSchema):
-        type       = colander.SchemaNode(colander.String(), name = "type")
-        identifier = colander.SchemaNode(colander.String())
+        type       = colander.SchemaNode(utf8_string(), name = "type")
+        identifier = colander.SchemaNode(utf8_string())
 
     class IndustryIdentifiersSchema(colander.SequenceSchema):
         identifier = IndustryIdentifierSchema()
 
     class VolumeInfoSchema(colander.MappingSchema):
-        title       = colander.SchemaNode(colander.String())
-        subtitle    = colander.SchemaNode(colander.String(),
-                                          missing="")
-        authors     = AuthorsSchema()
-        publisher   = colander.SchemaNode(colander.String(encoding="utf-8"),
-                                          missing="")
+        title       = colander.SchemaNode(utf8_string())
+        subtitle    = colander.SchemaNode(utf8_string(), missing="")
+        authors     = AuthorsSchema(missing=[])
+        publisher   = colander.SchemaNode(utf8_string(), missing="")
         industryIdentifiers = IndustryIdentifiersSchema()
-        description = colander.SchemaNode(colander.String(), missing="")
+        description = colander.SchemaNode(utf8_string(), missing="")
+        publishedDate = colander.SchemaNode(utf8_string(), missing="")
 
     class BookSchema(colander.MappingSchema):
+        id         = colander.SchemaNode(utf8_string())
         volumeInfo = VolumeInfoSchema()
 
     class BooksSchema(colander.SequenceSchema):
@@ -220,21 +215,24 @@ def search(context, request):
 
         rsp = context.catalogue.query(query['query'])
         if not rsp:
-            return {'form': rsp}
+            raise HTTPBadRequest("no query parameter")
 
         books = json.load(rsp)
         try:
             books = ResultSchema().deserialize(books)
         except colander.Invalid, e:
-            return HTTPInternalServerError(str(e.asdict()) + str(books))
+            raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
         def book_to_book(b):
+            id = b['id']
             b = b['volumeInfo']
             authors =b['authors']
             identifiers = [[i['type'], i['identifier']]
                            for i in b['industryIdentifiers']]
-            return Book(b['title'], b['subtitle'], authors, b['publisher'],
-                        identifiers, b['description'])
+            book = Book(b['title'], b['subtitle'], authors, b['publisher'],
+                        b['publishedDate'], identifiers, b['description'])
+            book.googleId = id
+            return book
 
         books = [book_to_book(vi) for vi in books['items']]
 
@@ -243,3 +241,15 @@ def search(context, request):
 
     return {'form': search_form.render(),
             'result': []}
+
+@view_config(context=Books, name='add', renderer='books/add.mak')
+def add_book(context, request):
+    id = request.path.split('/')[-1]    # probably a bad idea
+
+    print id
+
+    return {'status': 'ok'}
+
+@view_config(context=Books, name='list', renderer='books/list.mak')
+def list_book(context, request):
+    return {}

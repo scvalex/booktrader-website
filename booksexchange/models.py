@@ -10,6 +10,7 @@ from repoze.catalog.indexes.field import CatalogFieldIndex
 from booksexchange.utils          import IndexFolder, GoogleBooksCatalogue
 
 import bcrypt
+import hashlib
 import uuid
 
 class App(PersistentMapping):
@@ -45,6 +46,8 @@ class User(Persistent):
 
         self.confirmed = False
 
+        self.owned     = PersistentList()
+
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
 
@@ -63,21 +66,42 @@ class User(Persistent):
 
         return False
     
+
 class Books(IndexFolder):
     def __init__(self):
         super(Books, self).__init__(isbn = CatalogFieldIndex('isbn'))
 
         self.catalogue = GoogleBooksCatalogue()
 
+
 class Book(Persistent):
-    def __init__(self, title, subtitle, authors, publisher,
+    def __init__(self, title, subtitle, authors, publisher, date,
                  identifiers, description):
         self.title       = title
         self.subtitle    = subtitle
         self.authors     = authors
         self.publisher   = publisher
+        self.year        = date
+        if isinstance(self.year, basestring):
+            self.year = int(self.year[:4])
         self.identifiers = identifiers
         self.description = description
+
+        self.googleId    = None
+        self.identifier  = self.make_identifier()
+
+    def make_identifier(self):
+        m = hashlib.new("sha1")
+        m.update(self.recode(self.title))
+        m.update(self.recode(self.subtitle))
+        m.update(self.recode(self.publisher))
+        m.update(str(self.year))
+
+        return m.hexdigest()
+
+    def recode(self, s):
+        return s.encode('ascii', 'backslashreplace')
+
 
 def appmaker(zodb_root):
     if not 'app_root' in zodb_root:

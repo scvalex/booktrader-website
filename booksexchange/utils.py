@@ -101,4 +101,4 @@ class GoogleBooksCatalogue(object):
         try:
             return urlopen(url, timeout=10)
         except URLError, e:
-            return (str(e) + ": " + url)
+            return None
