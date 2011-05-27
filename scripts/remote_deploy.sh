@@ -11,5 +11,8 @@ if [ -z $USERNAME ]; then
     exit 1
 fi
 
+echo -e "* \033[38;5;148mRemote deploy\033[39m"
 scp scripts/deploy.sh $USERNAME@$ENTRY_SERVER:$PROJECT_DIR
-ssh $USERNAME@$ENTRY_SERVER "$PROJECT_DIR/deploy.sh"
+ssh $USERNAME@$ENTRY_SERVER "$PROJECT_DIR/deploy.sh && rm $PROJECT_DIR/deploy.sh"
+
+echo -e "* \033[38;5;148mFinished remote deployment\033[39m"
