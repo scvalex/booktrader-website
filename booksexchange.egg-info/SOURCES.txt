@@ -1,4 +1,5 @@
 CHANGES.txt
+DoC.ini
 MANIFEST.in
 README.txt
 development.ini

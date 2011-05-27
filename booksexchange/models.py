@@ -7,7 +7,7 @@ from persistent.mapping           import PersistentMapping
 
 from repoze.catalog.indexes.field import CatalogFieldIndex
 
-from booksexchange.utils          import IndexFolder
+from booksexchange.utils          import IndexFolder, GoogleBooksCatalogue
 
 import bcrypt
 import uuid
@@ -20,10 +20,11 @@ class App(PersistentMapping):
         self[name]     = obj
         obj.__name__   = name
         obj.__parent__ = self
-    
+
     def __init__(self):
         super(App, self).__init__()
         self.setchild('users', Users())
+        self.setchild('books', Books())
 
 
 class Users(IndexFolder):
@@ -62,6 +63,22 @@ class User(Persistent):
 
         return False
     
+class Books(IndexFolder):
+    def __init__(self):
+        super(Books, self).__init__(isbn = CatalogFieldIndex('isbn'))
+
+        self.catalogue = GoogleBooksCatalogue()
+
+class Book(Persistent):
+    def __init__(self, title, subtitle, authors, publisher,
+                 identifiers, description):
+        self.title       = title
+        self.subtitle    = subtitle
+        self.authors     = authors
+        self.publisher   = publisher
+        self.identifiers = identifiers
+        self.description = description
+
 def appmaker(zodb_root):
     if not 'app_root' in zodb_root:
         app_root              = App()
