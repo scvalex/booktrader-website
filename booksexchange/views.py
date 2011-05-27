@@ -199,3 +199,7 @@ def search(context, request):
 
     return {'form': search_form.render(),
             'result': []}
+
+@view_config(context=Books, name='add', renderer='books/add.mak')
+def add_book(context, request):
+    return {'status': 'ok'}
