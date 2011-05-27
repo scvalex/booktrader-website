@@ -8,6 +8,7 @@ from repoze.catalog.query   import Eq
 
 import colander
 import deform
+import json
 
 from booksexchange.models   import App, Users, User, Books
 
@@ -136,19 +137,55 @@ def view_search(context, request):
     class SearchSchema(colander.Schema):
         query = colander.SchemaNode(colander.String())
 
-    schema = SearchSchema()
-    form   = deform.Form(schema, buttons=('Search',))
+    class AuthorsSchema(colander.SequenceSchema):
+        author = colander.SchemaNode(colander.String())
+
+    class IndustryIdentifierSchema(colander.MappingSchema):
+        type       = colander.SchemaNode(colander.String(), name = "type")
+        identifier = colander.SchemaNode(colander.String())
+
+    class IndustryIdentifiersSchema(colander.SequenceSchema):
+        identifier = IndustryIdentifierSchema()
+
+    class VolumeInfoSchema(colander.MappingSchema):
+        title       = colander.SchemaNode(colander.String())
+        subtitle    = colander.SchemaNode(colander.String(),
+                                          missing="")
+        authors     = AuthorsSchema()
+        publisher   = colander.SchemaNode(colander.String(encoding="utf-8"),
+                                          missing="")
+        industryIdentifiers = IndustryIdentifiersSchema()
+        description = colander.SchemaNode(colander.String(), missing="")
+
+    class BookSchema(colander.MappingSchema):
+        volumeInfo = VolumeInfoSchema()
+
+    class BooksSchema(colander.SequenceSchema):
+        book = BookSchema()
+
+    class ResultSchema(colander.MappingSchema):
+        items = BooksSchema()
+
+    searchForm = deform.Form(SearchSchema(), buttons=('Search',))
 
     if 'Search' in request.POST:
         query = request.POST.items()
 
         try:
-            query = form.validate(query)
+            query = searchForm.validate(query)
         except deform.ValidationFailure, e:
             return {'form': e.render()}
 
         rsp = context.catalogue.query(query['query'])
+        if not rsp:
+            return {'form': rsp}
 
-        return {'form': rsp}
+        books = json.load(rsp)
+        try:
+            books = ResultSchema().deserialize(books)
+        except colander.Invalid, e:
+            return {'form': str(e.asdict()) + str(books)}
 
-    return {'form': form.render()}
+        return {'form': str(books)}
+
+    return {'form': searchForm.render()}

@@ -40,13 +40,12 @@ class IndexFolder(Folder):
                                   obj)
 
 class GoogleBooksCatalogue:
-    def __init__(self):
-        self.key = 'AIzaSyCwMw-h8bLntjsRydO8AXjwinfD5HnGpz4' # scvalex
-        self.base_url = 'https://www.googleapis.com/books/v1/volumes'
+    key = 'AIzaSyCwMw-h8bLntjsRydO8AXjwinfD5HnGpz4' # scvalex
+    base_url = 'https://www.googleapis.com/books/v1/volumes'
 
     def query(self, qstr):
-        url = "%s?q=%s" % (self.base_url, qstr)
+        url = "%s?q=%s" % (GoogleBooksCatalogue.base_url, qstr)
         try:
-            return unicode(urlopen(url, timeout=10).read(), "utf-8")
+            return urlopen(url, timeout=10)
         except URLError, e:
             return (str(e) + ": " + url)

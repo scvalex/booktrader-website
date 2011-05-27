@@ -49,12 +49,13 @@ class Books(IndexFolder):
         self.catalogue = GoogleBooksCatalogue()
 
 class Book(Persistent):
-    def __init__(self, title, subtitle, authors, publisher, isbn, description):
+    def __init__(self, title, subtitle, authors, publisher,
+                 identifiers, description):
         self.title       = title
         self.subtitle    = subtitle
         self.authors     = authors
         self.publisher   = publisher
-        self.isbn        = isbn
+        self.identifiers = identifiers
         self.description = description
 
 def appmaker(zodb_root):
