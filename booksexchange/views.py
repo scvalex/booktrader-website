@@ -3,7 +3,7 @@ from pyramid.url            import resource_url
 from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPInternalServerError
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPInternalServerError, HTTPBadRequest
 
 from repoze.catalog.query   import Eq
 
@@ -149,7 +149,7 @@ def search(context, request):
     class VolumeInfoSchema(colander.MappingSchema):
         title       = colander.SchemaNode(utf8_string())
         subtitle    = colander.SchemaNode(utf8_string(), missing="")
-        authors     = AuthorsSchema()
+        authors     = AuthorsSchema(missing=[])
         publisher   = colander.SchemaNode(utf8_string(), missing="")
         industryIdentifiers = IndustryIdentifiersSchema()
         description = colander.SchemaNode(utf8_string(), missing="")
@@ -176,13 +176,13 @@ def search(context, request):
 
         rsp = context.catalogue.query(query['query'])
         if not rsp:
-            return {'form': rsp}
+            raise HTTPBadRequest("no query parameter")
 
         books = json.load(rsp)
         try:
             books = ResultSchema().deserialize(books)
         except colander.Invalid, e:
-            return HTTPInternalServerError(str(e.asdict()) + str(books))
+            raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
         def book_to_book(b):
             b = b['volumeInfo']
