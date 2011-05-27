@@ -139,4 +139,14 @@ def view_search(context, request):
     schema = SearchSchema()
     form   = deform.Form(schema, buttons=('Search',))
 
+    if 'Search' in request.POST:
+        query = request.POST.items()
+
+        try:
+            query = form.validate(query)
+        except deform.ValidationFailure, e:
+            return {'form': e.render()}
+
+        return {'form': query}
+
     return {'form': form.render()}
