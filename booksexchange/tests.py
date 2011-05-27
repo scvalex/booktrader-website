@@ -125,9 +125,33 @@ class LoginTests(unittest.TestCase):
         self.assertTrue(not ('status' in res) or res.status != '302 Found')
 
 
-# class RegisterTests(unittest.TestCase):
-#     def _callFUT(self, context, request):
-#         from booksexchange.views import request
-#         return request(context, request)
+class ForbiddenTests(unittest.TestCase):
+    def _callFUT(self, request):
+        from booksexchange.views import forbidden
+        from booksexchange.models import appmaker
+        
+        request.root = appmaker({})
+        
+        return forbidden(request)
 
-#     def test_
+    def test_forbidden_user(self):
+        from pyramid.testing import setUp, tearDown
+        
+        self.config = setUp()
+        self.config.testing_securitypolicy(userid='francesco')
+
+        request = testing.DummyRequest()
+
+        res = self._callFUT(request)
+
+        self.assertEqual(res.status, '403 Forbidden')
+
+        tearDown(self.config)
+        
+    def test_forbidden_redirect(self):
+        request = testing.DummyRequest()
+        
+        res = self._callFUT(request)
+        
+        self.assertEqual(res.status, '302 Found')
+

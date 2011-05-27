@@ -1,5 +1,6 @@
 from pyramid.view           import view_config
 from pyramid.url            import resource_url
+from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -26,15 +27,15 @@ def forbidden(request):
     if authenticated_userid(request):
         return HTTPForbidden()
     
-    return HTTPFound(location = resource_url(request.root['users']['login']))
+    return HTTPFound(location = resource_path(request.root['users'], 'login'))
 
 
 def already_logged_in(request):
     # If the user is logged in already, redirect
     if authenticated_userid(request):
         request.session.flash('You are already logged in.')
-        
         return True
+    
     return False
     
 @view_config(context=Users, name='login', renderer='users/login.mak')
@@ -106,8 +107,8 @@ def register(context, request):
     schema = RegisterSchema()
     form   = deform.Form(schema, buttons=('Register',))
 
-    if 'Register' in request.POST:
-        controls = request.POST.items()
+    if 'Register' in request.params:
+        controls = request.params.items()
 
         try:
             register_data = form.validate(controls)
