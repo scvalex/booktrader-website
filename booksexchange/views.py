@@ -2,7 +2,8 @@ from pyramid.view           import view_config
 from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPInternalServerError, HTTPBadRequest
+from pyramid.httpexceptions import (HTTPFound, HTTPForbidden,
+                                    HTTPInternalServerError, HTTPBadRequest)
 
 from repoze.catalog.query   import Eq
 
@@ -11,7 +12,7 @@ import deform
 import json
 
 from booksexchange.models   import App, Users, User, Books, Book
-from booksexchange.schemas  import SearchSchema, utf8_string
+from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
 
@@ -179,30 +180,6 @@ def confirm_user(context, request):
                                                      query = {'wrong':True}))
 
 
-class AuthorsSchema(colander.SequenceSchema):
-    author = colander.SchemaNode(utf8_string())
-
-class IndustryIdentifierSchema(colander.MappingSchema):
-    type       = colander.SchemaNode(utf8_string(), name = "type")
-    identifier = colander.SchemaNode(utf8_string())
-
-class IndustryIdentifiersSchema(colander.SequenceSchema):
-    identifier = IndustryIdentifierSchema()
-
-class VolumeInfoSchema(colander.MappingSchema):
-    title       = colander.SchemaNode(utf8_string())
-    subtitle    = colander.SchemaNode(utf8_string(), missing="")
-    authors     = AuthorsSchema(missing=[])
-    publisher   = colander.SchemaNode(utf8_string(), missing="")
-    industryIdentifiers = IndustryIdentifiersSchema(missing = [])
-    description = colander.SchemaNode(utf8_string(), missing="")
-    publishedDate = colander.SchemaNode(utf8_string(), missing="")
-
-class BookSchema(colander.MappingSchema):
-    id         = colander.SchemaNode(utf8_string())
-    volumeInfo = VolumeInfoSchema()
-
-
 def json_to_book(b):
     id = b['id']
     b = b['volumeInfo']
@@ -213,7 +190,6 @@ def json_to_book(b):
                 b['publishedDate'], identifiers, b['description'])
     book.googleId = id
     return book
-
 
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
@@ -287,6 +263,7 @@ def add_book(context, request):
         return HTTPFound(location = request.resource_url(context, 'list'))
 
     return HTTPBadRequest("no book specified")
+
 
 
 @view_config(context=Books, name='list', renderer='books/list.mak',

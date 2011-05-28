@@ -12,7 +12,7 @@ body {
   padding: 0.4em 1em 0.6em 1em;
   background-color: #32656f;
   border-bottom: 0.2em solid #1c393f;
-  color: #b3ebe8;
+  color: #b3ebe8;n
 }
 
 #user a, #user a:visited {
@@ -31,7 +31,7 @@ h1, h2 {
 
 h1 {
   font-size: 2.4em;
-  padding:0;
+  padding:0 0 0 0;
 }
 
 h1 a, h1 a:visited {
@@ -42,11 +42,49 @@ h1 a, h1 a:visited {
 
 #content {
   background-color: #E0E4CC;
+  border-top: 0.2em solid #1c393f;
   border-bottom: 0.2em solid #c9cdb7;
-  padding: 0.5em 1em;
+  padding: 0 1em;
 }
 
 #footer {
   background-color: black;
   color:white;
+}
+
+#search_bar {
+  margin-left:1em;
+}
+
+#search_bar form, #search_bar fieldset {
+  width: 100%;
+}
+
+#search_bar ul {
+  display:block;
+  width:80%;
+  margin-left:10%;
+}
+
+#search_bar fieldset, #search_bar li {
+  display: inline;
+}
+
+#search_bar label {
+  display: none;
+}
+
+#search_bar input {
+  background-color: #1c393f;
+  border: 0.2em solid #1c393f;
+  border-bottom-left-radius: 0.2em;
+  border-bottom-right-radius: 0.2em;
+  font-size: 1.1em;
+  color: white;
+  padding: 0.1em 0.3em;
+  width:90%;
+}
+
+#search_bar #buttons {
+  width: 10%;
 }

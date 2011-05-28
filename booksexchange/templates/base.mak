@@ -13,10 +13,6 @@
           type="text/css">
     
     <link rel="stylesheet"
-          href="${request.static_url('deform:static/css/form.css')}"
-          type="text/css" />
-    
-    <link rel="stylesheet"
           href="${request.static_url('booksexchange:static/css/style.css')}"
           type="text/css" />
     
@@ -42,16 +38,14 @@
           % endif
         </div>
 
+
         <h1><a href="${request.resource_url(request.root)}">BooksExchange</a></h1>
+       
       </div>
 
       <div id="content">
+        ${request.search_bar}
         
-        <div id="searchbar">
-          searchbar
-        </div>
-        
-      
         <% flashes = request.session.pop_flash() %>
         % for flash in flashes:
             <div id="flash">${flash}</div>
