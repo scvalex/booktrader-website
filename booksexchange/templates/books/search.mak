@@ -11,7 +11,7 @@ ${form}
       ${maybe_li(book.subtitle)}
       <li>
       % for author in book.authors:
-        ${author}, 
+        ${author},
       % endfor
       </li>
       ${maybe_li(book.publisher)}

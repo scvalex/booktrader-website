@@ -180,31 +180,44 @@ def confirm_user(context, request):
                                                      query = {'wrong':True}))
 
 
+class AuthorsSchema(colander.SequenceSchema):
+    author = colander.SchemaNode(utf8_string())
+
+class IndustryIdentifierSchema(colander.MappingSchema):
+    type       = colander.SchemaNode(utf8_string(), name = "type")
+    identifier = colander.SchemaNode(utf8_string())
+
+class IndustryIdentifiersSchema(colander.SequenceSchema):
+    identifier = IndustryIdentifierSchema()
+
+class VolumeInfoSchema(colander.MappingSchema):
+    title       = colander.SchemaNode(utf8_string())
+    subtitle    = colander.SchemaNode(utf8_string(), missing="")
+    authors     = AuthorsSchema(missing=[])
+    publisher   = colander.SchemaNode(utf8_string(), missing="")
+    industryIdentifiers = IndustryIdentifiersSchema()
+    description = colander.SchemaNode(utf8_string(), missing="")
+    publishedDate = colander.SchemaNode(utf8_string(), missing="")
+
+class BookSchema(colander.MappingSchema):
+    id         = colander.SchemaNode(utf8_string())
+    volumeInfo = VolumeInfoSchema()
+
+
+def json_to_book(b):
+    id = b['id']
+    b = b['volumeInfo']
+    authors =b['authors']
+    identifiers = [[i['type'], i['identifier']]
+                   for i in b['industryIdentifiers']]
+    book = Book(b['title'], b['subtitle'], authors, b['publisher'],
+                b['publishedDate'], identifiers, b['description'])
+    book.googleId = id
+    return book
+
+
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
-    class AuthorsSchema(colander.SequenceSchema):
-        author = colander.SchemaNode(utf8_string())
-
-    class IndustryIdentifierSchema(colander.MappingSchema):
-        type       = colander.SchemaNode(utf8_string(), name = "type")
-        identifier = colander.SchemaNode(utf8_string())
-
-    class IndustryIdentifiersSchema(colander.SequenceSchema):
-        identifier = IndustryIdentifierSchema()
-
-    class VolumeInfoSchema(colander.MappingSchema):
-        title       = colander.SchemaNode(utf8_string())
-        subtitle    = colander.SchemaNode(utf8_string(), missing="")
-        authors     = AuthorsSchema(missing=[])
-        publisher   = colander.SchemaNode(utf8_string(), missing="")
-        industryIdentifiers = IndustryIdentifiersSchema()
-        description = colander.SchemaNode(utf8_string(), missing="")
-        publishedDate = colander.SchemaNode(utf8_string(), missing="")
-
-    class BookSchema(colander.MappingSchema):
-        id         = colander.SchemaNode(utf8_string())
-        volumeInfo = VolumeInfoSchema()
-
     class BooksSchema(colander.SequenceSchema):
         book = BookSchema()
 
@@ -231,18 +244,7 @@ def search(context, request):
         except colander.Invalid, e:
             return HTTPInternalServerError(str(e.asdict()) + str(books))
 
-        def book_to_book(b):
-            id = b['id']
-            b = b['volumeInfo']
-            authors =b['authors']
-            identifiers = [[i['type'], i['identifier']]
-                           for i in b['industryIdentifiers']]
-            book = Book(b['title'], b['subtitle'], authors, b['publisher'],
-                        b['publishedDate'], identifiers, b['description'])
-            book.googleId = id
-            return book
-
-        books = [book_to_book(vi) for vi in books['items']]
+        books = [json_to_book(vi) for vi in books['items']]
 
         return {'form': search_form.render(),
                 'result': books}
@@ -259,9 +261,28 @@ def add_book(context, request):
     if id:
         book = context.catalogue.volume(id)
         if not book:
-            return HTTPInternalServerError("no responese from catalogue")
+            raise HTTPInternalServerError("no responese from catalogue")
 
-        return {'status': 'ok'}
+        book = json.load(book)
+        try:
+            book = BookSchema().deserialize(book)
+        except colander.Invalid, e:
+            raise HTTPInternalServerError(str(e.asdict()) + str(book))
+
+        book = json_to_book(book)
+
+        user = authenticated_userid(request)
+        user = request.root['users'][user]
+        if not user:
+            raise HTTPInternalServerError("no user found")
+
+        if book.identifier in user.owned:
+            raise HTTPBadRequest("book already owned")
+
+        context.new_book(book)
+        user.add_book(book)
+
+        return {'status': 'ok', 'book': book}
 
     return HTTPBadRequest("no book specified")
 
@@ -269,4 +290,11 @@ def add_book(context, request):
 @view_config(context=Books, name='list', renderer='books/list.mak',
              permission='loggedin')
 def list_book(context, request):
-    return {}
+    user = authenticated_userid(request)
+    user = request.root['users'][user]
+    if not user:
+        raise HTTPInternalServerError("no user found")
+
+    books = user.owned.itervalues()
+
+    return {'books': books}

@@ -4,7 +4,6 @@ from pyramid.security             import Allow, Everyone
 from pyramid.traversal            import resource_path
 
 from persistent                   import Persistent
-from persistent.list              import PersistentList
 from persistent.mapping           import PersistentMapping
 
 from repoze.catalog.indexes.field import CatalogFieldIndex
@@ -49,7 +48,7 @@ class User(Persistent):
 
         self.confirmed = False
 
-        self.owned     = PersistentList()
+        self.owned     = PersistentMapping()
 
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
@@ -68,6 +67,9 @@ class User(Persistent):
             return True
 
         return False
+
+    def add_book(self, book):
+        self.owned[book.identifier] = book
     
 
 class Books(IndexFolder):
@@ -75,6 +77,9 @@ class Books(IndexFolder):
         super(Books, self).__init__(isbn = CatalogFieldIndex('isbn'))
 
         self.catalogue = GoogleBooksCatalogue()
+
+    def new_book(self, book):
+        self[book.identifier] = book
 
 
 class Book(Persistent):
