@@ -43,11 +43,12 @@
        
       </div>
 
+      <% flashes = request.session.pop_flash() %>
+      % for flash in flashes:
+          <div id="flash">${flash}</div>
+      % endfor
+
       <div id="content">
-        <% flashes = request.session.pop_flash() %>
-        % for flash in flashes:
-            <div id="flash">${flash}</div>
-        % endfor
 
         ${request.search_bar}
 
