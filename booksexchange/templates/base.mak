@@ -51,7 +51,9 @@
           <div id="flash">${flash}</div>
       % endfor
 
-      ${next.body()}
+      <div id="content">
+        ${next.body()}
+      </div>
 
       <div id="footer">${self.footer()}</div>
 

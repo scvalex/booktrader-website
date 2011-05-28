@@ -1,0 +1,38 @@
+body {
+  font-family: sans-serif;
+  background-color: #A7DBD8;
+}
+
+#wrapper {
+  margin:0.6em auto;
+  width:70%;
+  min-width:800px;
+  background-color: #E0E4CC;
+  border: 0.3em solid #2c3939;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+#header {
+  padding: 0.3em 0.4em 0.8em 0.4em;
+  background-color: #2c3939;
+}
+
+#user {
+  float:right;
+}
+
+h1, h2 {
+  font-family: Cabin, sans-serif;
+}
+
+h1 {
+  font-size: 2.4em;
+  padding:0.4em 0 0em 0;
+}
+
+h1 a, h1 a:visited {
+  color: #FA6900;
+  text-decoration: none;
+  text-shadow: -1px -1px black;
+}
