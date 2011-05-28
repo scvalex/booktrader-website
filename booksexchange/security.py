@@ -3,4 +3,8 @@ def groupfinder(userid, request):
     
     if userid in users:
         return ['group:users']
+
+    if request.user is not None:
+        return ['group:users']
+    
     return None
