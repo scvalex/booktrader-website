@@ -90,7 +90,7 @@ class Book(Persistent):
         self.authors     = authors
         self.publisher   = publisher
         self.year        = date
-        if isinstance(self.year, basestring) and self.year != '':
+        if self.year and isinstance(self.year, basestring):
             self.year = int(self.year[:4])
         self.identifiers = identifiers
         self.description = description

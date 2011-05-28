@@ -14,7 +14,7 @@ import json
 
 from booksexchange.models   import App, Users, User, Books, Book
 from booksexchange.schemas  import *
-from booksexchange.utils    import send_email
+from booksexchange.utils    import send_email, CatalogueException
 
 
 @view_config(context=HTTPException, renderer='exception.mak')
@@ -219,9 +219,11 @@ def search(context, request):
         except deform.ValidationFailure, e:
             return {'form': e.render()}
 
-        rsp = context.catalogue.query(query['query'])
-        if not rsp:
-            raise HTTPInternalServerError("no response from catalogue")
+        try:
+            rsp = context.catalogue.query(query['query'])
+        except CatalogueException, e:
+            raise HTTPInternalServerError("no response from catalogue: " +
+                                          str(e))
 
         books = json.load(rsp)
         try:
@@ -229,6 +231,7 @@ def search(context, request):
         except colander.Invalid, e:
             raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
+        
         books = [json_to_book(vi) for vi in books['items']]
 
         return {'form': search_form.render(),
@@ -243,9 +246,11 @@ def add_book(context, request):
     if len(request.subpath) == 1:
         id = request.subpath[0]
         
-        book = context.catalogue.volume(id)
-        if not book:
-            raise HTTPInternalServerError("no responese from catalogue")
+        try:
+            book = context.catalogue.volume(id)
+        except CatalogueException, e:
+            raise HTTPInternalServerError("no responese from catalogue: " +
+                                          str(e))
 
         book = json.load(book)
         try:
