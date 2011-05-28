@@ -141,14 +141,15 @@ class GoogleBooksCatalogue(object):
 
     def query(self, qstr):
         url = "%s/volumes?%s" % (GoogleBooksCatalogue.base_url,
-                                 urlencode({"q": qstr}))
+                                 urlencode({"q": qstr, "key": self.key}))
         try:
             return urlopen(url, timeout=10)
         except URLError, e:
             raise CatalogueException(str(e), url = url)
 
     def volume(self, id):
-        url = "%s/volumes/%s" % (GoogleBooksCatalogue.base_url, id)
+        url = "%s/volumes/%s?%s" % (GoogleBooksCatalogue.base_url, id,
+                                    urlencode({"key": self.key}))
         try:
             return urlopen(url, timeout=10)
         except URLError, e:
