@@ -289,9 +289,8 @@ def add_book(context, request):
 @view_config(context=Books, name='list', renderer='books/list.mak',
              permission='loggedin')
 def list_book(context, request):
-    user = authenticated_userid(request)
-    user = request.root['users'][user]
-    if not user:
+    user = request.user
+    if user is None:
         raise HTTPInternalServerError("no user found")
 
     books = user.owned.itervalues()
