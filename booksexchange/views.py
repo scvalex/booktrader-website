@@ -200,7 +200,6 @@ def json_to_book(b):
     book        = Book(id, b['title'], b['subtitle'], b['authors'], b['publisher'],
                        b['publishedDate'], identifiers, b['description'],
                        b['imageLinks'])
-    # book.googleId = id
     return book
 
 @view_config(context=Books, name='search', renderer='books/search.mak')
