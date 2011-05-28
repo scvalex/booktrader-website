@@ -49,17 +49,13 @@ def login(context, request):
     referer = request.referer
 
     if not referer:
-        request.path_info_pop()        # because redirecting with
-        request.path_info_pop()        # HTTPFound foobars the
-        referer = request.path_info    # referer header
+        # because redirecting with HTTPFound foobars the referer header
+        referer = '/' + '/'.join(request.path_info.split('/')[3:])
 
     if referer == request.path_url:
         referer = '/'
 
     came_from = request.params.get('came_from', referer)
-
-    print "Url:", request.url
-    print "Came from:", came_from
 
     username = ''
 

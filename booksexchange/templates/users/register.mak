@@ -2,4 +2,4 @@
 
 ${form}
 
-<%def name="title()">${parent.title()} - Home</%def>
+<%def name="title()">${parent.title()} - Register</%def>

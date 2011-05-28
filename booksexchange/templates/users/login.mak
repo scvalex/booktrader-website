@@ -14,4 +14,4 @@
   <input type="submit" name="form.submitted" value="Log In" />
 </form>
 
-<%def name="title()">${parent.title()} - Home</%def>
+<%def name="title()">${parent.title()} - Login</%def>
