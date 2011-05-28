@@ -2,7 +2,11 @@
 
 <%namespace name="common" file="/books/common.mak" />
 
-<h3>Your books!</h3>
+% if not username:
+  <h3>Your books!</h3>
+% else:
+  <h3>${username}'s books!</h3>
+% endif
 
 <ol>
   % for book in owned:
@@ -10,7 +14,11 @@
   % endfor
 </ol>
 
-<h3>Books you want!</h3>
+% if not username:
+  <h3>Books you want!</h3>
+% else:
+  <h3>Books ${username} wants!</h3>
+% endif
 
 <ol>
   % for book in want:
@@ -18,4 +26,4 @@
   % endfor
 </ol>
 
-<%def name="title()">${parent.title()} - List</%def>
+<%def name="title()">${parent.title()} - Home</%def>

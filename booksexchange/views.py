@@ -192,6 +192,18 @@ def confirm_user(context, request):
                                                     query = {'wrong':True}))
 
 
+@view_config(context=User, renderer='users/home.mak')
+def user_home(context, request):
+    user = request.user
+    username = context.username
+    if user is context:
+        username = ""
+
+    return {'username': username,
+            'owned': context.owned.itervalues(),
+            'want':  context.want.itervalues()}
+
+
 def json_to_book(b, context):
     id          = b['id']
     if id in context:
@@ -290,17 +302,6 @@ def add_book(context, request):
             book.add_coveter(user)
 
         request.session.flash('Book added!')
-        raise HTTPFound(location = request.resource_url(context, 'list'))
+        raise HTTPFound(location = request.resource_url(request.user))
 
     raise HTTPBadRequest('no book specified')
-
-
-@view_config(context=Books, name='list', renderer='books/list.mak',
-             permission='loggedin')
-def list_books(context, request):
-    user = request.user
-    if user is None:
-        raise HTTPInternalServerError("no user found")
-
-    return {'owned': user.owned.itervalues(),
-            'want':  user.want.itervalues()}
