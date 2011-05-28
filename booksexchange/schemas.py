@@ -4,8 +4,7 @@ utf8_string = lambda: colander.String(encoding="utf-8")
 
 class SearchSchema(colander.Schema):
     query = colander.SchemaNode(utf8_string(),
-                                validator=colander.Length(min=1))
-
+                                validator = colander.Length(min=1))
 
 
 class AuthorsSchema(colander.SequenceSchema):

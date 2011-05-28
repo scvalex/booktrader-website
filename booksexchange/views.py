@@ -223,6 +223,8 @@ def search(context, request):
         except deform.ValidationFailure, e:
             return {'form': e.render()}
 
+        search_form.schema['query'].default = query['query']
+
         try:
             rsp = context.catalogue.query(query['query'])
         except CatalogueException, e:
