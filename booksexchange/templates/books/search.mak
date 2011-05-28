@@ -4,19 +4,17 @@
 
 <h3>Find books!</h3>
 
-${form}
-
-<ol>
+<ul>
   % for book in result:
     <li>
       ${common.render_book(book)}
       <div>
-        <a href="${request.resource_url(request.context, 'add', book.googleId)}">
+        <a href="${request.resource_url(request.context, 'add', book.identifier)}">
           Have
         </a>
       </div>
     </li>
   % endfor
-</ol>
+</ul>
 
 <%def name="title()">${parent.title()} - Search</%def>

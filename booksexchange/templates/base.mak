@@ -44,12 +44,12 @@
       </div>
 
       <div id="content">
-        ${request.search_bar}
-        
         <% flashes = request.session.pop_flash() %>
         % for flash in flashes:
             <div id="flash">${flash}</div>
         % endfor
+
+        ${request.search_bar}
 
 
         ${next.body()}

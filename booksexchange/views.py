@@ -17,6 +17,7 @@ from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
 
+
 @view_config(context=HTTPException, renderer='exception.mak')
 def httpexception(context, request):
     return {'status': context.status,
@@ -192,14 +193,14 @@ def confirm_user(context, request):
 
 
 def json_to_book(b):
-    id = b['id']
-    b = b['volumeInfo']
-    authors =b['authors']
-    identifiers = [[i['type'], i['identifier']]
+    id          = b['id']
+    b           = b['volumeInfo']
+    identifiers = [(i['type'], i['identifier'])
                    for i in b['industryIdentifiers']]
-    book = Book(b['title'], b['subtitle'], authors, b['publisher'],
-                b['publishedDate'], identifiers, b['description'])
-    book.googleId = id
+    book        = Book(id, b['title'], b['subtitle'], b['authors'], b['publisher'],
+                       b['publishedDate'], identifiers, b['description'],
+                       b['imageLinks'])
+    # book.googleId = id
     return book
 
 @view_config(context=Books, name='search', renderer='books/search.mak')
@@ -210,9 +211,9 @@ def search(context, request):
     class ResultSchema(colander.MappingSchema):
         items = BooksSchema()
 
-    search_form = deform.Form(SearchSchema(), buttons=('Search',))
-
-    if 'Search' in request.POST:
+    if request.method == 'POST':
+        search_form = deform.Form(SearchSchema(), buttons=('Search',))
+        
         query = request.POST.items()
 
         try:
@@ -238,8 +239,7 @@ def search(context, request):
         return {'form': search_form.render(),
                 'result': books}
 
-    return {'form': search_form.render(),
-            'result': []}
+    return {'result': []}
 
 
 @view_config(context=Books, name='add', permission='loggedin')
