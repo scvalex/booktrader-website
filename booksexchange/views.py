@@ -241,31 +241,35 @@ def search(context, request):
     return {'result': []}
 
 
+def get_book(id, context):
+    try:
+        b = BookSchema().deserialize(json.load(context.catalogue.volume(id)))
+        return json_to_book(b)
+    except CatalogueException, e:
+        raise HTTPInternalServerError('no response from catalogue: ' + str(e))
+    except colander.Invalid, e:
+        raise HTTPInternalServerError(str(e.asdict()) + str(book))
+
+
+@view_config(context=Books, name='details', renderer='books/details.mak')
+def view_book(context, request):
+    if len(request.subpath) == 1:
+        book = get_book(id = request.subpath[0], context = context)
+        return {'book': book}
+    raise HTTPBadRequest('no book specified')
+
+
 @view_config(context=Books, name='add', permission='loggedin')
 def add_book(context, request):
     if len(request.subpath) == 1:
-        id = request.subpath[0]
-        
-        try:
-            book = context.catalogue.volume(id)
-        except CatalogueException, e:
-            raise HTTPInternalServerError("no responese from catalogue: " +
-                                          str(e))
-
-        book = json.load(book)
-        try:
-            book = BookSchema().deserialize(book)
-        except colander.Invalid, e:
-            raise HTTPInternalServerError(str(e.asdict()) + str(book))
-
-        book = json_to_book(book)
+        book = get_book(id = request.subpath[0], context = context)
 
         user = request.user
         if user is None:
-            raise HTTPInternalServerError("no user found")
+            raise HTTPInternalServerError('no user found')
 
         if book.identifier in user.owned:
-            raise HTTPBadRequest("book already owned")
+            raise HTTPBadRequest('book already owned')
 
         context.new_book(book)
         user.add_book(book)
@@ -273,13 +277,12 @@ def add_book(context, request):
         request.session.flash('Book added!')
         raise HTTPFound(location = request.resource_url(context, 'list'))
 
-    raise HTTPBadRequest("no book specified")
-
+    raise HTTPBadRequest('no book specified')
 
 
 @view_config(context=Books, name='list', renderer='books/list.mak',
              permission='loggedin')
-def list_book(context, request):
+def list_books(context, request):
     user = request.user
     if user is None:
         raise HTTPInternalServerError("no user found")
