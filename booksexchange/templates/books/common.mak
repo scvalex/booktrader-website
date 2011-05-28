@@ -2,6 +2,11 @@
     <ul>
       <li>${book.title}</li>
       ${maybe_li(book.subtitle)}
+
+      % if book.image_links and book.image_links['thumbnail']:
+          <img src="${book.image_links['thumbnail']}" alt="${book.title}" />
+      % endif
+      
       <li>
       % for author in book.authors:
         ${author},
@@ -26,3 +31,4 @@
     <li>${x}</li>
   % endif
 </%def>
+

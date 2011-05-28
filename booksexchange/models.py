@@ -84,7 +84,7 @@ class Books(IndexFolder):
 
 class Book(Persistent):
     def __init__(self, title, subtitle, authors, publisher, date,
-                 identifiers, description):
+                 identifiers, description, image_links):
         self.title       = title
         self.subtitle    = subtitle
         self.authors     = authors
@@ -94,6 +94,7 @@ class Book(Persistent):
             self.year = int(self.year[:4])
         self.identifiers = identifiers
         self.description = description
+        self.image_links = image_links
 
         self.googleId    = None
         self.identifier  = self.make_identifier()
@@ -109,7 +110,6 @@ class Book(Persistent):
 
     def recode(self, s):
         return s.encode('ascii', 'backslashreplace')
-
 
 def appmaker(zodb_root):
     if not 'app_root' in zodb_root:

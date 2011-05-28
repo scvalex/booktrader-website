@@ -36,7 +36,7 @@ class AppRequest(Request):
     def search_bar(self):
         action = self.resource_url(self.root['books'], 'search')
         return deform.Form(SearchSchema(),
-                           buttons = (deform.form.Buttone('Search', type='submit'),),
+                           buttons = (deform.form.Button('Search', type='submit'),),
                            action  = action,
                            formid  = "search_bar").render()
             

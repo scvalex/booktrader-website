@@ -17,6 +17,7 @@ from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
 
+
 @view_config(context=HTTPException, renderer='exception.mak')
 def httpexception(context, request):
     return {'status': context.status,
@@ -192,13 +193,13 @@ def confirm_user(context, request):
 
 
 def json_to_book(b):
-    id = b['id']
-    b = b['volumeInfo']
-    authors =b['authors']
-    identifiers = [[i['type'], i['identifier']]
+    id          = b['id']
+    b           = b['volumeInfo']
+    identifiers = [(i['type'], i['identifier'])
                    for i in b['industryIdentifiers']]
-    book = Book(b['title'], b['subtitle'], authors, b['publisher'],
-                b['publishedDate'], identifiers, b['description'])
+    book        = Book(b['title'], b['subtitle'], b['authors'], b['publisher'],
+                       b['publishedDate'], identifiers, b['description'],
+                       b['imageLinks'])
     book.googleId = id
     return book
 
