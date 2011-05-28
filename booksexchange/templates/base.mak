@@ -37,25 +37,29 @@
         <h1><a href="${request.resource_url(request.root)}">BooksExchange</a></h1>
       </div>
 
-      <div id="menu">
-        menu
-      </div>
-      
-      <div id="searchbar">
-        searchbar
-      </div>
-      
-      
-      <% flashes = request.session.pop_flash() %>
-      % for flash in flashes:
-          <div id="flash">${flash}</div>
-      % endfor
-
       <div id="content">
+        <div id="menu">
+          menu
+        </div>
+        
+        <div id="searchbar">
+          searchbar
+        </div>
+        
+      
+        <% flashes = request.session.pop_flash() %>
+        % for flash in flashes:
+            <div id="flash">${flash}</div>
+        % endfor
+
+
         ${next.body()}
       </div>
 
-      <div id="footer">${self.footer()}</div>
+      <div id="footer">
+        foot foot foot
+        ${self.footer()}
+      </div>
 
     </div>
   </body>
