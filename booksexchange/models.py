@@ -83,7 +83,7 @@ class Books(IndexFolder):
 
 
 class Book(Persistent):
-    def __init__(self, title, subtitle, authors, publisher, date,
+    def __init__(self, id, title, subtitle, authors, publisher, date,
                  identifiers, description, image_links):
         self.title       = title
         self.subtitle    = subtitle
@@ -96,8 +96,8 @@ class Book(Persistent):
         self.description = description
         self.image_links = image_links
 
-        self.googleId    = None
-        self.identifier  = self.make_identifier()
+        self.identifier  = id
+        # self.identifier  = self.make_identifier()
 
     def make_identifier(self):
         m = hashlib.new("sha1")

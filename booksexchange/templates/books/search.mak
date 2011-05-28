@@ -9,7 +9,7 @@
     <li>
       ${common.render_book(book)}
       <div>
-        <a href="${request.resource_url(request.context, 'add', book.googleId)}">
+        <a href="${request.resource_url(request.context, 'add', book.identifier)}">
           Have
         </a>
       </div>
