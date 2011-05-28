@@ -3,7 +3,8 @@ from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
 from pyramid.httpexceptions import (HTTPFound, HTTPForbidden,
-                                    HTTPInternalServerError, HTTPBadRequest)
+                                    HTTPInternalServerError, HTTPBadRequest,
+                                    HTTPException, HTTPRedirection)
 
 from repoze.catalog.query   import Eq
 
@@ -15,6 +16,15 @@ from booksexchange.models   import App, Users, User, Books, Book
 from booksexchange.schemas  import *
 from booksexchange.utils    import send_email
 
+
+@view_config(context=HTTPException, renderer='exception.mak')
+def httpexception(context, request):
+    return {'status': context.status,
+            'detail': context.detail}
+
+@view_config(context=HTTPRedirection)
+def httpredirection(context, request):
+    return context
 
 @view_config(context=App, renderer='home.mak')
 def home(context, request):
@@ -29,10 +39,10 @@ def view_users(context, request):
 @view_config(context=Forbidden)
 def forbidden(request):
     if authenticated_userid(request):
-        return HTTPForbidden()
+        raise HTTPForbidden("You don't have enough permissions to access this page.")
 
-    return HTTPFound(location = request.resource_url(request.root['users'], 'login',
-                                                     query={'ref':request.path}))
+    raise HTTPFound(location = request.resource_url(request.root['users'], 'login',
+                                                    query={'ref':request.path}))
 
 
 def already_logged_in(request):
@@ -46,7 +56,7 @@ def already_logged_in(request):
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def login(context, request):
     if already_logged_in(request):
-        return HTTPFound(location = '/')
+        raise HTTPFound(location = '/')
 
     if 'ref' in request.params:
         referer = request.params['ref']
@@ -67,8 +77,8 @@ def login(context, request):
 
         if username in context and context[username].check_password(password):
             headers = remember(request, username)
-            return HTTPFound(location = came_from,
-                             headers  = headers)
+            raise HTTPFound(location = came_from,
+                            headers  = headers)
 
         request.session.flash('Invalid username/password.')
 
@@ -87,14 +97,14 @@ def logout(context, request):
 
     request.session.flash('You are now logged out.')
     
-    return HTTPFound(location = referrer,
-                     headers = headers)
+    raise HTTPFound(location = referrer,
+                    headers = headers)
 
 
 @view_config(context=Users, name='register', renderer='users/register.mak')
 def register(context, request):
     if already_logged_in(request):
-        return HTTPFound(location = '/')
+        raise HTTPFound(location = '/')
 
     def validate_user(node, value):
         colander.Length(min=5, max=200)(node, value)
@@ -136,7 +146,7 @@ def register(context, request):
         
         context.new_user(new_user)
 
-        return HTTPFound(location = request.resource_url(new_user, 'generate_token'))
+        raise HTTPFound(location = request.resource_url(new_user, 'generate_token'))
     
     return {'form': form.render()}
                          
@@ -172,12 +182,12 @@ def confirm_user(context, request):
     if context.confirm(token):
         request.session.flash('Your accound was verified, enjoy BooksExchange!')
 
-        return HTTPFound(location = '/',
-                         headers  = remember(request, context.username))
+        raise HTTPFound(location = '/',
+                        headers  = remember(request, context.username))
 
-    return HTTPFound(location = request.resource_url(context,
-                                                     'generate_token',
-                                                     query = {'wrong':True}))
+    raise HTTPFound(location = request.resource_url(context,
+                                                    'generate_token',
+                                                    query = {'wrong':True}))
 
 
 def json_to_book(b):
@@ -211,13 +221,13 @@ def search(context, request):
 
         rsp = context.catalogue.query(query['query'])
         if not rsp:
-            return HTTPInternalServerError("no response from catalogue")
+            raise HTTPInternalServerError("no response from catalogue")
 
         books = json.load(rsp)
         try:
             books = ResultSchema().deserialize(books)
         except colander.Invalid, e:
-            return HTTPInternalServerError(str(e.asdict()) + str(books))
+            raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
         books = [json_to_book(vi) for vi in books['items']]
 
@@ -256,9 +266,9 @@ def add_book(context, request):
         user.add_book(book)
 
         request.session.flash('Book added!')
-        return HTTPFound(location = request.resource_url(context, 'list'))
+        raise HTTPFound(location = request.resource_url(context, 'list'))
 
-    return HTTPBadRequest("no book specified")
+    raise HTTPBadRequest("no book specified")
 
 
 
