@@ -9,9 +9,8 @@
     <li>
       ${common.render_book(book)}
       <div>
-        <a href="${request.resource_url(request.context, 'add', book.identifier)}">
-          Have
-        </a>
+        <a href="${request.resource_url(request.context, 'add', 'have', book.identifier)}">Have</a>
+        <a href="${request.resource_url(request.context, 'add', 'want', book.identifier)}">Want</a>
       </div>
     </li>
   % endfor

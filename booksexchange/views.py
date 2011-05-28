@@ -266,8 +266,12 @@ def view_book(context, request):
 
 @view_config(context=Books, name='add', permission='loggedin')
 def add_book(context, request):
-    if len(request.subpath) == 1:
-        book = get_book(id = request.subpath[0], context = context)
+    if len(request.subpath) == 2:
+        kind = request.subpath[0]
+        if not (kind in ['have', 'want']):
+            raise HTTPBadRequest("must add to either 'have' or 'want'")
+
+        book = get_book(id = request.subpath[1], context = context)
 
         user = request.user
         if user is None:
@@ -278,8 +282,12 @@ def add_book(context, request):
 
         if book.identifier not in context:
             context.new_book(book)
-        user.add_book(book)
-        book.add_owner(user)
+        if kind == 'have':
+            user.add_owned(book)
+            book.add_owner(user)
+        else:
+            user.add_want(book)
+            book.add_coveter(user)
 
         request.session.flash('Book added!')
         raise HTTPFound(location = request.resource_url(context, 'list'))
@@ -294,6 +302,5 @@ def list_books(context, request):
     if user is None:
         raise HTTPInternalServerError("no user found")
 
-    books = user.owned.itervalues()
-
-    return {'books': books}
+    return {'owned': user.owned.itervalues(),
+            'want':  user.want.itervalues()}

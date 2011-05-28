@@ -1,5 +1,7 @@
 import datetime
 
+from exceptions                   import RuntimeError
+
 from pyramid.security             import Allow, Everyone
 from pyramid.traversal            import resource_path
 
@@ -48,6 +50,7 @@ class User(Persistent):
         self.confirmed = False
 
         self.owned     = PersistentMapping()
+        self.want      = PersistentMapping()
 
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
@@ -67,8 +70,15 @@ class User(Persistent):
 
         return False
 
-    def add_book(self, book):
+    def add_owned(self, book):
+        if not isinstance(book, Book):
+            raise RuntimeError('not a book. GTFO')
         self.owned[book.identifier] = book
+
+    def add_want(self, book):
+        if not isinstance(book, Book):
+            raise RuntimeError('not a book. GTFO')
+        self.want[book.identifier] = book
     
 
 class Books(IndexFolder):
@@ -98,9 +108,17 @@ class Book(Persistent):
         self.identifier  = id
 
         self.owners      = PersistentMapping()
+        self.coveters    = PersistentMapping()
 
     def add_owner(self, user):
+        if not isinstance(user, User):
+            raise RuntimeError("that is a cabbage, not a human")
         self.owners[user.username] = user
+
+    def add_coveter(self, user):
+        if not isinstance(user, User):
+            raise RuntimeError("that is a cabbage, not a human")
+        self.coveters[user.username] = user
 
 def appmaker(zodb_root):
     if not 'app_root' in zodb_root:

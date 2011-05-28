@@ -29,13 +29,21 @@
       </li>
       % if len(book.owners) > 0:
         <li>
-          Owners: <ul>
+          Owners:
           % for username in book.owners:
-            <li>${username}</li>
+            ${username},
           % endfor
-          </ul>
         </li>
       % endif
+      % if len(book.coveters) > 0:
+        <li>
+          Coveters:
+          % for username in book.coveters:
+            ${username},
+          % endfor
+        </li>
+      % endif
+
     </ul>
 </%def>
 
