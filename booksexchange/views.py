@@ -192,13 +192,16 @@ def confirm_user(context, request):
                                                     query = {'wrong':True}))
 
 
-def json_to_book(b):
+def json_to_book(b, context):
     id          = b['id']
+    if id in context:
+        return context[id]
     b           = b['volumeInfo']
     identifiers = [(i['type'], i['identifier'])
                    for i in b['industryIdentifiers']]
-    book        = Book(id, b['title'], b['subtitle'], b['authors'], b['publisher'],
-                       b['publishedDate'], identifiers, b['description'],
+    book        = Book(id, b['title'], b['subtitle'], b['authors'],
+                       b['publisher'], b['publishedDate'],
+                       identifiers, b['description'],
                        b['imageLinks'])
     return book
 
@@ -233,7 +236,7 @@ def search(context, request):
             raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
         
-        books = [json_to_book(vi) for vi in books['items']]
+        books = [json_to_book(vi, context) for vi in books['items']]
 
         return {'form': search_form.render(),
                 'result': books}
@@ -244,7 +247,7 @@ def search(context, request):
 def get_book(id, context):
     try:
         b = BookSchema().deserialize(json.load(context.catalogue.volume(id)))
-        return json_to_book(b)
+        return json_to_book(b, context)
     except CatalogueException, e:
         raise HTTPInternalServerError('no response from catalogue: ' + str(e))
     except colander.Invalid, e:
