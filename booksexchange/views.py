@@ -268,9 +268,16 @@ def get_book(id, context):
         raise HTTPInternalServerError(str(e.asdict()) + str(book))
 
 
-@view_config(context=Book, renderer='books/details.mak')
+@view_config(context=Books, name='details', renderer='books/details.mak')
 def view_book(context, request):
-    return {'book': context}
+    if len(request.subpath) == 1:
+        id = request.subpath[0]
+        if id in context:
+            book = context[id]
+        else:
+            book = get_book(id, context)
+        return {'book': book}
+    raise HTTPBadRequest('no book specified')
 
 
 @view_config(context=Books, name='add', permission='loggedin')

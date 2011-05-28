@@ -29,7 +29,7 @@
 
 <%def name="render_book(book)">
     <ul>
-      <li><a href="${request.resource_url(request.root['books'], book.identifier)}">${book.title}</a></li>
+      <li><a href="${request.resource_url(request.root['books'], 'details', book.identifier)}">${book.title}</a></li>
       ${maybe_li(book.subtitle)}
 
 
@@ -77,7 +77,7 @@
 </%def>
 
 <%def name="book_link(book, inner)">
-  <a href="${request.resource_url(request.root['books'], book.identifier)}">
+  <a href="${request.resource_url(request.root['books'], 'details', book.identifier)}">
     ${inner}
   </a>
 </%def>
