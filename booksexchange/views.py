@@ -182,7 +182,7 @@ def confirm_user(context, request):
     token = request.params['token']
 
     if context.confirm(token):
-        request.session.flash('Your accound was verified, enjoy BooksExchange!')
+        request.session.flash('Your account was verified, enjoy BooksExchange!')
 
         raise HTTPFound(location = '/',
                         headers  = remember(request, context.username))
