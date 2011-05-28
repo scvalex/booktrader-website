@@ -212,7 +212,7 @@ def search(context, request):
 
     search_form = deform.Form(SearchSchema(), buttons=('Search',))
 
-    if 'Search' in request.POST:
+    if request.method == 'POST':
         query = request.POST.items()
 
         try:

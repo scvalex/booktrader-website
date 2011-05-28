@@ -11,7 +11,7 @@ body {
 #header {
   padding: 0.4em 1em 0.6em 1em;
   background-color: #32656f;
-  border-bottom: 0.2em solid #1c393f;
+  border-bottom: 0.3em solid #1c393f;
   color: #b3ebe8;
 }
 
@@ -42,9 +42,7 @@ h1 a, h1 a:visited {
 
 #content {
   background-color: #E0E4CC;
-  border-top: 0.2em solid #1c393f;
-  border-bottom: 0.2em solid #c9cdb7;
-  padding: 0;
+  border-bottom: 0.4em solid #c9cdb7;
 }
 
 #footer {
@@ -68,6 +66,14 @@ h1 a, h1 a:visited {
 
 #search_bar fieldset, #search_bar li {
   display: inline;
+  margin:0;
+  padding:0;
+}
+
+#search_bar label {
+  width:10%;
+  font-family: Cabin;
+  font-size:1.1em;
 }
 
 #search_bar label {
@@ -76,17 +82,29 @@ h1 a, h1 a:visited {
 
 #search_bar input {
   background-color: #1c393f;
-  border: 0.2em solid #1c393f;
-  border-bottom-left-radius: 0.2em;
-  border-bottom-right-radius: 0.2em;
+  border: 1px solid #1c393f;
+  border-radius: 0.2em;
   font-size: 1.1em;
   color: white;
-  padding: 0.1em 0.3em;
+  padding: 0.3em 0.3em;
   width:90%;
+  margin:0.5em 0;
+}
+
+#search_bar input:focus {
+  border: 1px solid #9cb0b8;
 }
 
 #search_bar #buttons {
   width: 10%;
+  font-family: Cabin;
+}
+
+#search_bar button {
+  background-color: transparent;
+  border: none;
+  font-size: 1.1em;
+  font-family: Cabin;
 }
 
 #flash {
