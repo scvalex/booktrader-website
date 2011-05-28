@@ -22,9 +22,11 @@ def httpexception(context, request):
     return {'status': context.status,
             'detail': context.detail}
 
+
 @view_config(context=HTTPRedirection)
-def httpredirection(context, request):
+def httpexception(context, request):
     return context
+
 
 @view_config(context=App, renderer='home.mak')
 def home(context, request):
@@ -174,8 +176,7 @@ def generate_token(context, request):
 @view_config(context=User, name='confirm')
 def confirm_user(context, request):
     if not 'token' in request.params or context.confirmed:
-        print request.resource_url(context, 'confirm')
-        return Forbidden()
+        raise Forbidden()
 
     token = request.params['token']
 
