@@ -57,6 +57,8 @@
 
 
         ${next.body()}
+
+        <hr id="stopper" />
       </div>
 
       <div id="footer">
