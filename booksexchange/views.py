@@ -19,6 +19,7 @@ from booksexchange.utils    import send_email
 def home(context, request):
     return {'blah': 'bloh'}
 
+
 @view_config(context=Users, renderer='users.mak', permission='loggedin')
 def view_users(context, request):
     return {'users': list(context)}
@@ -178,6 +179,7 @@ def confirm_user(context, request):
                                                      'generate_token',
                                                      query = {'wrong':True}))
 
+
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
     class AuthorsSchema(colander.SequenceSchema):
@@ -221,13 +223,13 @@ def search(context, request):
 
         rsp = context.catalogue.query(query['query'])
         if not rsp:
-            raise HTTPBadRequest("no query parameter")
+            return HTTPInternalServerError("no response from catalogue")
 
         books = json.load(rsp)
         try:
             books = ResultSchema().deserialize(books)
         except colander.Invalid, e:
-            raise HTTPInternalServerError(str(e.asdict()) + str(books))
+            return HTTPInternalServerError(str(e.asdict()) + str(books))
 
         def book_to_book(b):
             id = b['id']
@@ -248,14 +250,21 @@ def search(context, request):
     return {'form': search_form.render(),
             'result': []}
 
+
 @view_config(context=Books, name='add', renderer='books/add.mak',
              permission='loggedin')
 def add_book(context, request):
     id = request.path.split('/')[-1]    # probably a bad idea
 
-    print id
+    if id:
+        book = context.catalogue.volume(id)
+        if not book:
+            return HTTPInternalServerError("no responese from catalogue")
 
-    return {'status': 'ok'}
+        return {'status': 'ok'}
+
+    return HTTPBadRequest("no book specified")
+
 
 @view_config(context=Books, name='list', renderer='books/list.mak',
              permission='loggedin')

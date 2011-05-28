@@ -25,6 +25,9 @@ ${form}
       <li>
         ${book.identifier}
       </li>
+      <li>
+        <a href="/books/add/${book.googleId}">Have</a>
+      </li>
     </ul></li>
   % endfor
 </ol>

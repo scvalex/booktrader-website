@@ -92,12 +92,20 @@ def send_email(body, subject, recipients, settings, sender=None):
     
     server.quit()
 
+
 class GoogleBooksCatalogue(object):
     key = 'AIzaSyCwMw-h8bLntjsRydO8AXjwinfD5HnGpz4' # scvalex
-    base_url = 'https://www.googleapis.com/books/v1/volumes'
+    base_url = 'https://www.googleapis.com/books/v1'
 
     def query(self, qstr):
-        url = "%s?q=%s" % (GoogleBooksCatalogue.base_url, qstr)
+        url = "%s/volumes?q=%s" % (GoogleBooksCatalogue.base_url, qstr)
+        try:
+            return urlopen(url, timeout=10)
+        except URLError, e:
+            return None
+
+    def volume(self, id):
+        url = "%s/volumes/%s" % (GoogleBooksCatalogue.base_url, id)
         try:
             return urlopen(url, timeout=10)
         except URLError, e:
