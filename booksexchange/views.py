@@ -270,9 +270,8 @@ def add_book(context, request):
 
         book = json_to_book(book)
 
-        user = authenticated_userid(request)
-        user = request.root['users'][user]
-        if not user:
+        user = request.user
+        if user is None:
             raise HTTPInternalServerError("no user found")
 
         if book.identifier in user.owned:
