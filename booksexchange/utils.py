@@ -14,8 +14,12 @@ from email.mime.text import MIMEText
 
 from urllib2                 import urlopen, URLError
 
+import deform
 
-class RequestWithUser(Request):
+from booksexchange.schemas   import SearchSchema
+
+
+class AppRequest(Request):
     @reify
     def user(self):
         userid = unauthenticated_userid(self)
@@ -26,6 +30,14 @@ class RequestWithUser(Request):
                 return users[0]
 
         return None
+
+    @reify
+    def search_bar(self):
+        action = self.resource_url(self.root['books'], 'search')
+        return deform.Form(SearchSchema(),
+                           buttons = ('Search',),
+                           action  = action,
+                           formid  = "search_bar").render()
             
     
 class IndexFolder(Folder):

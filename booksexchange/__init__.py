@@ -7,7 +7,7 @@ from repoze.zodbconn.finder import PersistentApplicationFinder
 
 from booksexchange.models   import appmaker
 from booksexchange.security import groupfinder
-from booksexchange.utils    import RequestWithUser
+from booksexchange.utils    import AppRequest
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -32,7 +32,7 @@ def main(global_config, **settings):
                           authorization_policy  = authz_policy,
                           session_factory       = session_fac)
 
-    config.set_request_factory(RequestWithUser)
+    config.set_request_factory(AppRequest)
     
     config.add_static_view('static', 'booksexchange:static')
     config.add_static_view('deform', 'deform:static')
