@@ -255,9 +255,9 @@ def search(context, request):
 
 @view_config(context=Books, name='add', permission='loggedin')
 def add_book(context, request):
-    id = request.subpath[-1]
-    
-    if id:
+    if len(request.subpath) == 1:
+        id = request.subpath[1]
+        
         book = context.catalogue.volume(id)
         if not book:
             raise HTTPInternalServerError("no responese from catalogue")
