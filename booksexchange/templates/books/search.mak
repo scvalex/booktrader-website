@@ -6,7 +6,7 @@
 
 ${form}
 
-<ol>
+<ul>
   % for book in result:
     <li>
       ${common.render_book(book)}
@@ -17,6 +17,6 @@ ${form}
       </div>
     </li>
   % endfor
-</ol>
+</ul>
 
 <%def name="title()">${parent.title()} - Search</%def>

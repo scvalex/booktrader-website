@@ -1,6 +1,7 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
   background-color: black;
+  font-size: 12pt;
 }
 
 #wrapper {
