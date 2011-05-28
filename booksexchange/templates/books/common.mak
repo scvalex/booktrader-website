@@ -27,6 +27,15 @@
       <li>
         ${book.identifier}
       </li>
+      % if len(book.owners) > 0:
+        <li>
+          Owners: <ul>
+          % for username in book.owners:
+            <li>${username}</li>
+          % endfor
+          </ul>
+        </li>
+      % endif
     </ul>
 </%def>
 

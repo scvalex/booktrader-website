@@ -274,8 +274,10 @@ def add_book(context, request):
         if book.identifier in user.owned:
             raise HTTPBadRequest('book already owned')
 
-        context.new_book(book)
+        if book.identifier not in context:
+            context.new_book(book)
         user.add_book(book)
+        book.add_owner(user)
 
         request.session.flash('Book added!')
         raise HTTPFound(location = request.resource_url(context, 'list'))

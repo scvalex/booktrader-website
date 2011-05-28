@@ -97,6 +97,11 @@ class Book(Persistent):
 
         self.identifier  = id
 
+        self.owners      = PersistentMapping()
+
+    def add_owner(self, user):
+        self.owners[user.username] = user
+
 def appmaker(zodb_root):
     if not 'app_root' in zodb_root:
         app_root              = App()
