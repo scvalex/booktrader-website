@@ -1,6 +1,6 @@
 <%inherit file="/base.mak"/>
 
-<%namespace name="common" file="/books/common.mak" />
+<%namespace name="books_common" file="/books/common.mak" />
 
 % if not username:
   <h3>Your books!</h3>
@@ -10,7 +10,7 @@
 
 <ol>
   % for book in owned:
-    <li>${common.render_book(book)}</li>
+    <li>${books_common.render_book(book)}</li>
   % endfor
 </ol>
 
@@ -22,7 +22,7 @@
 
 <ol>
   % for book in want:
-    <li>${common.render_book(book)}</li>
+    <li>${books_common.render_book(book)}</li>
   % endfor
 </ol>
 

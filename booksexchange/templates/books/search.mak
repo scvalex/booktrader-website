@@ -1,13 +1,13 @@
 <%inherit file="/base.mak"/>
 
-<%namespace name="common" file="/books/common.mak" />
+<%namespace name="books_common" file="/books/common.mak" />
 
 <h3>Find books!</h3>
 
 <ul>
   % for book in result:
     <li>
-      ${common.render_book(book)}
+      ${books_common.render_book(book)}
       <div>
         <a href="${request.resource_url(request.context, 'add', 'have', book.identifier)}">Have</a>
         <a href="${request.resource_url(request.context, 'add', 'want', book.identifier)}">Want</a>

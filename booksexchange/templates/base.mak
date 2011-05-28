@@ -1,4 +1,7 @@
 ## -*- coding: utf-8 -*-
+
+<%namespace name="common" file="/common.mak" />
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -28,7 +31,7 @@
       <div id="header">
         <div id="user">
           % if request.user is not None:
-              logged in as ${request.user.username}
+              logged in as ${common.user_link(request.user)}
               &middot;
               <a href="${request.resource_url(request.root['users'], 'logout')}">logout</a>
           % else:

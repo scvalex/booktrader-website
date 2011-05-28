@@ -1,3 +1,5 @@
+<%namespace name="common" file="/common.mak" />
+
 <%def name="render_book(book)">
     <ul>
       <li><a href="${request.resource_url(request.root['books'], book.identifier)}">${book.title}</a></li>
@@ -31,7 +33,7 @@
         <li>
           Owners:
           % for username in book.owners:
-            ${username},
+            ${common.user_link(book.owners[username])},
           % endfor
         </li>
       % endif
@@ -39,7 +41,7 @@
         <li>
           Coveters:
           % for username in book.coveters:
-            ${username},
+            ${common.user_link(book.coveters[username])},
           % endfor
         </li>
       % endif
