@@ -255,8 +255,8 @@ def search(context, request):
 
 @view_config(context=Books, name='add', permission='loggedin')
 def add_book(context, request):
-    id = request.path.split('/')[-1]    # probably a bad idea
-
+    id = request.subpath[-1]
+    
     if id:
         book = context.catalogue.volume(id)
         if not book:

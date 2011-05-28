@@ -26,7 +26,9 @@ ${form}
         ${book.identifier}
       </li>
       <li>
-        <a href="/books/add/${book.googleId}">Have</a>
+        <a href="${request.resource_url(request.context, 'add', book.googleId)}">
+          Have
+        </a>
       </li>
     </ul></li>
   % endfor
