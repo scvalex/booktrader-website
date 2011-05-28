@@ -30,8 +30,8 @@ def forbidden(request):
     if authenticated_userid(request):
         return HTTPForbidden()
 
-    return HTTPFound(location = resource_path(request.root['users'], 'login',
-                                              *request.path.split('/')))
+    return HTTPFound(location = request.resource_url(request.root['users'], 'login',
+                                                     query={'ref':request.path}))
 
 
 def already_logged_in(request):
@@ -47,13 +47,12 @@ def login(context, request):
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
-    referer = request.referer
+    if 'ref' in request.params:
+        referer = request.params['ref']
+    else:
+        referer = '/'
 
-    if not referer:
-        # because redirecting with HTTPFound foobars the referer header
-        referer = '/' + '/'.join(request.path_info.split('/')[3:])
-
-    if referer == request.path_url:
+    if referer == request.path:
         referer = '/'
 
     came_from = request.params.get('came_from', referer)
@@ -74,7 +73,7 @@ def login(context, request):
 
     
     return {'came_from' : came_from,
-            'username' : username}
+            'username'  : username}
 
 @view_config(context=Users, name='logout', permission='loggedin')
 def logout(context, request):
@@ -256,7 +255,7 @@ def search(context, request):
 @view_config(context=Books, name='add', permission='loggedin')
 def add_book(context, request):
     if len(request.subpath) == 1:
-        id = request.subpath[1]
+        id = request.subpath[0]
         
         book = context.catalogue.volume(id)
         if not book:
