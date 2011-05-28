@@ -30,8 +30,8 @@ def forbidden(request):
     if authenticated_userid(request):
         return HTTPForbidden()
 
-    return HTTPFound(location = resource_path(request.root['users'], 'login',
-                                              *request.path.split('/')))
+    return HTTPFound(location = request.resource_url(request.root['users'], 'login',
+                                                     query={'ref':request.path}))
 
 
 def already_logged_in(request):
@@ -47,13 +47,12 @@ def login(context, request):
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
-    referer = request.referer
+    if 'ref' in request.params:
+        referer = request.params['ref']
+    else:
+        referer = '/'
 
-    if not referer:
-        # because redirecting with HTTPFound foobars the referer header
-        referer = '/' + '/'.join(request.path_info.split('/')[3:])
-
-    if referer == request.path_url:
+    if referer == request.path:
         referer = '/'
 
     came_from = request.params.get('came_from', referer)
@@ -74,7 +73,7 @@ def login(context, request):
 
     
     return {'came_from' : came_from,
-            'username' : username}
+            'username'  : username}
 
 @view_config(context=Users, name='logout', permission='loggedin')
 def logout(context, request):
@@ -257,9 +256,9 @@ def search(context, request):
 
 @view_config(context=Books, name='add', permission='loggedin')
 def add_book(context, request):
-    id = request.path.split('/')[-1]    # probably a bad idea
-
-    if id:
+    if len(request.subpath) == 1:
+        id = request.subpath[0]
+        
         try:
             book = context.catalogue.volume(id)
         except CatalogueException, e:
@@ -274,9 +273,8 @@ def add_book(context, request):
 
         book = json_to_book(book)
 
-        user = authenticated_userid(request)
-        user = request.root['users'][user]
-        if not user:
+        user = request.user
+        if user is None:
             raise HTTPInternalServerError("no user found")
 
         if book.identifier in user.owned:
@@ -294,9 +292,8 @@ def add_book(context, request):
 @view_config(context=Books, name='list', renderer='books/list.mak',
              permission='loggedin')
 def list_book(context, request):
-    user = authenticated_userid(request)
-    user = request.root['users'][user]
-    if not user:
+    user = request.user
+    if user is None:
         raise HTTPInternalServerError("no user found")
 
     books = user.owned.itervalues()

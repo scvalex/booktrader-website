@@ -1,0 +1,52 @@
+body {
+  font-family: sans-serif;
+  background-color: black;
+}
+
+#wrapper {
+  margin:0;
+  background-color: #E0E4CC;
+}
+
+#header {
+  padding: 0.4em 1em 0.6em 1em;
+  background-color: #32656f;
+  border-bottom: 0.2em solid #1c393f;
+  color: #b3ebe8;
+}
+
+#user a, #user a:visited {
+  color: #b3ebe8;
+  text-decoration: underline;
+}
+
+#user {
+  float:right;
+  font-size: 0.9em;
+}
+
+h1, h2 {
+  font-family: Cabin, sans-serif;
+}
+
+h1 {
+  font-size: 2.4em;
+  padding:0;
+}
+
+h1 a, h1 a:visited {
+  color: #FA6900;
+  text-decoration: none;
+  text-shadow: -1px -1px black;
+}
+
+#content {
+  background-color: #E0E4CC;
+  border-bottom: 0.2em solid #c9cdb7;
+  padding: 0.5em 1em;
+}
+
+#footer {
+  background-color: black;
+  color:white;
+}

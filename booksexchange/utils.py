@@ -1,8 +1,12 @@
-from pyramid.traversal       import resource_path
+from pyramid.traversal       import resource_path, find_resource, find_root
+from pyramid.request         import Request
+from pyramid.decorator       import reify
+from pyramid.security        import unauthenticated_userid
 
 from repoze.folder           import Folder
 from repoze.catalog.catalog  import Catalog
 from repoze.catalog.document import DocumentMap
+from repoze.catalog.query    import Eq
 
 import smtplib
 from email import Header
@@ -11,6 +15,20 @@ from email.mime.text import MIMEText
 from urllib                  import urlencode
 from urllib2                 import urlopen, URLError
 
+
+class RequestWithUser(Request):
+    @reify
+    def user(self):
+        userid = unauthenticated_userid(self)
+
+        if userid is not None:
+            (nusers, users) = self.root['users'].query(Eq('username', userid))
+            if nusers > 0:
+                return users[0]
+
+        return None
+            
+    
 class IndexFolder(Folder):
     def __init__(self, **kwargs):
         super(IndexFolder, self).__init__()
@@ -38,7 +56,10 @@ class IndexFolder(Folder):
         super(IndexFolder, self).remove(name, *args, **kwargs)
 
     def query(self, *args, **kwargs):
-        return self._catalog.query(*args, **kwargs)
+        res   = self._catalog.query(*args, **kwargs)
+        items = [find_resource(find_root(self), self._docmap.address_for_docid(index))
+                 for index in res[1]]
+        return (res[0], items)
 
     def update(self, obj):
         self._catalog.reindex_doc(self._docmap.docid_for_address(resource_path(obj)),
