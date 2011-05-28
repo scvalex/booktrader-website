@@ -253,8 +253,7 @@ def search(context, request):
             'result': []}
 
 
-@view_config(context=Books, name='add', renderer='books/add.mak',
-             permission='loggedin')
+@view_config(context=Books, name='add', permission='loggedin')
 def add_book(context, request):
     id = request.path.split('/')[-1]    # probably a bad idea
 
@@ -282,7 +281,8 @@ def add_book(context, request):
         context.new_book(book)
         user.add_book(book)
 
-        return {'status': 'ok', 'book': book}
+        request.session.flash('Book added!')
+        return HTTPFound(location = request.resource_url(context, 'list'))
 
     return HTTPBadRequest("no book specified")
 
