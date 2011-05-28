@@ -28,8 +28,9 @@ def view_users(context, request):
 def forbidden(request):
     if authenticated_userid(request):
         return HTTPForbidden()
-    
-    return HTTPFound(location = resource_path(request.root['users'], 'login'))
+
+    return HTTPFound(location = resource_path(request.root['users'], 'login',
+                                              *request.path.split('/')))
 
 
 def already_logged_in(request):
@@ -45,13 +46,19 @@ def login(context, request):
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
-    referrer = request.url
-    
-    if referrer == request.path_url:
-        referrer = '/'
+    referer = request.referer
 
-    came_from = request.params.get('came_from', referrer)
+    if not referer:
+        request.path_info_pop()        # because redirecting with
+        request.path_info_pop()        # HTTPFound foobars the
+        referer = request.path_info    # referer header
 
+    if referer == request.path_url:
+        referer = '/'
+
+    came_from = request.params.get('came_from', referer)
+
+    print "Url:", request.url
     print "Came from:", came_from
 
     username = ''
@@ -69,8 +76,8 @@ def login(context, request):
         request.session.flash('Invalid username/password.')
 
     
-    return dict(came_from = came_from,
-                username  = username)
+    return {'came_from' : came_from,
+            'username' : username}
 
 @view_config(context=Users, name='logout', permission='loggedin')
 def logout(context, request):
