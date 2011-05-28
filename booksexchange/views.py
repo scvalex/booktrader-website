@@ -211,9 +211,9 @@ def search(context, request):
     class ResultSchema(colander.MappingSchema):
         items = BooksSchema()
 
-    search_form = deform.Form(SearchSchema(), buttons=('Search',))
-
     if request.method == 'POST':
+        search_form = deform.Form(SearchSchema(), buttons=('Search',))
+        
         query = request.POST.items()
 
         try:
@@ -239,8 +239,7 @@ def search(context, request):
         return {'form': search_form.render(),
                 'result': books}
 
-    return {'form': search_form.render(),
-            'result': []}
+    return {'result': []}
 
 
 @view_config(context=Books, name='add', permission='loggedin')

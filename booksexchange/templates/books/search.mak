@@ -4,8 +4,6 @@
 
 <h3>Find books!</h3>
 
-${form}
-
 <ul>
   % for book in result:
     <li>
