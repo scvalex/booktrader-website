@@ -19,7 +19,7 @@ from booksexchange.utils    import send_email
 def home(context, request):
     return {'blah': 'bloh'}
 
-@view_config(context=Users, renderer='users.mak')
+@view_config(context=Users, renderer='users.mak', permission='loggedin')
 def view_users(context, request):
     return {'users': list(context)}
 
@@ -45,12 +45,14 @@ def login(context, request):
     if already_logged_in(request):
         return HTTPFound(location = '/')
 
-    referrer  = request.url
+    referrer = request.url
     
     if referrer == request.path_url:
         referrer = '/'
 
     came_from = request.params.get('came_from', referrer)
+
+    print "Came from:", came_from
 
     username = ''
 
@@ -70,7 +72,7 @@ def login(context, request):
     return dict(came_from = came_from,
                 username  = username)
 
-@view_config(context=Users, name='logout')
+@view_config(context=Users, name='logout', permission='loggedin')
 def logout(context, request):
     headers = forget(request)
 
@@ -135,7 +137,8 @@ def register(context, request):
     return {'form': form.render()}
                          
 
-@view_config(context=User, name='generate_token', renderer='users/generate_token.mak')
+@view_config(context=User, name='generate_token',
+             renderer='users/generate_token.mak')
 def generate_token(context, request):
     token = context.generate_token()
 
@@ -242,7 +245,8 @@ def search(context, request):
     return {'form': search_form.render(),
             'result': []}
 
-@view_config(context=Books, name='add', renderer='books/add.mak')
+@view_config(context=Books, name='add', renderer='books/add.mak',
+             permission='loggedin')
 def add_book(context, request):
     id = request.path.split('/')[-1]    # probably a bad idea
 
@@ -250,6 +254,7 @@ def add_book(context, request):
 
     return {'status': 'ok'}
 
-@view_config(context=Books, name='list', renderer='books/list.mak')
+@view_config(context=Books, name='list', renderer='books/list.mak',
+             permission='loggedin')
 def list_book(context, request):
     return {}

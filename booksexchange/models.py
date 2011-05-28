@@ -1,5 +1,6 @@
 import datetime
 
+from pyramid.security             import Allow, Everyone
 from pyramid.traversal            import resource_path
 
 from persistent                   import Persistent
@@ -17,6 +18,7 @@ import uuid
 class App(PersistentMapping):
     __name__   = None
     __parent__ = None
+    __acl__    = [ (Allow, 'group:users', 'loggedin') ]
 
     def setchild(self, name, obj):
         self[name]     = obj
@@ -111,6 +113,9 @@ def appmaker(zodb_root):
 
         app_root['users'].new_user(User('francesco', 'f@mazzo.li', 'francesco'))
         app_root['users']['francesco'].confirmed = True
+
+        app_root['users'].new_user(User('scvalex', 'scvalex@gmail.com', 'scvalex'))
+        app_root['users']['scvalex'].confirmed = True
         
         import transaction
         transaction.commit()
