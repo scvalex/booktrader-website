@@ -12,7 +12,7 @@ fi
 
 ENTRY_SERVER=$2
 
-if [ -z $PROJECT_DIR ]; then
+if [ -z $ENTRY_SERVER ]; then
     ENTRY_SERVER=shell1.doc.ic.ac.uk
 fi
 
