@@ -12,7 +12,7 @@ import json
 
 from booksexchange.models   import App, Users, User, Books, Book
 from booksexchange.schemas  import SearchSchema, utf8_string
-from booksexchange.utils    import send_email
+from booksexchange.utils    import send_email, CatalogueException
 
 
 @view_config(context=App, renderer='home.mak')
@@ -195,7 +195,7 @@ class VolumeInfoSchema(colander.MappingSchema):
     subtitle    = colander.SchemaNode(utf8_string(), missing="")
     authors     = AuthorsSchema(missing=[])
     publisher   = colander.SchemaNode(utf8_string(), missing="")
-    industryIdentifiers = IndustryIdentifiersSchema()
+    industryIdentifiers = IndustryIdentifiersSchema(missing = [])
     description = colander.SchemaNode(utf8_string(), missing="")
     publishedDate = colander.SchemaNode(utf8_string(), missing="")
 
@@ -234,15 +234,17 @@ def search(context, request):
         except deform.ValidationFailure, e:
             return {'form': e.render()}
 
-        rsp = context.catalogue.query(query['query'])
-        if not rsp:
-            return HTTPInternalServerError("no response from catalogue")
+        try:
+            rsp = context.catalogue.query(query['query'])
+        except CatalogueException, e:
+            raise HTTPInternalServerError("no response from catalogue: " +
+                                          str(e))
 
         books = json.load(rsp)
         try:
             books = ResultSchema().deserialize(books)
         except colander.Invalid, e:
-            return HTTPInternalServerError(str(e.asdict()) + str(books))
+           raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
         books = [json_to_book(vi) for vi in books['items']]
 
@@ -258,9 +260,11 @@ def add_book(context, request):
     id = request.path.split('/')[-1]    # probably a bad idea
 
     if id:
-        book = context.catalogue.volume(id)
-        if not book:
-            raise HTTPInternalServerError("no responese from catalogue")
+        try:
+            book = context.catalogue.volume(id)
+        except CatalogueException, e:
+            raise HTTPInternalServerError("no responese from catalogue: " +
+                                          str(e))
 
         book = json.load(book)
         try:

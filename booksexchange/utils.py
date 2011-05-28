@@ -8,6 +8,7 @@ import smtplib
 from email import Header
 from email.mime.text import MIMEText
 
+from urllib                  import urlencode
 from urllib2                 import urlopen, URLError
 
 class IndexFolder(Folder):
@@ -93,20 +94,29 @@ def send_email(body, subject, recipients, settings, sender=None):
     server.quit()
 
 
+class CatalogueException(RuntimeError):
+    def __init__(self, str, url):
+        super(CatalogueException, self).__init__(str)
+        self.url = url
+
+    def __str__(self):
+        return super(CatalogueException, self).__str__() + ": " + self.url
+
 class GoogleBooksCatalogue(object):
     key = 'AIzaSyCwMw-h8bLntjsRydO8AXjwinfD5HnGpz4' # scvalex
     base_url = 'https://www.googleapis.com/books/v1'
 
     def query(self, qstr):
-        url = "%s/volumes?q=%s" % (GoogleBooksCatalogue.base_url, qstr)
+        url = "%s/volumes?%s" % (GoogleBooksCatalogue.base_url,
+                                 urlencode({"q": qstr}))
         try:
             return urlopen(url, timeout=10)
         except URLError, e:
-            return None
+            raise CatalogueException(str(e), url = url)
 
     def volume(self, id):
         url = "%s/volumes/%s" % (GoogleBooksCatalogue.base_url, id)
         try:
             return urlopen(url, timeout=10)
         except URLError, e:
-            return None
+            raise CatalogueException(str(e), url = url)
