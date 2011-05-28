@@ -9,15 +9,20 @@ body {
 }
 
 #header {
-  padding: 0.3em 0.4em 0.6em 1em;
+  padding: 0.4em 1em 0.6em 1em;
   background-color: #32656f;
   border-bottom: 0.2em solid #1c393f;
   color: #b3ebe8;
 }
 
+#user a, #user a:visited {
+  color: #b3ebe8;
+  text-decoration: underline;
+}
+
 #user {
   float:right;
-  font-size: 0.85em;
+  font-size: 0.9em;
 }
 
 h1, h2 {
@@ -26,7 +31,7 @@ h1, h2 {
 
 h1 {
   font-size: 2.4em;
-  padding:0.2em 0 0 0;
+  padding:0;
 }
 
 h1 a, h1 a:visited {
@@ -38,6 +43,7 @@ h1 a, h1 a:visited {
 #content {
   background-color: #E0E4CC;
   border-bottom: 0.2em solid #c9cdb7;
+  padding: 0.5em 1em;
 }
 
 #footer {

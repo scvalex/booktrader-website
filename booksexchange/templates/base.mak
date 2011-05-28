@@ -31,16 +31,21 @@
 
       <div id="header">
         <div id="user">
-          login register etc
+          % if request.user is not None:
+              logged in as ${request.user.username}
+              &middot;
+              <a href="${request.resource_url(request.root['users'], 'logout')}">logout</a>
+          % else:
+              <a href="${request.resource_url(request.root['users'], 'login')}">login</a>
+              &middot;
+              <a href="${request.resource_url(request.root['users'], 'register')}">register</a>
+          % endif
         </div>
 
         <h1><a href="${request.resource_url(request.root)}">BooksExchange</a></h1>
       </div>
 
       <div id="content">
-        <div id="menu">
-          menu
-        </div>
         
         <div id="searchbar">
           searchbar
