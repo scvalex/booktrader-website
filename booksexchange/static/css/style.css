@@ -44,6 +44,7 @@ h1 a, h1 a:visited {
   background-color: #E0E4CC;
   border-top: 0.2em solid #1c393f;
   border-bottom: 0.2em solid #c9cdb7;
+  min-height: 600px;
   padding: 0 1em;
 }
 
