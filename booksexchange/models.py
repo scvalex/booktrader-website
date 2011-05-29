@@ -63,7 +63,7 @@ class User(Persistent):
     @property
     def username(self):
         return self._username
-    
+
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
 
@@ -71,7 +71,7 @@ class User(Persistent):
         token = str(uuid.uuid4())
         self._token = token
         return token
-    
+
     def confirm(self, token):
         if not hasattr(self, '_token'):
             return False
@@ -91,7 +91,7 @@ class User(Persistent):
         if not isinstance(book, Book):
             raise RuntimeError('not a book. GTFO')
         self.want[book.identifier] = book
-    
+
 
 class Books(IndexFolder):
     def __init__(self):
@@ -102,7 +102,7 @@ class Books(IndexFolder):
     def __getitem__(self, key):
         if key in ['search', 'add']:
             raise KeyError
-        
+
         try:
             return super(Books, self).__getitem__(key)
         except KeyError, e:
@@ -119,10 +119,10 @@ class Books(IndexFolder):
 
     def json_to_book(self, b):
         id          = b['id']
-        
+
         if id in self:
             return self[id]
-        
+
         b           = b['volumeInfo']
         identifiers = [(i['type'], i['identifier'])
                        for i in b['industryIdentifiers']]
@@ -155,7 +155,7 @@ class Book(Persistent):
     @property
     def identifier(self):
         return self._identifier
-    
+
     def add_owner(self, user):
         if not isinstance(user, User):
             raise RuntimeError("that is a cabbage, not a human")
@@ -229,7 +229,7 @@ def appmaker(zodb_root):
 
         app_root['users'].new_user(User('scvalex', 'scvalex@gmail.com', 'scvalex'))
         app_root['users']['scvalex'].confirmed = True
-        
+
         import transaction
         transaction.commit()
     return zodb_root['app_root']

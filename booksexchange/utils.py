@@ -42,8 +42,8 @@ class AppRequest(Request):
                            action  = action,
                            formid  = 'search_bar',
                            method  = 'GET').render()
-            
-    
+
+
 class IndexFolder(Folder):
     def __init__(self, **kwargs):
         super(IndexFolder, self).__init__()
@@ -51,7 +51,7 @@ class IndexFolder(Folder):
         self._docmap = DocumentMap()
 
         self._catalog = Catalog()
-        
+
         for k, v in kwargs.iteritems():
             self._catalog[k] = v
 
@@ -63,11 +63,11 @@ class IndexFolder(Folder):
 
     def remove(self, name, *args, **kwargs):
         obj = self[name]
-        
+
         docid = self._docmap.docid_for_address(resource_path(obj))
         self._docmap.remove_docid(docid)
         self._catalog.unindex_doc(docid)
-        
+
         super(IndexFolder, self).remove(name, *args, **kwargs)
 
     def query(self, *args, **kwargs):
@@ -95,11 +95,11 @@ def send_email(body, subject, recipients, settings, sender=None):
     Thanks to http://mg.pov.lt/blog/unicode-emails-in-python for the
     encoding tips.
     """
-    
+
     # Fallback to default sender
     if not sender:
         sender = settings['smtp_email']
-    
+
     # Header class is smart enough to try US-ASCII, then the charset we
     # provide, then fall back to UTF-8.
     header_charset = 'ISO-8859-1'
@@ -126,7 +126,7 @@ def send_email(body, subject, recipients, settings, sender=None):
     server = smtplib.SMTP_SSL(settings['smtp_server'], settings['smtp_port'])
     server.login(settings['smtp_username'], settings['smtp_password'])
     server.sendmail(sender, recipients, msg.as_string())
-    
+
     server.quit()
 
 
