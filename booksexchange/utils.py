@@ -40,7 +40,8 @@ class AppRequest(Request):
         return deform.Form(SearchSchema(),
                            buttons = (deform.form.Button('Search', type='submit'),),
                            action  = action,
-                           formid  = "search_bar").render()
+                           formid  = 'search_bar',
+                           method  = 'GET').render()
             
     
 class IndexFolder(Folder):

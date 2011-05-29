@@ -1,3 +1,5 @@
+/* General */
+
 body {
   font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
   background-color: black;
@@ -8,6 +10,13 @@ body {
   margin:0;
   background-color: #E0E4CC;
 }
+
+h1, h2, h3 {
+  font-family: Cabin, sans-serif;
+}
+
+
+/* Header */
 
 #header {
   padding: 0.4em 1em 0.6em 1em;
@@ -26,10 +35,6 @@ body {
   font-size: 0.9em;
 }
 
-h1, h2 {
-  font-family: Cabin, sans-serif;
-}
-
 h1 {
   font-size: 2.4em;
   padding:0 0 0 0;
@@ -41,23 +46,33 @@ h1 a, h1 a:visited {
   text-shadow: -1px -1px black;
 }
 
+
+/* Content div */
+
 #content {
   background-color: #E0E4CC;
-<<<<<<< HEAD
   border-top: 0.2em solid #1c393f;
-  border-bottom: 0.2em solid #c9cdb7;
   min-height: 600px;
-  padding: 0 1em;
-=======
   border-bottom: 0.4em solid #c9cdb7;
   padding:0 1em 1em 1em;
->>>>>>> origin/master
 }
+
+#content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+
+/* Footer */
 
 #footer {
   background-color: black;
   color:white;
 }
+
+
+/* Search bar */
 
 #search_bar {
   margin-left:1em;
@@ -116,9 +131,85 @@ h1 a, h1 a:visited {
   font-family: Cabin;
 }
 
+
+/*  Flash messages */
+
 #flash {
   background-color: #1c393f;
   padding:0 1em 0.4em 1em;
   color: #b3ebe8;
   font-weight: bold;
+}
+
+
+/* Books listings (eg search page) */
+
+#books_list li {
+  float: left;
+  width: 49%;
+  margin: 1em 1% 0 0;
+  background-color: #f6fae0;
+  border-radius: 0.2em;
+  min-height:160px;
+}
+
+#books_list li:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+#books_list .right {
+  float: right;
+  margin: 1em 0 0 1%;
+}
+
+#books_list li h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+  font-family: Cabin, Helvetica, Arial, sans-serif;
+  margin: 0 0 .2em 0;
+}
+
+#books_list li h3 a, #books_list li h3 a:visited {
+  color:#1c393f;
+}
+
+#books_list li p {
+  margin: 0.2em 0;
+}
+.book_short {
+  margin:1em;
+}
+
+.authors {
+  font-size: 0.9em;
+}
+
+.author {
+  font-weight: bold;
+}
+
+.cover {
+  float: left;
+  margin: 0 0.5em 0.5em 0;
+}
+
+.cover img {
+  max-height: 120px;
+}
+
+.have_want {
+  margin:1em;
+}
+
+.have_want a {
+  color: white;
+  background-color: #1c393f;
+  font-family: Cabin, Helvetica, Arial, sans-serif;
+  padding:0.2em;
+  font-size: 1.1em;
+  border-radius: 0.2em;
+  text-decoration: none;
+  text-shadow: -1px 1px black;
 }
