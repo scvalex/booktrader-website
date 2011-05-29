@@ -109,6 +109,9 @@ class User(Persistent):
         self.mailbox[message.identifier] = message
         self.unread.insert(0, message)
 
+    def message_read(self, message):
+        self.unread.remove(message)
+
 
 class Books(IndexFolder):
     def __init__(self):
