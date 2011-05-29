@@ -20,6 +20,7 @@ import bcrypt
 import uuid
 import json
 import colander
+import datetime
 
 class App(PersistentMapping):
     __name__   = None
@@ -189,7 +190,11 @@ class Events(object):
         self.all.insert(0, e)
 
 class Event(object):
-    pass
+    def __init__(self):
+        super(Event, self).__init__()
+
+        self.date = datetime.datetime.utcnow()
+
 
 class HaveEvent(Event):
     def __init__(self, user, book):

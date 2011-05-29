@@ -5,6 +5,9 @@
 <ul>
   % for have in events.have:
     <li>
+      ${have.date}
+    </li>
+    <li>
       ${common.book_cover(have.book)} ${common.user_link(have.owner)} has ${common.book_link(have.book, common.format_book_title(have.book))}
     </li>
   % endfor
@@ -13,6 +16,9 @@
 <ul>
   % for want in events.want:
     <li>
+      ${have.date}
+    </li>
+    <li>
       ${common.book_cover(want.book)} ${common.user_link(want.coveter)} wants ${common.book_link(want.book, common.format_book_title(want.book))}
     </li>
   % endfor
@@ -20,6 +26,9 @@
 
 <ul>
   % for exchange in events.exchange:
+    <li>
+      ${have.date}
+    </li>
     <li>
       ${common.book_cover(exchange.book)} ${common.user_link(exchange.giver)} gave ${common.user_link(exchange.taker)} ${common.book_link(exchange.book, common.format_book_title(exchange.book))}
     </li>
