@@ -306,7 +306,7 @@ def create_group(context, request):
 
 @view_config(context=Group, renderer='groups/view.mak', permission='view_group')
 def view_group(context, request):
-    pass
+    return {}
 
 @view_config(context=Group, name='join', permission='join_group')
 def join_group(context, request):
