@@ -10,19 +10,6 @@ from booksexchange.models   import appmaker
 from booksexchange.security import groupfinder
 from booksexchange.utils    import AppRequest
 
-class SuperSpecial(object):
-    """ Exception capturing middleware"""
-
-    def __init__(self, application):
-        self.app = application
-
-    def __call__(self, environ, start_response):
-        try:
-            return self.app(environ, start_response)
-        except HTTPException, e:
-            print "Exception: ", e
-            return e # httpexception(e, None)
-
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
