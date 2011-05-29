@@ -281,18 +281,12 @@ class Group(Persistent):
 
     @property
     def __acl__(self):
-        if self.type == 'public':
-            return [(Allow, Everyone, 'view_group'),
-                    (Allow, 'group:users', 'join_group'),
-                    (Allow, self.owners_group, 'admin_group')]
-        elif self.type == 'private':
-            return [(Allow, Everyone, 'view_group'),
-                    (Deny, Everyone, 'join_group'),
-                    (Allow, self.owners_group, 'admin_group')]
-        raise AttributeError
+        return [(Allow, Everyone, 'view_group'),
+                (Allow, 'group:users', 'join_group'),
+                (Allow, self.owners_group, 'admin_group')]
 
     def generate_token(self, user):
-        token = uuid.uuid4()
+        token = str(uuid.uuid4())
         self.tokens[user.username] = token
         return token
 
@@ -301,7 +295,6 @@ class Group(Persistent):
                 self.tokens[user.username] == token:
             del self.tokens[user.username]
             return True
-
         return False
         
 

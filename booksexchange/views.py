@@ -310,14 +310,74 @@ def create_group(context, request):
 def view_group(context, request):
     return {}
 
-@view_config(context=Group, name='join', permission='join_group')
+@view_config(context=Group, name='join', permission='join_group',
+             renderer='groups/join.mak')
 def join_group(context, request):
-    request.user.add_group(context)
-    context.add_member(request.user)
-    request.root['users'].update(request.user)
-    request.root['groups'].update(context)
+    def success():
+        request.session.flash('You are now a member of ' + context.name + '!')
+        raise HTTPFound(location = request.resource_url(context))
 
-    raise HTTPFound(location = request.resource_url(context))
+    if context.type == 'public':
+        request.user.add_group(context)
+        context.add_member(request.user)
+        request.root['users'].update(request.user)
+        request.root['groups'].update(context)
+        
+        success()
+        
+    elif context.type == 'private':
+
+        def validate_email(node, value):
+            colander.Length(max=255)(node, value)
+            
+            for domain in context.domains:
+                if value.endswith('@' + domain):
+                    return
+                
+            error_email = "The email you inserted doesn't belong " + \
+                          "to one of the required domains."
+            raise colander.Invalid(node, error_email)
+
+        class GroupEmail(colander.MappingSchema):
+            email = colander.SchemaNode(colander.String(), validator=validate_email)
+
+        form = deform.Form(schema=GroupEmail(), buttons=('Join',))
+        
+        if 'token' in request.params:
+            if context.confirm_user(request.user, request.params['token']):
+                success()
+            else:
+                return {'wrong_token': True,
+                        'form': form.render()}
+
+        if request.method == 'POST':
+            controls = request.params.items()
+
+            try:
+                data = form.validate(controls)
+            except deform.ValidationFailure, e:
+                return {'form': e.render(),
+                        'wrong_token': False}
+            
+            token = context.generate_token(request.user)
+        
+            confirm_url = request.resource_url(context, 'join',
+                                               query = {'token': token})
+
+            email_body = "Dear " + request.user.username + ",\n\n" + \
+                         "To join group " + context.name +"," \
+                         "please click visit this link: " + confirm_url + ".\n\n" + \
+                         "The BooksExchange team."
+
+
+            send_email(email_body, 'BooksExchange group.',
+                       [data['email']], request.registry.settings)
+
+            return {'form':None}
+
+        return {'form': form.render(),
+                'wrong_token': False}
+        
 
 @view_config(context=Group, name='admin', permission='admin_group',
              renderer='groups/admin.mak')
@@ -364,6 +424,4 @@ def admin_group(context, request):
         request.root['groups'].update(context)
 
     
-    return {'form': form.render()}
-            
-            
+    return {'form': form.render()}    
