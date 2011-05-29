@@ -63,6 +63,9 @@ class User(Persistent):
 
         self.groups    = PersistentMapping()
 
+        self.mailbox   = PersistentMapping()
+        self.unread    = PersistentList()
+
     @property
     def username(self):
         return self._username
@@ -99,7 +102,13 @@ class User(Persistent):
         if not isinstance(group, Group):
             raise RuntimeError('not a group')
         self.groups[group.identifier] = group
-    
+
+    def add_message(self, message):
+        if not isinstance(message, Message):
+            raise RuntimeError('not a message')
+        self.mailbox[message.identifier] = message
+        self.unread.insert(0, message)
+
 
 class Books(IndexFolder):
     def __init__(self):
@@ -242,10 +251,9 @@ class Group(Persistent):
         if type not in self.types:
             raise RuntimeError(type + ' is not a valid group type.')
         self.type        = type
-        
 
         self.created     = datetime.datetime.utcnow()
-        
+
         self._identifier = str(uuid.uuid1())
 
         self.members     = PersistentMapping()
@@ -269,7 +277,7 @@ class Group(Persistent):
             raise RuntimeError("that is a cabbage, not a human")
 
         self.owners[user.username] = user
-    
+
     def remove_user(self, user):
         del self.member[user.username]
 
@@ -302,7 +310,14 @@ class Group(Persistent):
             del self.tokens[user.username]
             return True
         return False
-        
+
+
+class Message(object):
+    def __init__(self, sender, body):
+        super(Message, self).__init__()
+
+        self.sender = sender
+        self.body = body
 
 
 def appmaker(zodb_root):
