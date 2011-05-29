@@ -9,7 +9,6 @@ from repoze.zodbconn.finder import PersistentApplicationFinder
 from booksexchange.models   import appmaker
 from booksexchange.security import groupfinder
 from booksexchange.utils    import AppRequest
-from booksexchange.views    import httpexception
 
 class SuperSpecial(object):
     """ Exception capturing middleware"""

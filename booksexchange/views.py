@@ -17,13 +17,6 @@ from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
 
-
-@view_config(context=HTTPException, renderer='exception.mak')
-def httpexception(context, request):
-    return {'status': context.status,
-            'detail': context.detail}
-
-
 @view_config(context=HTTPRedirection)
 def httpexception(context, request):
     return context
