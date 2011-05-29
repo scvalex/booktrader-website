@@ -82,7 +82,7 @@ def login(context, request):
     return {'came_from' : came_from,
             'username'  : username}
 
-@view_config(context=Users, name='logout')
+@view_config(context=Users, name='logout', permission='loggedin')
 def logout(context, request):
     headers = forget(request)
 
