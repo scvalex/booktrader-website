@@ -204,7 +204,7 @@ h1 a, h1 a:visited {
   margin:1em;
 }
 
-.have_want a {
+.have_want a, .have_want span {
   color: white;
   background-color: #1c393f;
   font-family: Cabin, Helvetica, Arial, sans-serif;

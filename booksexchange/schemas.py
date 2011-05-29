@@ -1,6 +1,7 @@
 import colander
 import deform
 
+
 utf8_string = lambda: colander.String(encoding="utf-8")
 
 class SearchSchema(colander.Schema):
@@ -57,3 +58,24 @@ class VolumeInfoSchema(colander.MappingSchema):
 class BookSchema(colander.MappingSchema):
     id         = colander.SchemaNode(utf8_string())
     volumeInfo = VolumeInfoSchema()
+
+
+
+class GroupSchema(colander.MappingSchema):
+    types       = ['public', 'private']
+    
+    name        = colander.SchemaNode(utf8_string(),
+                                      validator = colander.Length(min=5, max=400),
+                                      title     = "Group name")
+    description = colander.SchemaNode(utf8_string(),
+                                      validator = colander.Length(max=10000),
+                                      widget    = deform.widget.TextAreaWidget(),
+                                      missing   = u'')
+    type = colander.SchemaNode(
+        utf8_string(),
+        validator = colander.OneOf(types),
+        title     = "Group privacy",
+        widget    = deform.widget.SelectWidget(values=[(t, t.capitalize())
+                                                       for t in types]))
+
+        

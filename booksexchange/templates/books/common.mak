@@ -21,13 +21,11 @@
 
     <div class="have_want">
       % if user and book.identifier in user.owned:
-        Have
+        <span>You have this book.</span>
+      % elif user and book.identifier in user.want:
+        <span>You want this book.</span>
       % else:
         <a href="${request.resource_url(request.context, 'add', 'have', book.identifier)}">Have</a>
-      % endif
-      % if user and book.identifier in user.want:
-        Want
-      % else:
         <a href="${request.resource_url(request.context, 'add', 'want', book.identifier)}">Want</a>
       % endif
     </div>
@@ -60,18 +58,12 @@
       </li>
       % if len(book.owners) > 0:
         <li>
-          Owners:
-          % for username in book.owners:
-            ${common.user_link(book.owners[username])},
-          % endfor
+          Owners: ${', '.join([common.user_link(u) for u in book.owners.values()])}
         </li>
       % endif
       % if len(book.coveters) > 0:
         <li>
-          Coveters:
-          % for username in book.coveters:
-            ${common.user_link(book.coveters[username])},
-          % endfor
+          Coveters: ${', '.join([common.user_link(u) for u in book.coveters.values()])}
         </li>
       % endif
 
