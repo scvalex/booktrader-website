@@ -105,7 +105,7 @@ class Books(IndexFolder):
             except CatalogueException, e:
                 raise HTTPInternalServerError('no response from catalogue: ' + str(e))
             except colander.Invalid, e:
-                raise HTTPInternalServerError(str(e.asdict()) + str(book))
+                raise HTTPInternalServerError(str(e.asdict()) + str(key))
 
     def new_book(self, book):
         self[book.identifier] = book

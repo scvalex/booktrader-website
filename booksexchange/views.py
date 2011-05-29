@@ -257,7 +257,7 @@ def add_book(context, request):
         if not (kind in ['have', 'want']):
             raise HTTPBadRequest("must add to either 'have' or 'want'")
 
-        book = get_book(id = request.subpath[1], context = context)
+        book = context[request.subpath[1]]
 
         user = request.user
         if user is None:

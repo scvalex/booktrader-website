@@ -46,7 +46,7 @@ class VolumeInfoSchema(colander.MappingSchema):
     subtitle    = colander.SchemaNode(utf8_string(), missing="")
     authors     = AuthorsSchema(missing=[])
     publisher   = colander.SchemaNode(utf8_string(), missing="")
-    industryIdentifiers = IndustryIdentifiersSchema()
+    industryIdentifiers = IndustryIdentifiersSchema(missing=[])
     description = colander.SchemaNode(utf8_string(), missing="")
     publishedDate = colander.SchemaNode(utf8_string(), missing="")
     imageLinks  = ImageLinksSchema(missing=None)
