@@ -171,8 +171,7 @@ def superspecial_factory(conf, **kw):
             except HTTPInternalServerError:
                 raise
             except HTTPException, e:
-                resp = Template(filename = "booksexchange/templates/exception.mak",
-                                module_directory="booksexchange/templates")
+                resp = Template(filename = "booksexchange/templates/exception.mak")
                 resp = resp.render(**{'status': e.status, 'detail': e.detail})
                 headers = dict(e.headers.items())
                 headers['Content-Length'] = len(resp)
