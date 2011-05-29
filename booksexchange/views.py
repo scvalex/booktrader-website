@@ -236,20 +236,32 @@ def search(context, request):
         books = [context.json_to_book(vi) for vi in books['items']]
 
 
-        next_url = ""
-        if start_index < total_items:
-            next_url = re.sub("start_index=(" + str(start_index) + ")?",
-                              "start_index=" + str(start_index + 10),
-                              request.url)
+        def make_url(i):
+            return re.sub("start_index=(" + str(start_index) + ")?",
+                          "start_index=" + str(i * 10),
+                          request.url)
+
         prev_url = ""
         if start_index > 0:
-            prev_url = re.sub("start_index=" + str(start_index),
-                              "start_index=" + str(start_index - 10),
-                              request.url)
+            prev_url = make_url(start_index / 10 - 1)
+        next_url = ""
+        if start_index < total_items:
+            next_url = make_url(start_index / 10 + 1)
+
+        # Compute -3 and +3 page indices around the current page
+        page_indices = start_index / 10 - 3
+        if page_indices < 0:
+            page_indices = 0
+        num_items = 7
+        if page_indices + num_items > total_items / 10:
+            num_items = total_items / 10 - page_indices
+        page_indices = range(page_indices, page_indices + num_items)
 
         return {'form': search_form.render(),
                 'user': request.user,
                 'total_items': total_items, 'result': books,
+                'page_indices': page_indices, 'page_index': start_index / 10,
+                'make_url': make_url,
                 'next_url': next_url, 'prev_url': prev_url}
 
     return {'result': []}
