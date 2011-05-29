@@ -21,13 +21,11 @@
 
     <div class="have_want">
       % if user and book.identifier in user.owned:
-        Have
+        <span>You have this book.</span>
+      % elif user and book.identifier in user.want:
+        <span>You want this book.</span>
       % else:
         <a href="${request.resource_url(request.context, 'add', 'have', book.identifier)}">Have</a>
-      % endif
-      % if user and book.identifier in user.want:
-        Want
-      % else:
         <a href="${request.resource_url(request.context, 'add', 'want', book.identifier)}">Want</a>
       % endif
     </div>
