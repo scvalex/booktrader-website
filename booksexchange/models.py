@@ -184,7 +184,7 @@ class Book(Persistent):
         self.coveters[user.username] = user
 
 
-class Events(object):
+class Events(Persistent):
     def __init__(self):
         self.have     = PersistentList()
         self.want     = PersistentList()
@@ -206,7 +206,7 @@ class Events(object):
         self.exchange.insert(0, e)
         self.all.insert(0, e)
 
-class Event(object):
+class Event(Persistent):
     def __init__(self):
         super(Event, self).__init__()
 
@@ -312,7 +312,7 @@ class Group(Persistent):
         return False
 
 
-class Message(object):
+class Message(Persistent):
     def __init__(self, sender, body):
         super(Message, self).__init__()
 
