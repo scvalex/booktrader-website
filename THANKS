@@ -8,3 +8,6 @@
 ** booksexchange/static/css/reset.css
    * License :: Public domain
    * Source  :: http://meyerweb.com/eric/tools/css/reset/
+** booksexchange/utils.py
+   * License :: Public domain
+   * Source  :: http://mg.pov.lt/blog/unicode-emails-in-python
