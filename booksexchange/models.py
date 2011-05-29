@@ -47,7 +47,7 @@ class Users(IndexFolder):
 
 class User(Persistent):
     def __init__(self, username, email, password):
-        self.username   = username
+        self._username  = username
         self.email      = email
         self._password  = bcrypt.hashpw(password, bcrypt.gensalt())
         self.created    = datetime.datetime.utcnow()
@@ -57,6 +57,10 @@ class User(Persistent):
         self.owned     = PersistentMapping()
         self.want      = PersistentMapping()
 
+    @property
+    def username(self):
+        return self._username
+    
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
 
@@ -140,11 +144,15 @@ class Book(Persistent):
         self.description = description
         self.image_links = image_links
 
-        self.identifier  = id
+        self._identifier = id
 
         self.owners      = PersistentMapping()
         self.coveters    = PersistentMapping()
 
+    @property
+    def identifier(self):
+        return self._identifier
+    
     def add_owner(self, user):
         if not isinstance(user, User):
             raise RuntimeError("that is a cabbage, not a human")
