@@ -225,10 +225,10 @@ def search(context, request):
     class ResultSchema(colander.MappingSchema):
         items = BooksSchema()
 
-    if request.method == 'POST':
+    if 'Search' in request.params:
         search_form = deform.Form(SearchSchema(), buttons=('Search',))
         
-        query = request.POST.items()
+        query = request.params.items()
 
         try:
             query = search_form.validate(query)
