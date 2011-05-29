@@ -4,10 +4,11 @@
 <%namespace name="common" file="/common.mak" />
 
 <%
-username = (request.context == request.user) and request.context.username or ""
+current_user = request.context = request.user
+username     = request.context.username
 %>
 
-% if not username:
+% if current_user:
   <h3>Your books!</h3>
 % else:
   <h3>${username}'s books!</h3>
@@ -19,7 +20,7 @@ username = (request.context == request.user) and request.context.username or ""
   % endfor
 </ol>
 
-% if not username:
+% if current_user:
   <h3>Books you want!</h3>
 % else:
   <h3>Books ${username} wants!</h3>
@@ -31,7 +32,7 @@ username = (request.context == request.user) and request.context.username or ""
   % endfor
 </ol>
 
-% if not username:
+% if current_user:
   <h3>Groups you're in:</h3>
 % else:
   <h3>Groups ${username} is in</h3>

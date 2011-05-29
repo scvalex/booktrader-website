@@ -310,21 +310,34 @@ def create_group(context, request):
 def view_group(context, request):
     return {}
 
+
+def join_group_success(context, request):
+    request.user.add_group(context)
+    context.add_member(request.user)
+    request.root['users'].update(request.user)
+    request.root['groups'].update(context)
+
+    request.session.flash('You are now a member of ' + context.name + '!')
+    
+    raise HTTPFound(location = request.resource_url(context))
+
+
+@view_config(context=Group, name='confirm_join', permission='join_group')
+def confirm_join_group(context, request):
+    if 'token' in request.params:
+        if context.confirm_user(request.user, request.params['token']):
+            join_group_success(context, request)
+        else:
+            request.session.flash('The token provided is wrong, please try again.')
+    
+    raise HTTPBadRequest('No token provided.')
+    
 @view_config(context=Group, name='join', permission='join_group',
              renderer='groups/join.mak')
 def join_group(context, request):
-    def success():
-        request.session.flash('You are now a member of ' + context.name + '!')
-        raise HTTPFound(location = request.resource_url(context))
-
     if context.type == 'public':
-        request.user.add_group(context)
-        context.add_member(request.user)
-        request.root['users'].update(request.user)
-        request.root['groups'].update(context)
-        
-        success()
-        
+        join_group_success(context, request)
+
     elif context.type == 'private':
 
         def validate_email(node, value):
@@ -343,25 +356,17 @@ def join_group(context, request):
 
         form = deform.Form(schema=GroupEmail(), buttons=('Join',))
         
-        if 'token' in request.params:
-            if context.confirm_user(request.user, request.params['token']):
-                success()
-            else:
-                return {'wrong_token': True,
-                        'form': form.render()}
-
         if request.method == 'POST':
             controls = request.params.items()
 
             try:
                 data = form.validate(controls)
             except deform.ValidationFailure, e:
-                return {'form': e.render(),
-                        'wrong_token': False}
+                return {'form': e.render()}
             
             token = context.generate_token(request.user)
         
-            confirm_url = request.resource_url(context, 'join',
+            confirm_url = request.resource_url(context, 'confirm_join',
                                                query = {'token': token})
 
             email_body = "Dear " + request.user.username + ",\n\n" + \
@@ -375,8 +380,7 @@ def join_group(context, request):
 
             return {'form':None}
 
-        return {'form': form.render(),
-                'wrong_token': False}
+        return {'form': form.render()}
         
 
 @view_config(context=Group, name='admin', permission='admin_group',
