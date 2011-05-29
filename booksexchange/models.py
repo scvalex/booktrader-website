@@ -4,16 +4,21 @@ from exceptions                   import RuntimeError
 
 from pyramid.security             import Allow, Everyone
 from pyramid.traversal            import resource_path
+from pyramid.httpexceptions       import HTTPInternalServerError
 
 from persistent                   import Persistent
 from persistent.mapping           import PersistentMapping
 
 from repoze.catalog.indexes.field import CatalogFieldIndex
 
-from booksexchange.utils          import IndexFolder, GoogleBooksCatalogue
+from booksexchange.utils          import (IndexFolder, GoogleBooksCatalogue,
+                                          CatalogueException)
+from booksexchange.schemas        import BookSchema
 
 import bcrypt
 import uuid
+import json
+import colander
 
 class App(PersistentMapping):
     __name__   = None
@@ -87,8 +92,41 @@ class Books(IndexFolder):
 
         self.catalogue = GoogleBooksCatalogue()
 
+    def __getitem__(self, key):
+        if key in ['search', 'add']:
+            raise KeyError
+        
+        try:
+            return super(Books, self).__getitem__(key)
+        except KeyError, e:
+            try:
+                b = BookSchema().deserialize(json.load(self.catalogue.volume(key)))
+                return self.json_to_book(b)
+            except CatalogueException, e:
+                raise HTTPInternalServerError('no response from catalogue: ' + str(e))
+            except colander.Invalid, e:
+                raise HTTPInternalServerError(str(e.asdict()) + str(book))
+
     def new_book(self, book):
         self[book.identifier] = book
+
+    def json_to_book(self, b):
+        id          = b['id']
+        
+        if id in self:
+            return context[id]
+        
+        b           = b['volumeInfo']
+        identifiers = [(i['type'], i['identifier'])
+                       for i in b['industryIdentifiers']]
+        book        = Book(id, b['title'], b['subtitle'], b['authors'],
+                           b['publisher'], b['publishedDate'],
+                           identifiers, b['description'],
+                           b['imageLinks'])
+        return book
+
+
+    
 
 
 class Book(Persistent):

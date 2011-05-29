@@ -204,19 +204,6 @@ def user_home(context, request):
             'want':  context.want.itervalues()}
 
 
-def json_to_book(b, context):
-    id          = b['id']
-    if id in context:
-        return context[id]
-    b           = b['volumeInfo']
-    identifiers = [(i['type'], i['identifier'])
-                   for i in b['industryIdentifiers']]
-    book        = Book(id, b['title'], b['subtitle'], b['authors'],
-                       b['publisher'], b['publishedDate'],
-                       identifiers, b['description'],
-                       b['imageLinks'])
-    return book
-
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
     class BooksSchema(colander.SequenceSchema):
@@ -250,7 +237,7 @@ def search(context, request):
             raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
         
-        books = [json_to_book(vi, context) for vi in books['items']]
+        books = [context.json_to_book(vi) for vi in books['items']]
 
         return {'form': search_form.render(),
                 'result': books}
@@ -258,26 +245,9 @@ def search(context, request):
     return {'result': []}
 
 
-def get_book(id, context):
-    try:
-        b = BookSchema().deserialize(json.load(context.catalogue.volume(id)))
-        return json_to_book(b, context)
-    except CatalogueException, e:
-        raise HTTPInternalServerError('no response from catalogue: ' + str(e))
-    except colander.Invalid, e:
-        raise HTTPInternalServerError(str(e.asdict()) + str(book))
-
-
-@view_config(context=Books, name='details', renderer='books/details.mak')
+@view_config(context=Book, renderer='books/details.mak')
 def view_book(context, request):
-    if len(request.subpath) == 1:
-        id = request.subpath[0]
-        if id in context:
-            book = context[id]
-        else:
-            book = get_book(id, context)
-        return {'book': book}
-    raise HTTPBadRequest('no book specified')
+    return {'book': context}
 
 
 @view_config(context=Books, name='add', permission='loggedin')
