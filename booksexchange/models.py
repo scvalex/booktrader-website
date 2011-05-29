@@ -126,9 +126,6 @@ class Books(IndexFolder):
         return book
 
 
-    
-
-
 class Book(Persistent):
     def __init__(self, id, title, subtitle, authors, publisher, date,
                  identifiers, description, image_links):
@@ -157,6 +154,7 @@ class Book(Persistent):
         if not isinstance(user, User):
             raise RuntimeError("that is a cabbage, not a human")
         self.coveters[user.username] = user
+
 
 def appmaker(zodb_root):
     if not 'app_root' in zodb_root:

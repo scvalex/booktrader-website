@@ -263,8 +263,10 @@ def add_book(context, request):
         if user is None:
             raise HTTPInternalServerError('no user found')
 
-        if book.identifier in user.owned:
+        if kind == 'have' and book.identifier in user.owned:
             raise HTTPBadRequest('book already owned')
+        elif book.identifier in user.want:
+            raise HTTPBadRequest('book already wanted')
 
         if book.identifier not in context:
             context.new_book(book)
