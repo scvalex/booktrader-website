@@ -3,10 +3,10 @@
 <%def name="render_book_short(book)">
   <div class="book_short">
     <div class="cover">
-      ${book_link(book, book_cover(book))}
+      ${common.book_link(book, common.book_cover(book))}
     </div>
 
-    <h3>${book_link(book, book.title)}</h3>
+    <h3>${common.book_link(book, book.title)}</h3>
 
     % if book.authors:
         <p class="authors">
@@ -41,7 +41,7 @@
       ${maybe_li(book.subtitle)}
 
 
-      
+
       <li>
       % for author in book.authors:
         ${author},
@@ -81,21 +81,5 @@
 <%def name="maybe_li(x)">
   % if x:
     <li>${x}</li>
-  % endif
-</%def>
-
-<%def name="book_link(book, inner)">
-  <a href="${request.resource_url(request.root['books'], book.identifier)}">
-    ${inner}
-  </a>
-</%def>
-
-<%def name="book_cover(book)">
-  % if book.image_links and book.image_links['thumbnail']:
-      <img src="${book.image_links['thumbnail']}"
-           alt="${book.title}" />
-  % else:
-      <img src="${request.static_url('booksexchange:static/img/book_thumb.png')}"
-           alt="${book.title}" />
   % endif
 </%def>

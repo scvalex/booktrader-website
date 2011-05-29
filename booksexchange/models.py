@@ -175,18 +175,18 @@ class Events(object):
 
     def add_have(self, user, book):
         e = HaveEvent(user, book)
-        self.have.append(e)
-        self.all.append(e)
+        self.have.insert(0, e)
+        self.all.insert(0, e)
 
     def add_want(self, user, book):
         e = WantEvent(user, book)
-        self.want.append(e)
-        self.all.append(e)
+        self.want.insert(0, e)
+        self.all.insert(0, e)
 
     def add_exchange(self, giver, taker, book):
         e = ExchangeEvent(giver, taker, book)
-        self.exchange.append(e)
-        self.all.append(e)
+        self.exchange.insert(0, e)
+        self.all.insert(0, e)
 
 class Event(object):
     pass

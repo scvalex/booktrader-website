@@ -24,7 +24,7 @@ def httpexception(context, request):
 
 @view_config(context=App, renderer='home.mak')
 def home(context, request):
-    return {'blah': 'bloh'}
+    return {'events': context['events']}
 
 
 @view_config(context=Users, renderer='users.mak', permission='loggedin')
