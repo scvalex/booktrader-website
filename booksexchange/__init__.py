@@ -26,7 +26,7 @@ def main(global_config, **settings):
     finder = PersistentApplicationFinder(zodb_uri, appmaker)
     def get_root(request):
         return finder(request.environ)
-    
+
     config = Configurator(root_factory          = get_root,
                           settings              = settings,
                           authentication_policy = authn_policy,
@@ -34,9 +34,9 @@ def main(global_config, **settings):
                           session_factory       = session_fac)
 
     config.set_request_factory(AppRequest)
-    
+
     config.add_static_view('static', 'booksexchange:static')
     config.add_static_view('deform', 'deform:static')
-    
+
     config.scan('booksexchange')
     return config.make_wsgi_app()

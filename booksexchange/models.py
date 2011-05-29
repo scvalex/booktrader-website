@@ -7,6 +7,7 @@ from pyramid.traversal            import resource_path
 from pyramid.httpexceptions       import HTTPInternalServerError
 
 from persistent                   import Persistent
+from persistent.list              import PersistentList
 from persistent.mapping           import PersistentMapping
 
 from repoze.catalog.indexes.field import CatalogFieldIndex
@@ -34,6 +35,7 @@ class App(PersistentMapping):
         super(App, self).__init__()
         self.setchild('users', Users())
         self.setchild('books', Books())
+        self.setchild('events', Events())
 
 
 class Users(IndexFolder):
@@ -162,6 +164,54 @@ class Book(Persistent):
         if not isinstance(user, User):
             raise RuntimeError("that is a cabbage, not a human")
         self.coveters[user.username] = user
+
+
+class Events(object):
+    def __init__(self):
+        self.have     = PersistentList()
+        self.want     = PersistentList()
+        self.exchange = PersistentList()
+        self.all      = PersistentList()
+
+    def add_have(self, user, book):
+        e = HaveEvent(user, book)
+        self.have.append(e)
+        self.all.append(e)
+
+    def add_want(self, user, book):
+        e = WantEvent(user, book)
+        self.want.append(e)
+        self.all.append(e)
+
+    def add_exchange(self, giver, taker, book):
+        e = ExchangeEvent(giver, taker, book)
+        self.exchange.append(e)
+        self.all.append(e)
+
+class Event(object):
+    pass
+
+class HaveEvent(Event):
+    def __init__(self, user, book):
+        super(HaveEvent, self).__init__()
+
+        self.owner = user
+        self.book  = book
+
+class WantEvent(Event):
+    def __init__(self, user, book):
+        super(WantEvent, self).__init__()
+
+        self.coveter = user
+        self.book    = book
+
+class ExchangeEvent(Event):
+    def __init__(self, giver, taker, book):
+        super(ExchangeEvent, self).__init__()
+
+        self.giver = giver
+        self.taker = taker
+        self.book  = book
 
 
 def appmaker(zodb_root):

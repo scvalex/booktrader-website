@@ -2,7 +2,7 @@
 
 <%namespace name="common" file="/common.mak" />
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
   <head>
@@ -14,11 +14,11 @@
     <link href="http://fonts.googleapis.com/css?family=Cabin:regular,regularitalic,bold"
           rel="stylesheet"
           type="text/css">
-    
+
     <link rel="stylesheet"
           href="${request.static_url('booksexchange:static/css/style.css')}"
           type="text/css" />
-    
+
     ${self.head()}
 
     <title>${self.title()}</title>
@@ -43,7 +43,7 @@
 
 
         <h1><a href="${request.resource_url(request.root)}">BooksExchange</a></h1>
-       
+
       </div>
 
       <% flashes = request.session.pop_flash() %>

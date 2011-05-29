@@ -46,9 +46,9 @@ def already_logged_in(request):
     if authenticated_userid(request):
         request.session.flash('You are already logged in.')
         return True
-    
+
     return False
-    
+
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def login(context, request):
     if already_logged_in(request):
@@ -78,7 +78,7 @@ def login(context, request):
 
         request.session.flash('Invalid username/password.')
 
-    
+
     return {'came_from' : came_from,
             'username'  : username}
 
@@ -92,7 +92,7 @@ def logout(context, request):
         referrer = '/'
 
     request.session.flash('You are now logged out.')
-    
+
     raise HTTPFound(location = referrer,
                     headers = headers)
 
@@ -107,7 +107,7 @@ def register(context, request):
 
         if context.query(Eq('username', value))[0] != 0:
             raise colander.Invalid(node, '"' + value + '" is already taken.')
-    
+
     def validate_email(node, value):
         colander.Email()(node, value)
 
@@ -123,7 +123,7 @@ def register(context, request):
             widget    = deform.widget.CheckedPasswordWidget(size=20))
         email    = colander.SchemaNode(colander.String(),
                                        validator = validate_email)
-        
+
 
     schema = RegisterSchema()
     form   = deform.Form(schema, buttons=('Register',))
@@ -139,13 +139,13 @@ def register(context, request):
         new_user = User(register_data['username'],
                         register_data['email'],
                         register_data['password'])
-        
+
         context.new_user(new_user)
 
         raise HTTPFound(location = request.resource_url(new_user, 'generate_token'))
-    
+
     return {'form': form.render()}
-                         
+
 
 @view_config(context=User, name='generate_token',
              renderer='users/generate_token.mak')
@@ -154,7 +154,7 @@ def generate_token(context, request):
 
     confirm_url = request.resource_url(context, 'confirm',
                                        query = {'token': token})
-    
+
     email_body = "Dear " + context.username + ",\n\n" + \
                  "To activate your account " + \
                  "please click visit this link: " + confirm_url + ".\n\n" + \
@@ -165,7 +165,7 @@ def generate_token(context, request):
                [context.email], request.registry.settings)
 
     return {'wrong_token': ('wrong' in request.params)}
-                         
+
 
 @view_config(context=User, name='confirm')
 def confirm_user(context, request):
@@ -207,7 +207,7 @@ def search(context, request):
 
     if 'Search' in request.params:
         search_form = deform.Form(SearchSchema(), buttons=('Search',))
-        
+
         query = request.params.items()
 
         try:
@@ -229,7 +229,7 @@ def search(context, request):
         except colander.Invalid, e:
             raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
-        
+
         books = [context.json_to_book(vi) for vi in books['items']]
 
         return {'form': search_form.render(),
@@ -267,9 +267,11 @@ def add_book(context, request):
         if kind == 'have':
             user.add_owned(book)
             book.add_owner(user)
+            request.root['events'].add_have(user, book)
         else:
             user.add_want(book)
             book.add_coveter(user)
+            request.root['events'].add_want(user, book)
 
         request.session.flash('Book added!')
         raise HTTPFound(location = request.resource_url(request.user))
