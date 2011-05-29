@@ -2,6 +2,7 @@ from pyramid.traversal       import resource_path, find_resource, find_root
 from pyramid.request         import Request
 from pyramid.decorator       import reify
 from pyramid.security        import unauthenticated_userid
+from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError
 
 from repoze.folder           import Folder
 from repoze.catalog.catalog  import Catalog
@@ -18,7 +19,6 @@ from urllib2                 import urlopen, URLError
 import deform
 
 from booksexchange.schemas   import SearchSchema
-
 
 class AppRequest(Request):
     @reify
@@ -154,3 +154,23 @@ class GoogleBooksCatalogue(object):
             return urlopen(url, timeout=10)
         except URLError, e:
             raise CatalogueException(str(e), url = url)
+
+
+def superspecial_factory(conf, **kw):
+    class SuperSpecial(object):
+        """ Exception capturing middleware"""
+
+        def __init__(self, application):
+            self.app = application
+
+        def __call__(self, environ, start_response):
+            try:
+                return self.app(environ, start_response)
+            except HTTPException, e:
+                resp = str(e)
+                headers = dict(e.headers.items())
+                headers['Content-Length'] = len(resp)
+                start_response(e.status, headers.items())
+                return resp
+
+    return SuperSpecial

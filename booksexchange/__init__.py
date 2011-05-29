@@ -2,12 +2,27 @@ from pyramid.config         import Configurator
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization  import ACLAuthorizationPolicy
 from pyramid.session        import UnencryptedCookieSessionFactoryConfig
+from pyramid.httpexceptions import HTTPException, HTTPInternalServerError
 
 from repoze.zodbconn.finder import PersistentApplicationFinder
 
 from booksexchange.models   import appmaker
 from booksexchange.security import groupfinder
 from booksexchange.utils    import AppRequest
+from booksexchange.views    import httpexception
+
+class SuperSpecial(object):
+    """ Exception capturing middleware"""
+
+    def __init__(self, application):
+        self.app = application
+
+    def __call__(self, environ, start_response):
+        try:
+            return self.app(environ, start_response)
+        except HTTPException, e:
+            print "Exception: ", e
+            return e # httpexception(e, None)
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.

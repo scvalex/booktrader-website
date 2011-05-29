@@ -42,9 +42,9 @@ def view_users(context, request):
 @view_config(context=Forbidden)
 def forbidden(request):
     if authenticated_userid(request):
-        return HTTPForbidden("You don't have enough permissions to access this page.")
+        raise HTTPForbidden("You don't have enough permissions to access this page.")
 
-    return HTTPFound(location = request.resource_url(request.root['users'], 'login',
+    raise HTTPFound(location = request.resource_url(request.root['users'], 'login',
                                                     query={'ref':request.path}))
 
 
