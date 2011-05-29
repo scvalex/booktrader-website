@@ -229,7 +229,7 @@ class Groups(IndexFolder):
 
 
 class Group(Persistent):
-    types = ['public', 'private', 'secret']
+    types = ['public', 'private']
 
     def __init__(self, name, description, type):
         self.name        = name
@@ -246,7 +246,8 @@ class Group(Persistent):
         self.members     = PersistentMapping()
         self.owners      = PersistentMapping()
 
-        self.set_acl()
+        self.domains     = PersistentList()
+        self.tokens      = PersistentMapping()
 
     @property
     def identifier(self):
@@ -283,16 +284,26 @@ class Group(Persistent):
         if self.type == 'public':
             return [(Allow, Everyone, 'view_group'),
                     (Allow, 'group:users', 'join_group'),
-                    (Allow, self.owners_group, 'edit_group')]
-        elif type == 'private':
+                    (Allow, self.owners_group, 'admin_group')]
+        elif self.type == 'private':
             return [(Allow, Everyone, 'view_group'),
                     (Deny, Everyone, 'join_group'),
-                    (Allow, self.owners_group, 'edit_group')]
-        elif type == 'secret':
-            return [(Deny, Everyone, 'view_group'),
-                    (Deny, Everyone, 'join_group'),
-                    (Allow, self.owners_group, 'edit_group')]
+                    (Allow, self.owners_group, 'admin_group')]
         raise AttributeError
+
+    def generate_token(self, user):
+        token = uuid.uuid4()
+        self.tokens[user.username] = token
+        return token
+
+    def confirm_user(self, user, token):
+        if user.username in self.tokens and \
+                self.tokens[user.username] == token:
+            del self.tokens[user.username]
+            return True
+
+        return False
+        
 
 
 def appmaker(zodb_root):

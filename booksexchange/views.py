@@ -8,6 +8,8 @@ from pyramid.httpexceptions import (HTTPFound, HTTPForbidden,
 
 from repoze.catalog.query   import Eq
 
+from sets import Set
+
 import colander
 import deform
 import json
@@ -148,8 +150,8 @@ def register(context, request):
 
 
 @view_config(context=User, name='generate_token',
-             renderer='users/generate_token.mak')
-def generate_token(context, request):
+             renderer='users/registration_token.mak')
+def registration_token(context, request):
     token = context.generate_token()
 
     confirm_url = request.resource_url(context, 'confirm',
@@ -168,7 +170,7 @@ def generate_token(context, request):
 
 
 @view_config(context=User, name='confirm')
-def confirm_user(context, request):
+def confirm_registration(context, request):
     if not 'token' in request.params or context.confirmed:
         raise Forbidden()
 
@@ -316,3 +318,52 @@ def join_group(context, request):
     request.root['groups'].update(context)
 
     raise HTTPFound(location = request.resource_url(context))
+
+@view_config(context=Group, name='admin', permission='admin_group',
+             renderer='groups/admin.mak')
+def admin_group(context, request):
+
+    class GroupAdminSchema(GroupSchema):
+        new_domain = colander.SchemaNode(utf8_string(),
+                                         missing   = None,
+                                         title     = 'Add domain authorized domain')
+    
+
+    if context.type == 'public':
+        schema = GroupSchema()
+    else:
+        schema = GroupAdminSchema()
+        
+
+    form = deform.Form(schema, buttons=('Submit',))
+
+    choices = [(context.type, context.type.capitalize())]
+    for t in Group.types:
+        if t != context.type:
+            choices.append((t, t.capitalize()))
+    
+    form.schema['type'].widget.values  = choices
+    form.schema['name'].default        = context.name
+    form.schema['description'].default = context.description
+
+    if request.method == 'POST':
+        controls = request.POST.items()
+
+        try:
+            data = form.validate(controls)
+        except deform.ValidationFailure, e:
+            return {'form': e.render()}
+
+        context.name = data['name']
+        context.description = data['description']
+        context.type = data['type']
+        
+        if 'new_domain' in data and data['new_domain']:
+            context.domains.append(data['new_domain'])
+
+        request.root['groups'].update(context)
+
+    
+    return {'form': form.render()}
+            
+            
