@@ -10,4 +10,12 @@
   % endfor
 </ul>
 
+% if prev_url:
+  <a href="${prev_url}">Previous</a>
+% endif
+% if next_url:
+  <a href="${next_url}">Next</a>
+% endif
+
+
 <%def name="title()">${parent.title()} - Search</%def>

@@ -11,6 +11,7 @@ from repoze.catalog.query   import Eq
 import colander
 import deform
 import json
+import re
 
 from booksexchange.models   import App, Users, User, Books, Book
 from booksexchange.schemas  import *
@@ -204,6 +205,7 @@ def search(context, request):
 
     class ResultSchema(colander.MappingSchema):
         items = BooksSchema()
+        totalItems = colander.SchemaNode(colander.Integer())
 
     if 'Search' in request.params:
         search_form = deform.Form(SearchSchema(), buttons=('Search',))
@@ -216,9 +218,10 @@ def search(context, request):
             return {'form': e.render()}
 
         search_form.schema['query'].default = query['query']
+        start_index = query['start_index']
 
         try:
-            rsp = context.catalogue.query(query['query'])
+            rsp = context.catalogue.query(query['query'], start_index)
         except CatalogueException, e:
             raise HTTPInternalServerError("no response from catalogue: " +
                                           str(e))
@@ -229,12 +232,26 @@ def search(context, request):
         except colander.Invalid, e:
             raise HTTPInternalServerError(str(e.asdict()) + str(books))
 
-
+        total_items = books['totalItems']
         books = [context.json_to_book(vi) for vi in books['items']]
+
+
+        next_url = ""
+        if start_index < total_items:
+            next_url = re.sub("start_index=(" + str(start_index) + ")?",
+                              "start_index=" + str(start_index + 10),
+                              request.url)
+        prev_url = ""
+        if start_index > 0:
+            prev_url = re.sub("start_index=" + str(start_index),
+                              "start_index=" + str(start_index - 10),
+                              request.url)
 
         return {'form': search_form.render(),
                 'user': request.user,
-                'result': books}
+                'result': books,
+                'next_url': next_url,
+                'prev_url': prev_url}
 
     return {'result': []}
 

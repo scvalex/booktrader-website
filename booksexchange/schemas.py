@@ -1,11 +1,14 @@
 import colander
+import deform
 
 utf8_string = lambda: colander.String(encoding="utf-8")
 
 class SearchSchema(colander.Schema):
     query = colander.SchemaNode(utf8_string(),
                                 validator = colander.Length(min=1))
-
+    start_index = colander.SchemaNode(colander.Integer(),
+                                      missing = 0,
+                                      widget = deform.widget.HiddenWidget())
 
 class AuthorsSchema(colander.SequenceSchema):
     author = colander.SchemaNode(utf8_string())
