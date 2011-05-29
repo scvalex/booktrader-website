@@ -2,7 +2,7 @@ import datetime
 
 from exceptions                   import RuntimeError
 
-from pyramid.security             import Allow, Everyone
+from pyramid.security             import Allow, Everyone, Deny
 from pyramid.traversal            import resource_path
 from pyramid.httpexceptions       import HTTPInternalServerError
 
@@ -36,6 +36,7 @@ class App(PersistentMapping):
         self.setchild('users', Users())
         self.setchild('books', Books())
         self.setchild('events', Events())
+        self.setchild('groups', Groups())
 
 
 class Users(IndexFolder):
@@ -58,6 +59,8 @@ class User(Persistent):
 
         self.owned     = PersistentMapping()
         self.want      = PersistentMapping()
+
+        self.groups    = PersistentMapping()
 
     @property
     def username(self):
@@ -90,6 +93,11 @@ class User(Persistent):
         if not isinstance(book, Book):
             raise RuntimeError('not a book. GTFO')
         self.want[book.identifier] = book
+
+    def add_group(self, group):
+        if not isinstance(group, Group):
+            raise RuntimeError('not a group')
+        self.groups[group.identifier] = group
     
 
 class Books(IndexFolder):
@@ -212,6 +220,78 @@ class ExchangeEvent(Event):
         self.giver = giver
         self.taker = taker
         self.book  = book
+
+
+
+class Groups(IndexFolder):
+    def __init__(self):
+        super(Groups, self).__init__(name = CatalogFieldIndex('name'))
+
+
+class Group(Persistent):
+    types = ['public', 'private', 'secret']
+    
+    def __init__(self, name, description, type):
+        self.name        = name
+        self.description = description
+        if type not in self.types:
+            raise RuntimeError(type + ' is not a valid group type.')
+        self.type        = type
+        
+
+        self.created     = datetime.datetime.utcnow()
+        
+        self._identifier = str(uuid.uuid1())
+
+        self.members     = PersistentMapping()
+        self.owners      = PersistentMapping()
+
+        # self.set_acl()
+
+    @property
+    def identifier(self):
+        return self._identifier
+
+    def add_member(self, user):
+        if not isinstance(user, User):
+            raise RuntimeError("that is a cabbage, not a human")
+
+        self.members[user.username] = user
+
+    def add_owner(self, user):
+        if not isinstance(user, User):
+            raise RuntimeError("that is a cabbage, not a human")
+
+        self.owners[user.username] = user
+    
+    def remove_user(self, user):
+        del self.member[user.username]
+
+        if user.username in self.owners:
+            del self.owners[user.username]
+
+    @property
+    def members_group(self):
+        return 'group:' + self.identifier + ':member'
+
+    @property
+    def owners_group(self):
+        return 'group:' + self.identifier + ':owner'
+
+    def set_acl(self):
+        if type == 'public':
+            self.__acl__ = [(Allow, Everyone, 'view_group'),
+                            (Allow, 'group:users', 'join_group'),
+                            (Allow, self.owners_group, 'edit_group')]
+        elif type == 'private':
+            self.__acl__ = [(Allow, Everyone, 'view_group'),
+                            (Deny, Everyone, 'join_group'),
+                            (Allow, self.owners_group, 'edit_group')]
+        elif type == 'secret':
+            self.__acl__ = [(Deny, Everyone, 'view_group'),
+                            (Deny, Everyone, 'join_group'),
+                            (Allow, self.owners_group, 'edit_group')]
+
 
 
 def appmaker(zodb_root):

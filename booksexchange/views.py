@@ -12,7 +12,7 @@ import colander
 import deform
 import json
 
-from booksexchange.models   import App, Users, User, Books, Book
+from booksexchange.models   import App, Users, User, Books, Book, Groups, Group
 from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
@@ -82,7 +82,7 @@ def login(context, request):
     return {'came_from' : came_from,
             'username'  : username}
 
-@view_config(context=Users, name='logout', permission='loggedin')
+@view_config(context=Users, name='logout')
 def logout(context, request):
     headers = forget(request)
 
@@ -277,3 +277,48 @@ def add_book(context, request):
         raise HTTPFound(location = request.resource_url(request.user))
 
     raise HTTPBadRequest('no book specified')
+
+
+@view_config(context=Groups, name='create', permission='loggedin',
+             renderer='groups/create_group.mak')
+def create_group(context, request):
+    schema = GroupSchema()
+    form   = deform.Form(schema, buttons=('Create Group',))
+
+    if request.method == 'POST':
+        controls = request.POST.items()
+
+        try:
+            group_data = form.validate(controls)
+        except deform.ValidationFailure, e:
+            return {'form': e.render()}
+
+        new_group = Group(group_data['name'],
+                          group_data['description'],
+                          group_data['type'])
+        context[new_group.identifier] = new_group
+        
+        new_group.add_member(request.user)
+        new_group.add_owner(request.user)
+        request.user.add_group(new_group)
+        request.root['users'].update(request.user)
+        request.root['groups'].update(new_group)
+
+        request.session.flash('Your group has been created.')
+        
+        raise HTTPFound(location = request.resource_url(new_group))
+
+    return {'form': form.render()}
+
+@view_config(context=Group, renderer='string')
+def view_group(context, request):
+    return str(context.members)
+
+@view_config(context=Group, name='join')
+def join_group(context, request):
+    request.user.add_group(context)
+    context.add_member(request.user)
+    request.root['users'].update(request.user)
+    request.root['groups'].update(context)
+
+    raise HTTPFound(location = request.resource_url(context))
