@@ -321,7 +321,7 @@ def create_group(context, request):
                           group_data['description'],
                           group_data['type'])
         context[new_group.identifier] = new_group
-        
+
         new_group.add_member(request.user)
         new_group.add_owner(request.user)
         request.user.add_group(new_group)
@@ -329,7 +329,7 @@ def create_group(context, request):
         request.root['groups'].update(new_group)
 
         request.session.flash('Your group has been created.')
-        
+
         raise HTTPFound(location = request.resource_url(new_group))
 
     return {'form': form.render()}
@@ -346,7 +346,7 @@ def join_group_success(context, request):
     request.root['groups'].update(context)
 
     request.session.flash('You are now a member of ' + context.name + '!')
-    
+
     raise HTTPFound(location = request.resource_url(context))
 
 
@@ -358,9 +358,9 @@ def confirm_join_group(context, request):
         else:
             request.session.flash('The token provided is wrong, please try again.')
             raise HTTPFound(location = request.resource_url(context, 'join'))
-    
+
     raise HTTPBadRequest('No token provided.')
-    
+
 @view_config(context=Group, name='join', permission='join_group',
              renderer='groups/join.mak')
 def join_group(context, request):
@@ -371,11 +371,11 @@ def join_group(context, request):
 
         def validate_email(node, value):
             colander.Length(max=255)(node, value)
-            
+
             for domain in context.domains:
                 if value.endswith('@' + domain):
                     return
-                
+
             error_email = "The email you inserted doesn't belong " + \
                           "to one of the required domains."
             raise colander.Invalid(node, error_email)
@@ -384,7 +384,7 @@ def join_group(context, request):
             email = colander.SchemaNode(colander.String(), validator=validate_email)
 
         form = deform.Form(schema=GroupEmail(), buttons=('Join',))
-        
+
         if request.method == 'POST':
             controls = request.params.items()
 
@@ -392,9 +392,9 @@ def join_group(context, request):
                 data = form.validate(controls)
             except deform.ValidationFailure, e:
                 return {'form': e.render()}
-            
+
             token = context.generate_token(request.user)
-        
+
             confirm_url = request.resource_url(context, 'confirm_join',
                                                query = {'token': token})
 
@@ -410,7 +410,7 @@ def join_group(context, request):
             return {'form':None}
 
         return {'form': form.render()}
-        
+
 
 @view_config(context=Group, name='admin', permission='admin_group',
              renderer='groups/admin.mak')
@@ -420,13 +420,13 @@ def admin_group(context, request):
         new_domain = colander.SchemaNode(utf8_string(),
                                          missing   = None,
                                          title     = 'Add domain authorized domain')
-    
+
 
     if context.type == 'public':
         schema = GroupSchema()
     else:
         schema = GroupAdminSchema()
-        
+
 
     form = deform.Form(schema, buttons=('Submit',))
 
@@ -434,7 +434,7 @@ def admin_group(context, request):
     for t in Group.types:
         if t != context.type:
             choices.append((t, t.capitalize()))
-    
+
     form.schema['type'].widget.values  = choices
     form.schema['name'].default        = context.name
     form.schema['description'].default = context.description
@@ -450,11 +450,10 @@ def admin_group(context, request):
         context.name = data['name']
         context.description = data['description']
         context.type = data['type']
-        
+
         if 'new_domain' in data and data['new_domain']:
             context.domains.append(data['new_domain'])
 
         request.root['groups'].update(context)
 
-    
-    return {'form': form.render()}    
+    return {'form': form.render()}
