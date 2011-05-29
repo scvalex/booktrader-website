@@ -249,9 +249,8 @@ def search(context, request):
 
         return {'form': search_form.render(),
                 'user': request.user,
-                'result': books,
-                'next_url': next_url,
-                'prev_url': prev_url}
+                'total_items': total_items, 'result': books,
+                'next_url': next_url, 'prev_url': prev_url}
 
     return {'result': []}
 

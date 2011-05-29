@@ -2,6 +2,8 @@
 
 <%namespace name="books_common" file="/books/common.mak" />
 
+<h3>Found ${total_items} books!</h3>
+
 <ul id="books_list">
   % for book in result:
     <li>
