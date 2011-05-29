@@ -88,7 +88,7 @@ class User(Persistent):
 
 class Books(IndexFolder):
     def __init__(self):
-        super(Books, self).__init__(isbn = CatalogFieldIndex('isbn'))
+        super(Books, self).__init__()
 
         self.catalogue = GoogleBooksCatalogue()
 
