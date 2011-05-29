@@ -240,6 +240,7 @@ def search(context, request):
         books = [context.json_to_book(vi) for vi in books['items']]
 
         return {'form': search_form.render(),
+                'user': request.user,
                 'result': books}
 
     return {'result': []}
@@ -265,7 +266,7 @@ def add_book(context, request):
 
         if kind == 'have' and book.identifier in user.owned:
             raise HTTPBadRequest('book already owned')
-        elif book.identifier in user.want:
+        elif kind == 'want' and book.identifier in user.want:
             raise HTTPBadRequest('book already wanted')
 
         if book.identifier not in context:

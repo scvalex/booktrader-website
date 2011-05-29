@@ -20,8 +20,16 @@
     % endif
 
     <div class="have_want">
-      <a href="${request.resource_url(request.context, 'add', 'have', book.identifier)}">Have</a>
-      <a href="${request.resource_url(request.context, 'add', 'want', book.identifier)}">Want</a>
+      % if book.identifier in user.owned:
+        Have
+      % else:
+        <a href="${request.resource_url(request.context, 'add', 'have', book.identifier)}">Have</a>
+      % endif
+      % if book.identifier in user.want:
+        Want
+      % else:
+        <a href="${request.resource_url(request.context, 'add', 'want', book.identifier)}">Want</a>
+      % endif
     </div>
   </div>
 </%def>
