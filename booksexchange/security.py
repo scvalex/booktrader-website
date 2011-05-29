@@ -7,7 +7,7 @@ def groupfinder(userid, request):
 
             if request.user.username in group.owners:
                 groups.append(group.owners_group)
-
+        
         return groups
     
     return None

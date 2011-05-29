@@ -230,7 +230,7 @@ class Groups(IndexFolder):
 
 class Group(Persistent):
     types = ['public', 'private', 'secret']
-    
+
     def __init__(self, name, description, type):
         self.name        = name
         self.description = description
@@ -246,7 +246,7 @@ class Group(Persistent):
         self.members     = PersistentMapping()
         self.owners      = PersistentMapping()
 
-        # self.set_acl()
+        self.set_acl()
 
     @property
     def identifier(self):
@@ -278,19 +278,20 @@ class Group(Persistent):
     def owners_group(self):
         return 'group:' + self.identifier + ':owner'
 
-    def set_acl(self):
-        if type == 'public':
-            self.__acl__ = [(Allow, Everyone, 'view_group'),
-                            (Allow, 'group:users', 'join_group'),
-                            (Allow, self.owners_group, 'edit_group')]
+    @property
+    def __acl__(self):
+        if self.type == 'public':
+            return [(Allow, Everyone, 'view_group'),
+                    (Allow, 'group:users', 'join_group'),
+                    (Allow, self.owners_group, 'edit_group')]
         elif type == 'private':
-            self.__acl__ = [(Allow, Everyone, 'view_group'),
-                            (Deny, Everyone, 'join_group'),
-                            (Allow, self.owners_group, 'edit_group')]
+            return [(Allow, Everyone, 'view_group'),
+                    (Deny, Everyone, 'join_group'),
+                    (Allow, self.owners_group, 'edit_group')]
         elif type == 'secret':
-            self.__acl__ = [(Deny, Everyone, 'view_group'),
-                            (Deny, Everyone, 'join_group'),
-                            (Allow, self.owners_group, 'edit_group')]
+            return [(Deny, Everyone, 'view_group'),
+                    (Deny, Everyone, 'join_group'),
+                    (Allow, self.owners_group, 'edit_group')]
 
 
 

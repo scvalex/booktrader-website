@@ -310,11 +310,11 @@ def create_group(context, request):
 
     return {'form': form.render()}
 
-@view_config(context=Group, renderer='string')
+@view_config(context=Group, renderer='string', permission='view_group')
 def view_group(context, request):
     return str(context.members)
 
-@view_config(context=Group, name='join')
+@view_config(context=Group, name='join', permission='join_group')
 def join_group(context, request):
     request.user.add_group(context)
     context.add_member(request.user)
