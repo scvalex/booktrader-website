@@ -114,7 +114,7 @@ class Books(IndexFolder):
         id          = b['id']
         
         if id in self:
-            return context[id]
+            return self[id]
         
         b           = b['volumeInfo']
         identifiers = [(i['type'], i['identifier'])
