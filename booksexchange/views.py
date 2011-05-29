@@ -304,9 +304,9 @@ def create_group(context, request):
 
     return {'form': form.render()}
 
-@view_config(context=Group, renderer='string', permission='view_group')
+@view_config(context=Group, renderer='groups/view.mak', permission='view_group')
 def view_group(context, request):
-    return str(context.members)
+    pass
 
 @view_config(context=Group, name='join', permission='join_group')
 def join_group(context, request):
