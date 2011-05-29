@@ -287,6 +287,7 @@ class Group(Persistent):
     @property
     def __acl__(self):
         return [(Allow, Everyone, 'view_group'),
+                (Deny,  self.members_group, 'join_group'),
                 (Allow, 'group:users', 'join_group'),
                 (Allow, self.owners_group, 'admin_group')]
 

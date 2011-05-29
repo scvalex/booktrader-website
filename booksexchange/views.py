@@ -357,6 +357,7 @@ def confirm_join_group(context, request):
             join_group_success(context, request)
         else:
             request.session.flash('The token provided is wrong, please try again.')
+            raise HTTPFound(location = request.resource_url(context, 'join'))
     
     raise HTTPBadRequest('No token provided.')
     
