@@ -187,13 +187,7 @@ def confirm_user(context, request):
 
 @view_config(context=User, renderer='users/home.mak')
 def user_home(context, request):
-    user = request.user
-    username = context.username
-    if user is context:
-        username = ""
-
-    return {'username': username,
-            'owned': context.owned.itervalues(),
+    return {'owned': context.owned.itervalues(),
             'want':  context.want.itervalues()}
 
 

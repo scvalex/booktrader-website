@@ -292,7 +292,7 @@ class Group(Persistent):
             return [(Deny, Everyone, 'view_group'),
                     (Deny, Everyone, 'join_group'),
                     (Allow, self.owners_group, 'edit_group')]
-
+        raise AttributeError
 
 
 def appmaker(zodb_root):

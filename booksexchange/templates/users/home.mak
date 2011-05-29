@@ -1,6 +1,11 @@
 <%inherit file="/base.mak"/>
 
 <%namespace name="books_common" file="/books/common.mak" />
+<%namespace name="common" file="/common.mak" />
+
+<%
+username = (request.context == request.user) and request.context.username or ""
+%>
 
 % if not username:
   <h3>Your books!</h3>
@@ -25,5 +30,12 @@
     <li>${books_common.render_book(book)}</li>
   % endfor
 </ol>
+
+% if not username:
+  <h3>Groups you're in:</h3>
+% else:
+  <h3>Groups ${username} is in</h3>
+% endif
+${', '.join([common.group_link(g, g.name) for g in request.context.groups.values()])}
 
 <%def name="title()">${parent.title()} - Home</%def>
