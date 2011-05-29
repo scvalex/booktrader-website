@@ -18,6 +18,8 @@ from urllib2                 import urlopen, URLError
 
 import deform
 
+from mako.template           import Template
+
 from booksexchange.schemas   import SearchSchema
 
 class AppRequest(Request):
@@ -166,8 +168,12 @@ def superspecial_factory(conf, **kw):
         def __call__(self, environ, start_response):
             try:
                 return self.app(environ, start_response)
+            except HTTPInternalServerError:
+                raise
             except HTTPException, e:
-                resp = str(e)
+                resp = Template(filename = "booksexchange/templates/exception.mak",
+                                module_directory="booksexchange/templates")
+                resp = resp.render(**{'status': e.status, 'detail': e.detail})
                 headers = dict(e.headers.items())
                 headers['Content-Length'] = len(resp)
                 start_response(e.status, headers.items())
