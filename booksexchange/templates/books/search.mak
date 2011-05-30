@@ -2,7 +2,7 @@
 
 <%namespace name="books_common" file="/books/common.mak" />
 
-<ul id="books_list">
+<ul class="books_list">
   % for book in result:
     <li>
       ${books_common.render_book_short(book)}
