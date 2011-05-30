@@ -2,7 +2,7 @@
 
 <%namespace name="books_common" file="/books/common.mak" />
 
-% if result:
+% if result is not None:
   <h3>Found ${total_items} books!</h3>
 
   <ul class="books_list">

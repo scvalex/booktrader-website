@@ -200,7 +200,7 @@ def search(context, request):
         book = BookSchema()
 
     class ResultSchema(colander.MappingSchema):
-        items = BooksSchema()
+        items = BooksSchema(missing=[])
         totalItems = colander.SchemaNode(colander.Integer())
 
     if 'Search' in request.params:
