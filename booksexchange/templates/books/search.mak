@@ -4,7 +4,7 @@
 
 <h3>Found ${total_items} books!</h3>
 
-<ul id="books_list">
+<ul class="books_list">
   % for book in result:
     <li>
       ${books_common.render_book_short(book)}

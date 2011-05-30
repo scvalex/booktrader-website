@@ -145,38 +145,51 @@ h1 a, h1 a:visited {
 
 /* Books listings (eg search page) */
 
-#books_list li {
-  float: left;
-  width: 49%;
-  margin: 1em 1% 0 0;
+.books_list li, .book_details {
   background-color: #f6fae0;
   border-radius: 0.2em;
   min-height:160px;
 }
 
-#books_list li:after {
+.book_details {
+  padding:1em;
+}
+
+.books_list li {
+  width: 49%;
+  margin: 1em 1% 0 0;
+  float: left;
+}
+
+.books_list:after {
   content: "";
   display: block;
   clear: both;
 }
 
-#books_list .right {
+.books_list li:after, .book_details:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.books_list .right {
   float: right;
   margin: 1em 0 0 1%;
 }
 
-#books_list li h3 {
+.books_list li h3, .book_details h2 {
   font-size: 1.1em;
   font-weight: bold;
   font-family: Cabin, Helvetica, Arial, sans-serif;
   margin: 0 0 .2em 0;
 }
 
-#books_list li h3 a, #books_list li h3 a:visited {
+.books_list li h3 a, .books_list li h3 a:visited {
   color:#1c393f;
 }
 
-#books_list li p {
+.books_list li p {
   margin: 0.2em 0;
 }
 .book_short {
@@ -196,15 +209,34 @@ h1 a, h1 a:visited {
   margin: 0 0.5em 0.5em 0;
 }
 
-.cover img {
+
+.book_short .cover img {
   max-height: 120px;
 }
 
-.have_want {
+.book_short .have_want {
   margin:1em;
 }
 
-.have_want a, .have_want span {
+.book_details .have_want {
+  margin: 1em auto;
+  position: relative;
+}
+
+.book_details h2 {
+  font-size: 1.2em;
+}
+
+.book_details h2 a, .book_details h2 a:visited {
+  color: black;
+}
+
+.book_details h3 {
+  font-style: italic;
+  margin: 0.2em;
+}
+
+.have_want a, .have_want span{
   color: white;
   background-color: #1c393f;
   font-family: Cabin, Helvetica, Arial, sans-serif;
@@ -233,4 +265,16 @@ a.unread {
 
 .messageList .unread {
     background-color: #fff;
+}
+
+.book_details .book_info {
+  margin: 0.2em;
+}
+
+.book_details .book_info li {
+  margin: 0.2em 0;
+}
+
+.book_details .book_info .book_identifier {
+  font-size: 0.8em;
 }

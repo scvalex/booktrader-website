@@ -14,11 +14,11 @@ username     = request.context.username
   <h3>${username}'s books!</h3>
 % endif
 
-<ol>
+<ul class="books_list">
   % for book in owned:
-    <li>${books_common.render_book(book)}</li>
+    <li>${books_common.render_book_short(book)}</li>
   % endfor
-</ol>
+</ul>
 
 % if current_user:
   <h3>Books you want!</h3>
@@ -26,11 +26,11 @@ username     = request.context.username
   <h3>Books ${username} wants!</h3>
 % endif
 
-<ol>
+<ul class="books_list">
   % for book in want:
-    <li>${books_common.render_book(book)}</li>
+    <li>${books_common.render_book_short(book)}</li>
   % endfor
-</ol>
+</ul>
 
 % if current_user:
   <h3>Groups you're in:</h3>
