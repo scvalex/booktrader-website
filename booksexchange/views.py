@@ -15,7 +15,7 @@ import deform
 import json
 import re
 
-from booksexchange.models   import App, Users, User, Books, Book, Groups, Group, Messages, Message
+from booksexchange.models   import *
 from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
@@ -282,40 +282,35 @@ def view_book(context, request):
     return {'book': context}
 
 
-@view_config(context=Books, name='add', permission='loggedin')
-def add_book(context, request):
-    if len(request.subpath) == 2:
-        kind = request.subpath[0]
-        if not (kind in ['have', 'want']):
-            raise HTTPBadRequest("must add to either 'have' or 'want'")
+@view_config(context=Book, name='have', permission='loggedin')
+@view_config(context=Book, name='want', permission='loggedin')
+def add_book(book, request):
+    kind = request.view_name
+    if not (kind in ['have', 'want']):
+        raise HTTPBadRequest("must add to either 'have' or 'want'")
+    
+    user = request.user
+    if user is None:
+        raise HTTPInternalServerError('no user found')
 
-        book = context[request.subpath[1]]
+    if kind == 'have' and book.identifier in user.owned:
+        raise HTTPBadRequest('book already owned')
+    elif kind == 'want' and book.identifier in user.want:
+        raise HTTPBadRequest('book already wanted')
+    
+    if book.identifier not in request.root['books']:
+        request.root['books'].new_book(book)
+    if kind == 'have':
+        user.add_owned(book)
+        book.add_owner(user)
+        request.root['events'].add_have(user, book)
+    else:
+        user.add_want(book)
+        book.add_coveter(user)
+        request.root['events'].add_want(user, book)
 
-        user = request.user
-        if user is None:
-            raise HTTPInternalServerError('no user found')
-
-        if kind == 'have' and book.identifier in user.owned:
-            raise HTTPBadRequest('book already owned')
-        elif kind == 'want' and book.identifier in user.want:
-            raise HTTPBadRequest('book already wanted')
-
-        if book.identifier not in context:
-            context.new_book(book)
-        if kind == 'have':
-            user.add_owned(book)
-            book.add_owner(user)
-            request.root['events'].add_have(user, book)
-        else:
-            user.add_want(book)
-            book.add_coveter(user)
-            request.root['events'].add_want(user, book)
-
-        request.session.flash('Book added!')
-        raise HTTPFound(location = request.resource_url(request.user))
-
-    raise HTTPBadRequest('no book specified')
-
+    request.session.flash('Book added!')
+    raise HTTPFound(location = request.resource_url(request.user))
 
 @view_config(context=Groups, name='create', permission='loggedin',
              renderer='groups/create_group.mak')

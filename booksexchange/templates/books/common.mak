@@ -25,8 +25,8 @@
       % elif request.user and book.identifier in request.user.want:
         <span>You want this book.</span>
       % else:
-        <a href="${request.resource_url(request.context, 'add', 'have', book.identifier)}">Have</a>
-        <a href="${request.resource_url(request.context, 'add', 'want', book.identifier)}">Want</a>
+        <a href="${request.resource_url(book, 'have')}">Have</a>
+        <a href="${request.resource_url(book, 'want')}">Want</a>
       % endif
     </div>
   </div>
@@ -44,8 +44,8 @@
         % elif request.user and book.identifier in request.user.want:
             <span>You want this book.</span>
         % else:
-        <a href="${request.resource_url(request.root['books'], 'add', 'have', book.identifier)}">Have</a>
-        <a href="${request.resource_url(request.root['books'], 'add', 'want', book.identifier)}">Want</a>
+        <a href="${request.resource_url(book, 'have', book.identifier)}">Have</a>
+        <a href="${request.resource_url(book, 'want', book.identifier)}">Want</a>
       % endif
       </div>
     </div>
