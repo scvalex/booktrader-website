@@ -254,7 +254,6 @@ def search(context, request):
         page_indices = range(page_indices, page_indices + num_items)
 
         return {'form': search_form.render(),
-                'user': request.user,
                 'total_items': total_items, 'result': books,
                 'page_indices': page_indices, 'page_index': start_index / 10,
                 'make_url': make_url,
