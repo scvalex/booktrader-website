@@ -65,25 +65,40 @@ def login(context, request):
     if referer == request.path:
         referer = '/'
 
-    came_from = request.params.get('came_from', referer)
+    class LoginSchema(colander.Schema):
+        username  = colander.SchemaNode(colander.String())
+        password  = colander.SchemaNode(colander.String(),
+                                        widget  = deform.widget.PasswordWidget())
+        came_from = colander.SchemaNode(colander.String(),
+                                        widget  = deform.widget.HiddenWidget(),
+                                        default = referer)
 
-    username = ''
+    def validate_login(form, value):
+        exc = colander.Invalid(form, '')
+        exc['username'] = 'Invalid username/password.'
+        if value['username'] not in context:
+            raise exc
 
-    # If the request is post, try to authenticate
-    if 'form.submitted' in request.params:
-        username = request.params['username']
-        password = request.params['password']
+        if not context[value['username']].check_password(value['password']):
+            raise exc
 
-        if username in context and context[username].check_password(password):
-            headers = remember(request, username)
-            raise HTTPFound(location = came_from,
-                            headers  = headers)
+    form = deform.Form(LoginSchema(validator = validate_login),
+                       buttons = ('Login',))
 
-        request.session.flash('Invalid username/password.')
+    if 'Login' in request.params:
+        controls = request.params.items()
 
+        try:
+            data = form.validate(controls)
+        except deform.ValidationFailure, e:
+            return {'form': e.render()}
 
-    return {'came_from' : came_from,
-            'username'  : username}
+        request.session.flash('You are now logged in.')
+
+        raise HTTPFound(location = data['came_from'],
+                        headers  = remember(request, data['username']))
+    
+    return {'form': form.render()}
 
 @view_config(context=Users, name='logout')
 def logout(context, request):
@@ -308,8 +323,8 @@ def create_group(context, request):
     schema = GroupSchema()
     form   = deform.Form(schema, buttons=('Create Group',))
 
-    if request.method == 'POST':
-        controls = request.POST.items()
+    if 'Create Group' in request.params:
+        controls = request.params.items()
 
         try:
             group_data = form.validate(controls)
@@ -383,8 +398,8 @@ def join_group(context, request):
             email = colander.SchemaNode(colander.String(), validator=validate_email)
 
         form = deform.Form(schema=GroupEmail(), buttons=('Join',))
-
-        if request.method == 'POST':
+        
+        if 'Join' in request.params:
             controls = request.params.items()
 
             try:
@@ -438,8 +453,8 @@ def admin_group(context, request):
     form.schema['name'].default        = context.name
     form.schema['description'].default = context.description
 
-    if request.method == 'POST':
-        controls = request.POST.items()
+    if 'Submit' in request.params:
+        controls = request.params.items()
 
         try:
             data = form.validate(controls)
