@@ -182,7 +182,7 @@ h1 a, h1 a:visited {
   padding:1em;
 }
 
-.books_list li:after, .book_details:after {
+.books_list td:after, .book_details:after {
   content: "";
   display: block;
   clear: both;
@@ -193,18 +193,18 @@ h1 a, h1 a:visited {
   margin: 1em 0 0 1%;
 }
 
-.books_list li h3, .book_details h2 {
+.books_list td h3, .book_details h2 {
   font-size: 1.1em;
   font-weight: bold;
   font-family: Cabin, Helvetica, Arial, sans-serif;
   margin: 0 0 .2em 0;
 }
 
-.books_list li h3 a, .books_list li h3 a:visited {
+.books_list td h3 a, .books_list td h3 a:visited {
   color:#1c393f;
 }
 
-.books_list li p {
+.books_list td p {
   margin: 0.2em 0;
 }
 .book_short {
