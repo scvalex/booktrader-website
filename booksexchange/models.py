@@ -330,6 +330,7 @@ class Messages(PersistentMapping):
 
     def new_message(self, message):
         self[message.identifier] = message
+        message.__parent__ = self
 
 class Message(Persistent):
     def __init__(self, sender, recipient, subject, body):
@@ -339,9 +340,11 @@ class Message(Persistent):
         self.recipient = recipient
         self.subject   = subject
         self.body      = body
+        self.reply_to  = None
 
         self.date        = datetime.datetime.utcnow()
         self._identifier = str(uuid.uuid1())
+        self.__name__    = self._identifier
 
     @property
     def identifier(self):

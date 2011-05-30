@@ -466,44 +466,71 @@ def list_messages(context, request):
             'unread': request.user.unread,
             'msg': None}
 
-@view_config(context=Messages, name='new', permission='loggedin',
-             renderer='messages/new.mak')
-def send_message(context, request):
-    def validate_user_exists(node, username):
-        if username not in request.root['users']:
-            raise colander.Invalid(node, 'User "' + username +
-                                   '" does not exist.')
 
+def make_message_schema(users):
     class MessageSchema(colander.MappingSchema):
+        def validate_user_exists(node, username):
+            if username not in users:
+                raise colander.Invalid(node, 'User "' + username +
+                                       '" does not exist.')
+
         recipient = colander.SchemaNode(utf8_string(),
                                         validator = validate_user_exists)
         subject   = colander.SchemaNode(utf8_string())
         body      = colander.SchemaNode(utf8_string(),
                                         widget = deform.widget.TextAreaWidget(),
                                         validator = colander.Length(min = 17))
+    return MessageSchema()
 
-    form = deform.Form(MessageSchema(), buttons=('Send',))
+@view_config(context=Messages, name='new', permission='loggedin',
+             renderer='messages/new.mak')
+def send_message(context, request):
+    form = deform.Form(make_message_schema(request.root['users']),
+                       buttons=('Send',))
 
     if request.method == 'POST':
-        controls = request.POST.items()
-
-        try:
-            data = form.validate(controls)
-        except deform.ValidationFailure, e:
-            return {'form': e.render()}
-
-        recipient = request.root['users'][data['recipient']]
-
-        m = Message(request.user, recipient, data['subject'], data['body'])
-        context.new_message(m)
-        recipient.add_message(m)
-        request.user.add_message(m, unread = False)
-
-        request.session.flash('Message sent!')
-
-        raise HTTPFound(location = request.resource_url(context, 'list'))
+        common_send_message(context, request, form, lambda msg: msg)
 
     return {'form': form.render()}
+
+@view_config(context=Message, name='reply', renderer='messages/new.mak')
+def reply_to_message(context, request):
+    if request.user is not context.sender and request.user is not context.recipient:
+        raise Forbidden()
+
+    form = deform.Form(make_message_schema(request.root['users']),
+                       buttons=('Send',))
+
+    if request.method == 'POST':
+        def extra_fun(message):
+            message.reply_to = context
+        common_send_message(context, request, form, extra_fun)
+    else:
+        form.schema['recipient'].default = context.sender.username
+        form.schema['subject'].default = "Re: " + context.subject
+
+    return {'form': form.render()}
+
+def common_send_message(context, request, form, extra_fun):
+    controls = request.POST.items()
+
+    try:
+        data = form.validate(controls)
+    except deform.ValidationFailure, e:
+        return {'form': e.render()}
+
+    recipient = request.root['users'][data['recipient']]
+
+    m = Message(request.user, recipient, data['subject'], data['body'])
+    request.root['messages'].new_message(m)
+    recipient.add_message(m)
+    request.user.add_message(m, unread = False)
+    extra_fun(m)
+
+    request.session.flash('Message sent!')
+
+    raise HTTPFound(location = request.resource_url(request.root['messages'], 'list'))
+
 
 @view_config(context=Message, renderer='messages/list.mak')
 def show_message(context, request):

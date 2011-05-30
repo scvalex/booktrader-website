@@ -28,7 +28,7 @@
     <li>To: ${common.user_link(msg.recipient)}</li>
     <li>Subject: ${common.message_link(msg)}</li>
     <li>${msg.body}</li>
-    <li><h3><a href="#">Reply!</a></h3></li>
+    <li><h3><a href="${request.resource_url(msg, 'reply')}">Reply!</a></h3></li>
   </ul>
 % else:
   <table class="messageList">
