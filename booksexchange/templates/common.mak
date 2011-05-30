@@ -31,9 +31,14 @@
   % endif
 </%def>
 
-
 <%def name="group_link(group, inner)">
   <a href="${request.resource_url(request.root['groups'], group.identifier)}">
     ${inner}
+  </a>
+</%def>
+
+<%def name="message_link(message)">
+  <a href="${request.resource_url(request.root['messages'], 'list', message.identifier)}">
+    ${message.subject}
   </a>
 </%def>

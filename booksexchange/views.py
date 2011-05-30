@@ -470,6 +470,7 @@ def send_message(context, request):
     class MessageSchema(colander.MappingSchema):
         recipient = colander.SchemaNode(utf8_string(),
                                         validator = validate_user_exists)
+        subject   = colander.SchemaNode(utf8_string())
         body      = colander.SchemaNode(utf8_string(),
                                         widget = deform.widget.TextAreaWidget(),
                                         validator = colander.Length(min = 17))
@@ -486,17 +487,28 @@ def send_message(context, request):
 
         recipient = request.root['users'][data['recipient']]
 
-        m = Message(request.user, recipient, data['body'])
+        m = Message(request.user, recipient, data['subject'], data['body'])
         recipient.add_message(m)
 
         request.session.flash('Message sent!')
 
-        raise HTTPFound(location = request.resource_url(context))
+        raise HTTPFound(location = request.resource_url(context, 'list'))
 
     return {'form': form.render()}
 
-@view_config(context=Messages, permission='loggedin',
+@view_config(context=Messages, name="list", permission='loggedin',
              renderer='messages/list.mak')
 def list_messages(context, request):
+    message = None
+    if len(request.subpath) == 1:
+        message = request.subpath[0]
+        if message not in request.user.mailbox:
+            raise HTTPBadRequest('no such message')
+        message = request.user.mailbox[message]
+        if message in request.user.unread:
+            request.user.unread.remove(message)
+
     return {'messages': request.user.all_messages,
-            'unread': request.user.unread}
+            'mailbox': request.user.mailbox,
+            'unread': request.user.unread,
+            'msg': message}

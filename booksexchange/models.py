@@ -322,13 +322,15 @@ class Messages(Persistent):
     pass
 
 class Message(Persistent):
-    def __init__(self, sender, recipient, body):
+    def __init__(self, sender, recipient, subject, body):
         super(Message, self).__init__()
 
         self.sender    = sender
         self.recipient = recipient
+        self.subject   = subject
         self.body      = body
 
+        self.date        = datetime.datetime.utcnow()
         self._identifier = str(uuid.uuid1())
 
     @property

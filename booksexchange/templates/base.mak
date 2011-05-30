@@ -34,9 +34,9 @@
               logged in as ${common.user_link(request.user)}
               &middot;
               % if request.user.unread:
-                <a class="unread" href="${request.resource_url(request.root['messages'])}">${len(request.user.unread)} unread</a>
+                <a class="unread" href="${request.resource_url(request.root['messages'], 'list')}">${len(request.user.unread)} unread</a>
               % else:
-                <a href="${request.resource_url(request.root['messages'])}">inbox</a>
+                <a href="${request.resource_url(request.root['messages'], 'list')}">inbox</a>
               % endif
               &middot;
               <a href="${request.resource_url(request.root['users'], 'logout')}">logout</a>

@@ -1,5 +1,7 @@
 <%inherit file="/base.mak"/>
 
+<%namespace name="common" file="/common.mak" />
+
 <h1>Inbox!</h1>
 
 <h3>
@@ -17,22 +19,27 @@
 
 <ol>
   <li><a href="${request.resource_url(request.root['messages'], 'new')}">Compose</a></li>
-  <li><a href="${request.resource_url(request.root['messages'])}">Inbox</a></li>
+  <li><a href="${request.resource_url(request.root['messages'], 'list')}">Inbox</a></li>
 </ol>
 
-<ol>
-  % for message in messages:
-    <li>
-      <ul>
-        % if message in unread:
-          <li>Unread!</li>
-        % endif
-        <li>From: ${message.sender.username}</li>
-        <li>To: ${message.recipient.username}</li>
-        <li>${message.body}</li>
-      </ul>
-    </li>
-  % endfor
-</ol>
+% if msg:
+  Reading message!
+% else:
+  <ol>
+    % for message in messages:
+      <li>
+        <ul>
+          % if message in unread:
+            <li>Unread!</li>
+          % endif
+          <li>From: ${common.user_link(message.sender)}</li>
+          <li>To: ${common.user_link(message.recipient)}</li>
+          <li>Subject: ${common.message_link(message)}</li>
+          <li>${message.body}</li>
+        </ul>
+      </li>
+    % endfor
+  </ol>
+% endif
 
 <%def name="title()">${parent.title()} - Inbox</%def>
