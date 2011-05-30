@@ -4,7 +4,7 @@
 <%namespace name="common" file="/common.mak" />
 
 <%
-current_user = request.context = request.user
+current_user = request.context == request.user
 username     = request.context.username
 %>
 
