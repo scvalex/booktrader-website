@@ -138,6 +138,8 @@ class Books(IndexFolder):
                            b['publisher'], b['publishedDate'],
                            identifiers, b['description'],
                            b['imageLinks'])
+        book.__name__ = id
+        book.__parent__ = self
         return book
 
 
