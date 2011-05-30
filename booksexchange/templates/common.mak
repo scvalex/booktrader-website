@@ -38,7 +38,7 @@
 </%def>
 
 <%def name="message_link(message)">
-  <a href="${request.resource_url(request.root['messages'], 'list', message.identifier)}">
+  <a href="${request.resource_url(request.root['messages'], message.identifier)}">
     ${message.subject}
   </a>
 </%def>

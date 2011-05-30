@@ -459,6 +459,14 @@ def admin_group(context, request):
     return {'form': form.render()}
 
 
+@view_config(context=Messages, name='list', permission='loggedin',
+             renderer='messages/list.mak')
+def list_messages(context, request):
+    return {'messages': request.user.all_messages,
+            'mailbox': request.user.mailbox,
+            'unread': request.user.unread,
+            'msg': None}
+
 @view_config(context=Messages, name='new', permission='loggedin',
              renderer='messages/new.mak')
 def send_message(context, request):
@@ -488,7 +496,9 @@ def send_message(context, request):
         recipient = request.root['users'][data['recipient']]
 
         m = Message(request.user, recipient, data['subject'], data['body'])
+        context.new_message(m)
         recipient.add_message(m)
+        request.user.add_message(m, unread = False)
 
         request.session.flash('Message sent!')
 
@@ -496,19 +506,15 @@ def send_message(context, request):
 
     return {'form': form.render()}
 
-@view_config(context=Messages, name="list", permission='loggedin',
-             renderer='messages/list.mak')
-def list_messages(context, request):
-    message = None
-    if len(request.subpath) == 1:
-        message = request.subpath[0]
-        if message not in request.user.mailbox:
-            raise HTTPBadRequest('no such message')
-        message = request.user.mailbox[message]
-        if message in request.user.unread:
-            request.user.unread.remove(message)
+@view_config(context=Message, renderer='messages/list.mak')
+def show_message(context, request):
+    if request.user is not context.sender and request.user is not context.recipient:
+        raise Forbidden()
+
+    if context in request.user.unread:
+        request.user.unread.remove(context)
 
     return {'messages': request.user.all_messages,
             'mailbox': request.user.mailbox,
             'unread': request.user.unread,
-            'msg': message}
+            'msg': context}

@@ -105,11 +105,12 @@ class User(Persistent):
             raise RuntimeError('not a group')
         self.groups[group.identifier] = group
 
-    def add_message(self, message):
+    def add_message(self, message, unread = True):
         if not isinstance(message, Message):
             raise RuntimeError('not a message')
         self.mailbox[message.identifier] = message
-        self.unread.insert(0, message)
+        if unread:
+            self.unread.insert(0, message)
         self.all_messages.insert(0, message)
 
     def message_read(self, message):
@@ -320,8 +321,17 @@ class Group(Persistent):
         return False
 
 
-class Messages(Persistent):
-    pass
+class Messages(PersistentMapping):
+    def __init__(self):
+        super(Messages, self).__init__()
+
+    def __getitem__(self, key):
+        if key in ['new', 'list']:
+            raise KeyError
+        return super(Messages, self).__getitem__(key)
+
+    def new_message(self, message):
+        self[message.identifier] = message
 
 class Message(Persistent):
     def __init__(self, sender, recipient, subject, body):
