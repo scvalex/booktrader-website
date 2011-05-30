@@ -38,6 +38,7 @@ class App(PersistentMapping):
         self.setchild('books', Books())
         self.setchild('events', Events())
         self.setchild('groups', Groups())
+        self.setchild('messages', Messages())
 
 
 class Users(IndexFolder):
@@ -63,8 +64,9 @@ class User(Persistent):
 
         self.groups    = PersistentMapping()
 
-        self.mailbox   = PersistentMapping()
-        self.unread    = PersistentList()
+        self.mailbox      = PersistentMapping()
+        self.unread       = PersistentList()
+        self.all_messages = PersistentList()
 
     @property
     def username(self):
@@ -108,6 +110,7 @@ class User(Persistent):
             raise RuntimeError('not a message')
         self.mailbox[message.identifier] = message
         self.unread.insert(0, message)
+        self.all_messages.insert(0, message)
 
     def message_read(self, message):
         self.unread.remove(message)
@@ -315,12 +318,22 @@ class Group(Persistent):
         return False
 
 
+class Messages(Persistent):
+    pass
+
 class Message(Persistent):
-    def __init__(self, sender, body):
+    def __init__(self, sender, recipient, body):
         super(Message, self).__init__()
 
-        self.sender = sender
-        self.body = body
+        self.sender    = sender
+        self.recipient = recipient
+        self.body      = body
+
+        self._identifier = str(uuid.uuid1())
+
+    @property
+    def identifier(self):
+        return self._identifier
 
 
 def appmaker(zodb_root):

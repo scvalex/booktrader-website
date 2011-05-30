@@ -15,7 +15,7 @@ import deform
 import json
 import re
 
-from booksexchange.models   import App, Users, User, Books, Book, Groups, Group
+from booksexchange.models   import App, Users, User, Books, Book, Groups, Group, Messages, Message
 from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
@@ -457,3 +457,46 @@ def admin_group(context, request):
         request.root['groups'].update(context)
 
     return {'form': form.render()}
+
+
+@view_config(context=Messages, name='new', permission='loggedin',
+             renderer='messages/new.mak')
+def send_message(context, request):
+    def validate_user_exists(node, username):
+        if username not in request.root['users']:
+            raise colander.Invalid(node, 'User "' + username +
+                                   '" does not exist.')
+
+    class MessageSchema(colander.MappingSchema):
+        recipient = colander.SchemaNode(utf8_string(),
+                                        validator = validate_user_exists)
+        body      = colander.SchemaNode(utf8_string(),
+                                        widget = deform.widget.TextAreaWidget(),
+                                        validator = colander.Length(min = 17))
+
+    form = deform.Form(MessageSchema(), buttons=('Send',))
+
+    if request.method == 'POST':
+        controls = request.POST.items()
+
+        try:
+            data = form.validate(controls)
+        except deform.ValidationFailure, e:
+            return {'form': e.render()}
+
+        recipient = request.root['users'][data['recipient']]
+
+        m = Message(request.user, recipient, data['body'])
+        recipient.add_message(m)
+
+        request.session.flash('Message sent!')
+
+        raise HTTPFound(location = request.resource_url(context))
+
+    return {'form': form.render()}
+
+@view_config(context=Messages, permission='loggedin',
+             renderer='messages/list.mak')
+def list_messages(context, request):
+    return {'messages': request.user.all_messages,
+            'unread': request.user.unread}
