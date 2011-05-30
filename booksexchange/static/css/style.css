@@ -173,7 +173,6 @@ h1 a, h1 a:visited {
 .books_list td, .book_details {
   background-color: #f6fae0;
   border-radius: 0.2em;
-  height:160px;
 }
 
 .books_list td {
@@ -380,17 +379,6 @@ h1 a, h1 a:visited {
   margin:0.5em;
 }
 
-/* #search_bar input { */
-/*   background-color: #1c393f; */
-/*   border: 1px solid black; */
-/*   border-radius: 0.2em; */
-/*   font-size: 1.1em; */
-/*   color: white; */
-/*   padding: 0.3em 0.3em; */
-/*   width:90%; */
-/*   margin:0.5em 0; */
-/* } */
-
 #inner form.deform input, #inner form.deform textarea {
   background-color: white;
   border: 1px solid #ccc;
@@ -402,16 +390,6 @@ h1 a, h1 a:visited {
   box-shadow: #6c898f 0 0 2px;
   width: 300px;
 }
-
-/* #inner form.deform input { */
-/*   background-color: #white; */
-/*   border: 1px solid #ccc; */
-/*   border-radius:0.2em */
-/*   padding: 0.2em; */
-/*   margin-left: 0.5em; */
-/*   border: 1px solid #c5c8b3; */
-/*   width:300px; */
-/* } */
 
 #inner form.deform input:focus, #inner form.deform textarea:focus {
   border: 1px solid #9cb0b8;

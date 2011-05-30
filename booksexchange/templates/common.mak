@@ -42,3 +42,11 @@
     ${message.subject}
   </a>
 </%def>
+
+<%def name="truncate(text, length)">
+  % if len(text) > length:
+      ${text[0:length]}&hellip;
+  % else:
+      ${text}
+  % endif
+</%def>
