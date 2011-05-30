@@ -153,7 +153,7 @@ h1 a, h1 a:visited {
 #search_bar button {
   background-color: transparent;
   border: none;
-  font-size: 1.1em;
+  font-size: 1.2em;
   font-family: Cabin;
 }
 
@@ -353,7 +353,7 @@ h1 a, h1 a:visited {
 
 #inner form.deform label {
   display: inline-block;
-  min-width: 100px;
+  min-width: 150px;
 }
 
 #inner form.deform li {
@@ -366,7 +366,7 @@ h1 a, h1 a:visited {
 
 #inner form.deform li ul label {
   display: inline-block;
-  min-width: 190px;
+  min-width: 140px;
 }
 
 #inner form.deform p.error {
@@ -391,14 +391,27 @@ h1 a, h1 a:visited {
 /*   margin:0.5em 0; */
 /* } */
 
-#inner form.deform input {
-  background-color: #c5c8b3;
-  border: none;
+#inner form.deform input, #inner form.deform textarea {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0.2em;
+  color: #1c393f;
   padding: 0.2em;
+  width:90%;
   margin-left: 0.5em;
-  border: 1px solid #c5c8b3;
-  width:300px;
+  box-shadow: #6c898f 0 0 2px;
+  width: 300px;
 }
+
+/* #inner form.deform input { */
+/*   background-color: #white; */
+/*   border: 1px solid #ccc; */
+/*   border-radius:0.2em */
+/*   padding: 0.2em; */
+/*   margin-left: 0.5em; */
+/*   border: 1px solid #c5c8b3; */
+/*   width:300px; */
+/* } */
 
 #inner form.deform input:focus, #inner form.deform textarea:focus {
   border: 1px solid #9cb0b8;
@@ -409,11 +422,6 @@ h1 a, h1 a:visited {
   display:block;
   width: 500px;
   height: 300px;
-  margin-left: 0.5em;
-  background-color: #c5c8b3;
-  border: 1px solid #c5c8b3;
-  border: none;
-  padding-top: 0.2em;
-  border-radius: 0.2em;
   padding:0.3em;
+  margin:0.3em 0.5em;
 }
