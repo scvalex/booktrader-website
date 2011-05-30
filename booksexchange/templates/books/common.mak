@@ -50,6 +50,27 @@
       </div>
     </div>
 
+    % if len(book.owners) > 0:
+        <div class="owners">
+          <span>Owners:</span><br/>
+          <ul>
+            % for u in book.owners.values():
+                <li>${common.user_link(u)}</li>
+            % endfor
+          </ul>
+        </div>
+    % endif
+    % if len(book.coveters) > 0:
+        <div class="coveters">
+          <span>Coveters:</span><br/>
+          <ul>
+            % for u in book.coveters.values():
+                <li>${common.user_link(u)}</li>
+            % endfor
+          </ul>
+        </div>
+    % endif
+
 
     <h2>${common.book_link(book, book.title)}</h2>
     % if book.subtitle:
@@ -72,16 +93,6 @@
       % endfor
     </ul>
 
-    % if len(book.owners) > 0:
-        <p>
-          Owners: ${', '.join([common.user_link(u) for u in book.owners.values()])}
-        </p>
-    % endif
-    % if len(book.coveters) > 0:
-        <p>
-          Coveters: ${', '.join([common.user_link(u) for u in book.coveters.values()])}
-        </p>
-    % endif
   </div>
 </%def>
 

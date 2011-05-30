@@ -278,3 +278,37 @@ a.unread {
 .book_details .book_info .book_identifier {
   font-size: 0.8em;
 }
+
+.book_details .owners, .book_details .coveters {
+  float:right;
+  padding: 0.5em;
+  background-color:#1C393F;
+  color: #B3EBE8;
+  font-size: 0.9em;
+  min-width: 120px;
+}
+
+.book_details .owners span, .book_details .coveters span {
+  font-weight: bold;
+}
+
+.book_details .owners ul, .book_details .coveters ul {
+  margin: 0.2em 0 0 0.2em;
+}
+
+.book_details .owners a, .book_details .coveters a, .book_details .owners a:visited, .book_details .coveters a:visited {
+  color: white;
+}
+
+.book_details .coveters {
+  border-top-left-radius: 0.2em;
+  border-bottom-left-radius: 0.2em;
+  border-right: 1px solid #f6fae0;
+
+}
+
+.book_details .owners {
+  border-left: 1px solid #f6fae0;
+  border-top-right-radius: 0.2em;
+  border-bottom-right-radius: 0.2em;
+}
