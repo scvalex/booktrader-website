@@ -1,6 +1,6 @@
 <%inherit file="/base.mak"/>
 
-<h3>Admin group ${context}</h3>
+<h2>Admin group &ldquo;${request.context.name}&rdquo;</h2>
 
 
 ${form}
@@ -13,3 +13,5 @@ ${form}
       % endfor
     </ul>
 % endif
+
+<%def name="title()">${parent.title()} - Groups - ${request.context.name} - Admin</%def>

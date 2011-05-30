@@ -1,7 +1,7 @@
 <%inherit file="/base.mak"/>
-<p>
-  Login:
-</p>
+<h2>
+  Login
+</h2>
 
 ${form}
 </form>

@@ -78,7 +78,7 @@ def login(context, request):
         exc['username'] = 'Invalid username/password.'
         if value['username'] not in context:
             raise exc
-
+        
         if not context[value['username']].check_password(value['password']):
             raise exc
 

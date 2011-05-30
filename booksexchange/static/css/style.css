@@ -15,6 +15,16 @@ h1, h2, h3 {
   font-family: Cabin, sans-serif;
 }
 
+h2 {
+  font-size: 1.7em;
+  font-weight: bold;
+  color: #1c393f;
+  text-shadow: 1px 1px white;
+  margin:0 0 0.4em 0;
+  padding: 0 0.2em;
+  border-bottom: 2px solid #b2b6a2;
+}
+
 
 /* Header */
 

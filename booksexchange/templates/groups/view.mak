@@ -11,3 +11,4 @@ ${', '.join([common.user_link(u) for u in group.owners.values()])}
 <h3>Members</h3>
 ${', '.join([common.user_link(u) for u in group.members.values()])}
 
+<%def name="title()">${parent.title()} - Groups - ${request.context.name}</%def>

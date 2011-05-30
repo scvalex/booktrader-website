@@ -1,6 +1,6 @@
 <%inherit file="/base.mak"/>
 
-<h3>Join group ${request.context.name}</h3>
+<h2>Join group ${request.context.name}</h2>
 
 % if form:
     The group requires an email of the following domains:

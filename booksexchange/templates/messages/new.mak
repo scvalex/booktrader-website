@@ -1,6 +1,6 @@
 <%inherit file="/base.mak"/>
 
-<h3>New message!</h3>
+<h2>New message</h2>
 
 ${form}
 

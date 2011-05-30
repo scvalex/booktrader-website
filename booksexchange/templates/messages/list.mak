@@ -2,7 +2,7 @@
 
 <%namespace name="common" file="/common.mak" />
 
-<h1>Inbox!</h1>
+<h2>Inbox</h2>
 
 <h3>
   % if unread:
