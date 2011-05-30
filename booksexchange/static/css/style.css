@@ -163,26 +163,23 @@ h1 a, h1 a:visited {
 
 /* Books listings (eg search page) */
 
-.books_list li, .book_details {
+.books_list td, .book_details {
   background-color: #f6fae0;
   border-radius: 0.2em;
-  min-height:160px;
+  height:160px;
+}
+
+.books_list td {
+  width: 50%;
+}
+
+.books_list {
+  border-spacing: 0.5em;
+  border-collapse: separate;
 }
 
 .book_details {
   padding:1em;
-}
-
-.books_list li {
-  width: 49%;
-  margin: 1em 1% 0 0;
-  float: left;
-}
-
-.books_list:after {
-  content: "";
-  display: block;
-  clear: both;
 }
 
 .books_list li:after, .book_details:after {
