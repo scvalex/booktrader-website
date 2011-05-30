@@ -382,7 +382,13 @@ h1 a, h1 a:visited {
   border: none;
   padding: 0.2em;
   margin-left: 0.5em;
+  border: 1px solid #c5c8b3;
 }
+
+#inner form.deform input:focus, #inner form.deform textarea:focus {
+  border: 1px solid #9cb0b8;
+}
+
 
 #inner form.deform textarea {
   display:block;
@@ -390,6 +396,7 @@ h1 a, h1 a:visited {
   height: 300px;
   margin-left: 0.5em;
   background-color: #c5c8b3;
+  border: 1px solid #c5c8b3;
   border: none;
   padding-top: 0.2em;
   border-radius: 0.2em;
