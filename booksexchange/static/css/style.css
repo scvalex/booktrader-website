@@ -99,6 +99,8 @@ h1 a, h1 a:visited {
 
 #search_bar {
   margin-left:1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 #search_bar form, #search_bar fieldset {
@@ -128,14 +130,15 @@ h1 a, h1 a:visited {
 }
 
 #search_bar input {
-  background-color: #1c393f;
-  border: 1px solid #1c393f;
+  background-color: white;
+  border: 1px solid #ccc;
   border-radius: 0.2em;
   font-size: 1.1em;
-  color: white;
+  color: #1c393f;
   padding: 0.3em 0.3em;
   width:90%;
   margin:0.5em 0;
+  box-shadow: #6c898f 0 0 6px;
 }
 
 #search_bar input:focus {
@@ -377,12 +380,24 @@ h1 a, h1 a:visited {
   margin:0.5em;
 }
 
+/* #search_bar input { */
+/*   background-color: #1c393f; */
+/*   border: 1px solid black; */
+/*   border-radius: 0.2em; */
+/*   font-size: 1.1em; */
+/*   color: white; */
+/*   padding: 0.3em 0.3em; */
+/*   width:90%; */
+/*   margin:0.5em 0; */
+/* } */
+
 #inner form.deform input {
   background-color: #c5c8b3;
   border: none;
   padding: 0.2em;
   margin-left: 0.5em;
   border: 1px solid #c5c8b3;
+  width:300px;
 }
 
 #inner form.deform input:focus, #inner form.deform textarea:focus {
