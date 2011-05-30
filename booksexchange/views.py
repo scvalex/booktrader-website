@@ -462,7 +462,8 @@ def admin_group(context, request):
         context.name        = data['name']
         context.description = data['description']
         context.type        = data['type']
-        context.domains     = data['domains']
+        if 'domains' in data:
+            context.domains = data['domains']
 
         request.root['groups'].update(context)
 
