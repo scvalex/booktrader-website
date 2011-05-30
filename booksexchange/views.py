@@ -85,8 +85,8 @@ def login(context, request):
     form = deform.Form(LoginSchema(validator = validate_login),
                        buttons = ('Login',))
 
-    if request.method == 'POST':
-        controls = request.POST.items()
+    if 'Login' in request.params:
+        controls = request.params.items()
 
         try:
             data = form.validate(controls)
@@ -324,8 +324,8 @@ def create_group(context, request):
     schema = GroupSchema()
     form   = deform.Form(schema, buttons=('Create Group',))
 
-    if request.method == 'POST':
-        controls = request.POST.items()
+    if 'Create Group' in request.params:
+        controls = request.params.items()
 
         try:
             group_data = form.validate(controls)
@@ -400,7 +400,7 @@ def join_group(context, request):
 
         form = deform.Form(schema=GroupEmail(), buttons=('Join',))
         
-        if request.method == 'POST':
+        if 'Join' in request.params:
             controls = request.params.items()
 
             try:
@@ -454,8 +454,8 @@ def admin_group(context, request):
     form.schema['name'].default        = context.name
     form.schema['description'].default = context.description
 
-    if request.method == 'POST':
-        controls = request.POST.items()
+    if 'Submit' in request.params:
+        controls = request.params.items()
 
         try:
             data = form.validate(controls)
