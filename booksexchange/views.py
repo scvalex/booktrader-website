@@ -500,14 +500,13 @@ def reply_to_message(context, request):
 
     form = deform.Form(make_message_schema(request.root['users']),
                        buttons=('Send',))
+    form.schema['recipient'].default = context.sender.username
+    form.schema['subject'].default = "Re: " + context.subject
 
     if request.method == 'POST':
         def extra_fun(message):
             message.reply_to = context
         common_send_message(context, request, form, extra_fun)
-    else:
-        form.schema['recipient'].default = context.sender.username
-        form.schema['subject'].default = "Re: " + context.subject
 
     return {'form': form.render()}
 
