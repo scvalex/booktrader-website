@@ -62,7 +62,7 @@
         ${request.search_bar}
 
 
-        ${next.body()}
+        <div id="inner">${next.body()}</div>
 
       </div>
 

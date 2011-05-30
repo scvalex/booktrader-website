@@ -32,22 +32,29 @@
   </div>
 </%def>
 
+<%def name="books_list(books)">
+  <table class="books_list" style="border-spacing: 10px;">
+    <% books.reverse() %>
+    % while len(books) > 1:
+        <tr>
+          <td>${render_book_short(books.pop())}</td>
+          <td>${render_book_short(books.pop())}</td>
+        </tr>
+    % endwhile
+    % if len(books) > 0:
+        <tr>
+          <td>${render_book_short(books.pop())}</td>
+          <td class="blank"></td>
+        </tr>
+    % endif
+  </table>
+</%def>
 
 <%def name="render_book(book)">
   <div class="book_details">
     <div class="cover">
       ${common.book_link(book, common.book_cover(book))}
 
-      <div class="have_want">
-        % if request.user and book.identifier in request.user.owned:
-            <span>You have this book.</span>
-        % elif request.user and book.identifier in request.user.want:
-            <span>You want this book.</span>
-        % else:
-        <a href="${request.resource_url(book, 'have', book.identifier)}">Have</a>
-        <a href="${request.resource_url(book, 'want', book.identifier)}">Want</a>
-      % endif
-      </div>
     </div>
 
     % if len(book.owners) > 0:
@@ -93,6 +100,16 @@
       % endfor
     </ul>
 
+      <div class="have_want">
+        % if request.user and book.identifier in request.user.owned:
+            <span>You have this book.</span>
+        % elif request.user and book.identifier in request.user.want:
+            <span>You want this book.</span>
+        % else:
+        <a href="${request.resource_url(book, 'have', book.identifier)}">Have</a>
+        <a href="${request.resource_url(book, 'want', book.identifier)}">Want</a>
+      % endif
+      </div>
   </div>
 </%def>
 
