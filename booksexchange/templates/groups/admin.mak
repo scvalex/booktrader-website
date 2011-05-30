@@ -5,13 +5,4 @@
 
 ${form}
 
-% if request.context.domains:
-    <h3>Authorized domains</h3>
-    <ul>
-      % for d in request.context.domains:
-         <li>${d}</li>
-      % endfor
-    </ul>
-% endif
-
 <%def name="title()">${parent.title()} - Groups - ${request.context.name} - Admin</%def>

@@ -425,16 +425,19 @@ def join_group(context, request):
              renderer='groups/admin.mak')
 def admin_group(context, request):
 
+    class DomainsSchema(colander.SequenceSchema):
+        domain = colander.SchemaNode(utf8_string(),
+                                     validator = colander.Length(min=3, max=255),
+                                     title     = 'Domain')
     class GroupAdminSchema(GroupSchema):
-        new_domain = colander.SchemaNode(utf8_string(),
-                                         missing   = None,
-                                         title     = 'Add domain authorized domain')
+        domains = DomainsSchema()
 
 
     if context.type == 'public':
         schema = GroupSchema()
     else:
         schema = GroupAdminSchema()
+        schema['domains'].default = context.domains
 
 
     form = deform.Form(schema, buttons=('Submit',))
@@ -456,14 +459,15 @@ def admin_group(context, request):
         except deform.ValidationFailure, e:
             return {'form': e.render()}
 
-        context.name = data['name']
+        context.name        = data['name']
         context.description = data['description']
-        context.type = data['type']
-
-        if 'new_domain' in data and data['new_domain']:
-            context.domains.append(data['new_domain'])
+        context.type        = data['type']
+        context.domains     = data['domains']
 
         request.root['groups'].update(context)
+
+        raise HTTPFound(location = request.url)
+
 
     return {'form': form.render()}
 

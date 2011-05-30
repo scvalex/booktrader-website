@@ -403,3 +403,20 @@ h1 a, h1 a:visited {
   padding:0.3em;
   margin:0.3em 0.5em;
 }
+
+.deformClosebuttonActive {
+    border: 0 none;
+    cursor: pointer;
+    float: left;
+}
+
+.deformClosebuttonActive:before {
+    content:"✖";
+    color:red;
+    margin-right: 2px;
+}
+
+.deformSeqAdd {
+  font-size: 0.9em;
+  margin: 0 0 0 0.5em;
+}

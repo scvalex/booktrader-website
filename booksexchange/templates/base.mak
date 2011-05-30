@@ -19,6 +19,15 @@
           href="${request.static_url('booksexchange:static/css/style.css')}"
           type="text/css" />
 
+    <script type="text/javascript"
+            src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}">
+    </script>
+
+    <script type="text/javascript"
+            src="${request.static_url('deform:static/scripts/deform.js')}">
+    </script>
+
+
     ${self.head()}
 
     <title>${self.title()}</title>
@@ -72,6 +81,10 @@
       </div>
 
     </div>
+
+    <script type="text/javascript">
+      deform.load()
+    </script>
   </body>
 </html>
 
