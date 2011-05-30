@@ -23,23 +23,42 @@
 </ol>
 
 % if msg:
-  Reading message!
+  <ul>
+    <li>From: ${common.user_link(msg.sender)}</li>
+    <li>To: ${common.user_link(msg.recipient)}</li>
+    <li>Subject: ${common.message_link(msg)}</li>
+    <li>${msg.body}</li>
+    <li><h3><a href="#">Reply!</a></h3></li>
+  </ul>
 % else:
-  <ol>
-    % for message in messages:
-      <li>
-        <ul>
-          % if message in unread:
-            <li>Unread!</li>
-          % endif
-          <li>From: ${common.user_link(message.sender)}</li>
-          <li>To: ${common.user_link(message.recipient)}</li>
-          <li>Subject: ${common.message_link(message)}</li>
-          <li>${message.body}</li>
-        </ul>
-      </li>
-    % endfor
-  </ol>
+  <table class="messageList">
+    <thead>
+      <tr>
+        <td>From/To</td>
+        <td>Subject</td>
+        <td>Date</td>
+      </tr>
+    </thead>
+    <tbody>
+      % for message in messages:
+        % if message in unread:
+          <tr class="unread">
+        % else:
+          <tr>
+        % endif
+          <td>
+            % if message.sender == request.user:
+              ${common.user_link(message.recipient)}
+            % else:
+              ${common.user_link(message.sender)}
+            % endif
+          </td>
+          <td>${common.message_link(message)}</td>
+          <td>${message.date}</td>
+        </tr>
+      % endfor
+    </tbody>
+  </table>
 % endif
 
 <%def name="title()">${parent.title()} - Inbox</%def>

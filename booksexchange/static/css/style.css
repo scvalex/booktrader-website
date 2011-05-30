@@ -221,3 +221,16 @@ a.unread {
   padding: 0.1em 0.3em 0.2em;
   border-radius: 0.2em;
 }
+
+.messageList tr {
+    border-bottom: 1px solid #333;
+    margin-top: 1em;
+}
+
+.messageList td {
+    padding: .2em 1em;
+}
+
+.messageList .unread {
+    background-color: #fff;
+}
