@@ -91,23 +91,19 @@ class User(Persistent):
         return False
 
     def add_owned(self, book):
-        if not isinstance(book, Book):
-            raise RuntimeError('not a book. GTFO')
+        check_class(book, Book, 'not a book. GTFO')
         self.owned[book.identifier] = book
 
     def add_want(self, book):
-        if not isinstance(book, Book):
-            raise RuntimeError('not a book. GTFO')
+        check_class(book, Book, 'not a book. GTFO')
         self.want[book.identifier] = book
 
     def add_group(self, group):
-        if not isinstance(group, Group):
-            raise RuntimeError('not a group')
+        check_class(group, Group, 'not a group')
         self.groups[group.identifier] = group
 
     def add_message(self, message, unread = True):
-        if not isinstance(message, Message):
-            raise RuntimeError('not a message')
+        check_class(message, Message, 'not a message')
         self.mailbox[message.identifier] = message
         if unread:
             self.unread.insert(0, message)
@@ -183,13 +179,11 @@ class Book(Persistent):
         return self._identifier
 
     def add_owner(self, user):
-        if not isinstance(user, User):
-            raise RuntimeError("that is a cabbage, not a human")
+        check_class(user, User, "that is a cabbage, not a human")
         self.owners[user.username] = user
 
     def add_coveter(self, user):
-        if not isinstance(user, User):
-            raise RuntimeError("that is a cabbage, not a human")
+        check_class(user, User, "that is a cabbage, not a human")
         self.coveters[user.username] = user
 
 
@@ -201,16 +195,23 @@ class Events(Persistent):
         self.all      = PersistentList()
 
     def add_have(self, user, book):
+        check_class(user, User, "not a User")
+        check_class(book, Book, "not a Book")
         e = HaveEvent(user, book)
         self.have.insert(0, e)
         self.all.insert(0, e)
 
     def add_want(self, user, book):
+        check_class(user, User, "not a User")
+        check_class(book, Book, "not a Book")
         e = WantEvent(user, book)
         self.want.insert(0, e)
         self.all.insert(0, e)
 
     def add_exchange(self, giver, taker, book):
+        check_class(giver, User, "not a User")
+        check_class(taker, User, "not a User")
+        check_class(book, Book, "not a Book")
         e = ExchangeEvent(giver, taker, book)
         self.exchange.insert(0, e)
         self.all.insert(0, e)
@@ -245,7 +246,6 @@ class ExchangeEvent(Event):
         self.book  = book
 
 
-
 class Groups(IndexFolder):
     def __init__(self):
         super(Groups, self).__init__(name = CatalogFieldIndex('name'))
@@ -276,14 +276,12 @@ class Group(Persistent):
         return self._identifier
 
     def add_member(self, user):
-        if not isinstance(user, User):
-            raise RuntimeError("that is a cabbage, not a human")
+        check_class(user, User, "that is a cabbage, not a human")
 
         self.members[user.username] = user
 
     def add_owner(self, user):
-        if not isinstance(user, User):
-            raise RuntimeError("that is a cabbage, not a human")
+        check_class(user, User, "that is a cabbage, not a human")
 
         self.owners[user.username] = user
 
@@ -348,6 +346,11 @@ class Message(Persistent):
     @property
     def identifier(self):
         return self._identifier
+
+
+def check_class(obj, klass, msg):
+    if not isinstance(obj, klass):
+        raise RuntimeError(msg)
 
 
 def appmaker(zodb_root):
