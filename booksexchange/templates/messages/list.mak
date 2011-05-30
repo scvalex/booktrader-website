@@ -17,4 +17,4 @@
   % endfor
 </ol>
 
-<%def name="title()">${parent.title()} - New Message</%def>
+<%def name="title()">${parent.title()} - Inbox</%def>

@@ -208,9 +208,16 @@ h1 a, h1 a:visited {
   color: white;
   background-color: #1c393f;
   font-family: Cabin, Helvetica, Arial, sans-serif;
-  padding:0.2em;
+  padding: 0.2em;
   font-size: 1.1em;
   border-radius: 0.2em;
   text-decoration: none;
   text-shadow: -1px 1px black;
+}
+
+a.unread {
+  color: white;
+  background-color: #aa0000;
+  padding: 0.1em 0.3em 0.2em;
+  border-radius: 0.2em;
 }
