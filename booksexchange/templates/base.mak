@@ -11,7 +11,7 @@
           href="${request.static_url('booksexchange:static/css/reset.css')}"
           type="text/css" />
 
-    <link href="http://fonts.googleapis.com/css?family=Cabin:regular,regularitalic,bold"
+    <link href="${request.static_url('booksexchange:static/css/fonts.css')}"
           rel="stylesheet"
           type="text/css">
 
