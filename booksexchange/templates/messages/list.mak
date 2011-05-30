@@ -1,6 +1,24 @@
 <%inherit file="/base.mak"/>
 
-<h3>Inbox!</h3>
+<h1>Inbox!</h1>
+
+<h3>
+  % if unread:
+    ${len(unread)} unread
+    % if len(unread) == 1:
+      message
+    % else:
+      messages
+    % endif
+  % else:
+    No unread messages
+  % endif
+</h3>
+
+<ol>
+  <li><a href="${request.resource_url(request.root['messages'], 'new')}">Compose</a></li>
+  <li><a href="${request.resource_url(request.root['messages'])}">Inbox</a></li>
+</ol>
 
 <ol>
   % for message in messages:
