@@ -64,9 +64,9 @@ class User(Persistent):
 
         self.groups    = PersistentMapping()
 
-        self.mailbox      = PersistentMapping()
-        self.unread       = PersistentList()
-        self.all_messages = PersistentList()
+        self.conversations     = PersistentMapping()
+        self.unread            = PersistentList()
+        self.conversation_list = PersistentList()
 
     @property
     def username(self):
@@ -104,10 +104,19 @@ class User(Persistent):
 
     def add_message(self, message, unread = True):
         check_class(message, Message, 'not a message')
-        self.mailbox[message.identifier] = message
+
+        first_message = message
+        while first_message.reply_to is not None:
+            first_message = first_message.reply_to
+        if first_message is message:
+            self.conversations[message.identifier] = PersistentList()
+        else:
+            self.conversation_list.remove(first_message)
+
+        self.conversations[first_message.identifier].append(message)
         if unread:
-            self.unread.insert(0, message)
-        self.all_messages.insert(0, message)
+            self.unread.insert(0, first_message)
+        self.conversation_list.insert(0, first_message)
 
     def message_read(self, message):
         self.unread.remove(message)
@@ -340,6 +349,7 @@ class Message(Persistent):
         self.recipient = recipient
         self.subject   = subject
         self.body      = body
+
         self.reply_to  = None
 
         self.date        = datetime.datetime.utcnow()

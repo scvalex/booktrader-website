@@ -476,8 +476,8 @@ def admin_group(context, request):
 @view_config(context=Messages, name='list', permission='loggedin',
              renderer='messages/list.mak')
 def list_messages(context, request):
-    return {'messages': request.user.all_messages,
-            'mailbox': request.user.mailbox,
+    return {'conversations': request.user.conversations,
+            'conversation_list': request.user.conversation_list,
             'unread': request.user.unread,
             'msg': None}
 
@@ -515,12 +515,15 @@ def reply_to_message(context, request):
 
     form = deform.Form(make_message_schema(request.root['users']),
                        buttons=('Send',))
-    form.schema['recipient'].default = context.sender.username
+    recipient = context.sender.username
+    if recipient == request.user.username:
+        recipient = context.recipient.username
+    form.schema['recipient'].default = recipient
     form.schema['subject'].default = "Re: " + context.subject
 
     if request.method == 'POST':
         def extra_fun(message):
-            message.reply_to = context
+            message.reply_to = request.user.conversations[context.identifier][-1] # reply to the *last* message in the conversation context
         common_send_message(context, request, form, extra_fun)
 
     return {'form': form.render()}
@@ -531,15 +534,16 @@ def common_send_message(context, request, form, extra_fun):
     try:
         data = form.validate(controls)
     except deform.ValidationFailure, e:
+        form.schema['body'].default = dict(controls)['body']
         return {'form': e.render()}
 
     recipient = request.root['users'][data['recipient']]
 
     m = Message(request.user, recipient, data['subject'], data['body'])
+    extra_fun(m)
     request.root['messages'].new_message(m)
     recipient.add_message(m)
     request.user.add_message(m, unread = False)
-    extra_fun(m)
 
     request.session.flash('Message sent!')
 
@@ -551,10 +555,14 @@ def show_message(context, request):
     if request.user is not context.sender and request.user is not context.recipient:
         raise Forbidden()
 
-    if context in request.user.unread:
-        request.user.unread.remove(context)
+    first_message = context
+    while first_message.reply_to is not None:
+        first_message = first_message.reply_to
 
-    return {'messages': request.user.all_messages,
-            'mailbox': request.user.mailbox,
+    if first_message in request.user.unread:
+        request.user.unread.remove(first_message)
+
+    return {'conversations': request.user.conversations,
+            'conversation_list': request.user.conversation_list,
             'unread': request.user.unread,
-            'msg': context}
+            'msg': first_message}

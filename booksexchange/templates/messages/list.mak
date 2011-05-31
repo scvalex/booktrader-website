@@ -23,13 +23,17 @@
 </ol>
 
 % if msg:
-  <ul>
-    <li>From: ${common.user_link(msg.sender)}</li>
-    <li>To: ${common.user_link(msg.recipient)}</li>
-    <li>Subject: ${common.message_link(msg)}</li>
-    <li>${msg.body}</li>
+  <ol>
+    % for m in conversations[msg.identifier]:
+      <li><ul>
+        <li>From: ${common.user_link(m.sender)}</li>
+        <li>To: ${common.user_link(m.recipient)}</li>
+        <li>Subject: ${common.message_link(m)}</li>
+        <li>${m.body}</li>
+      </ul></li>
+    % endfor
     <li><h3><a href="${request.resource_url(msg, 'reply')}">Reply!</a></h3></li>
-  </ul>
+  </ol>
 % else:
   <table class="messageList">
     <thead>
@@ -40,7 +44,7 @@
       </tr>
     </thead>
     <tbody>
-      % for message in messages:
+      % for message in conversation_list:
         % if message in unread:
           <tr class="unread">
         % else:
