@@ -48,36 +48,7 @@
 
     </div>
 
-    % if len(book.owners) > 0:
-        <div class="owners owners_coveters">
-          <span>Owners:</span><br/>
-          <ul>
-            % for u in book.owners.values():
-                <li>
-                  <a href="${request.resource_url(u)}">
-                    <img src="${u.gravatar(32)}" alt="${u.username}"/>
-                    <span>${u.username}</span>
-                  </a>
-                </li>
-            % endfor
-          </ul>
-        </div>
-    % endif
-    % if len(book.coveters) > 0:
-        <div class="coveters owners_coveters">
-          <span>Coveters:</span><br/>
-          <ul>
-            % for u in book.coveters.values():
-                <li>
-                  <a href="${request.resource_url(u)}">
-                    <img src="${u.gravatar(32)}" alt="${u.username}"/>
-                    <span>${u.username}</span>
-                  </a>
-                </li>
-            % endfor
-          </ul>
-        </div>
-    % endif
+    ${owners_coveters(book)}
 
 
     <h2>${common.book_link(book, book.title)}</h2>
@@ -129,4 +100,38 @@
       <a href="${request.resource_url(book, 'want')}">Want</a>
     % endif
   </div>
+</%def>
+
+<%def name="owners_coveters(book)">
+
+  % if len(book.owners) > 0:
+      <div class="owners">
+        <span>Owners:</span><br/>
+        <ul>
+          % for u in book.owners.values():
+              <li>
+                <a href="${request.resource_url(u)}">
+                  <img src="${u.gravatar(32)}" alt="${u.username}"/>
+                  <span>${u.username}</span>
+                </a>
+              </li>
+          % endfor
+        </ul>
+      </div>
+  % endif
+  % if len(book.coveters) > 0:
+      <div class="coveters">
+        <span>Coveters:</span><br/>
+        <ul>
+          % for u in book.coveters.values():
+              <li>
+                <a href="${request.resource_url(u)}">
+                  <img src="${u.gravatar(32)}" alt="${u.username}"/>
+                  <span>${u.username}</span>
+                </a>
+              </li>
+          % endfor
+        </ul>
+      </div>
+  % endif
 </%def>

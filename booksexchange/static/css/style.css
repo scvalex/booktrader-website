@@ -407,20 +407,20 @@ h1 a, h1 a:visited {
   float: left;
 }
 
-.owners_coveters ul li a {
+.owners ul li a, .coveters ul li a {
   position: relative;
   z-index: 1;
 }
 
-.owners_coveters ul li a:hover {
+.owners ul li a:hover, .coveters ul li a:hover {
   z-index: 2;
 }
 
-.owners_coveters ul li a span {
+.owners ul li a span, .coveters ul li a span {
   display: none;
 }
 
-.owners_coveters ul li a:hover span {
+.owners ul li a:hover span, .coveters ul li a:hover span {
   display: block;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.7);
