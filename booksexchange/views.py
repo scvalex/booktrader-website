@@ -482,10 +482,10 @@ def list_messages(context, request):
             'msg': None}
 
 
-def make_message_schema(users):
+def make_message_schema(users, current_user):
     class MessageSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
-            if username not in users:
+            if username == current_user.username or username not in users:
                 raise colander.Invalid(node, 'User "' + username +
                                        '" does not exist.')
 
@@ -500,7 +500,8 @@ def make_message_schema(users):
 @view_config(context=Messages, name='new', permission='loggedin',
              renderer='messages/new.mak')
 def send_message(context, request):
-    form = deform.Form(make_message_schema(request.root['users']),
+    form = deform.Form(make_message_schema(request.root['users'],
+                                           request.user),
                        buttons=('Send',))
 
     if request.method == 'POST':
@@ -513,7 +514,8 @@ def reply_to_message(context, request):
     if request.user is not context.sender and request.user is not context.recipient:
         raise Forbidden()
 
-    form = deform.Form(make_message_schema(request.root['users']),
+    form = deform.Form(make_message_schema(request.root['users'],
+                                           request.user),
                        buttons=('Send',))
     recipient = context.sender.username
     if recipient == request.user.username:
@@ -534,7 +536,10 @@ def common_send_message(context, request, form, extra_fun):
     try:
         data = form.validate(controls)
     except deform.ValidationFailure, e:
-        form.schema['body'].default = dict(controls)['body']
+        controls = dict(controls)
+        form.schema['recipient'].default = controls.get('recipient', '')
+        form.schema['subject'].default = controls.get('subject', '')
+        form.schema['body'].default = controls.get('body', '')
         return {'form': e.render()}
 
     recipient = request.root['users'][data['recipient']]
