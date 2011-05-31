@@ -496,7 +496,8 @@ def list_messages(context, request):
             'msg': None}
 
 
-def make_message_schema(users, current_user):
+def make_message_schema(users, current_user, other_user = None,
+                        typ = "message"):
     class MessageSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
             if username == current_user.username or username not in users:
@@ -509,7 +510,44 @@ def make_message_schema(users, current_user):
         body      = colander.SchemaNode(utf8_string(),
                                         widget = deform.widget.TextAreaWidget(),
                                         validator = colander.Length(min = 17))
-    return MessageSchema()
+
+    class OfferSchema(MessageSchema):
+        def validate_book_exists(node, user, book):
+            if user is None or book not in user.owned:
+                raise colander.Invalid(node, 'User "' + user.username +
+                                       '" does not have book "' + book + '"')
+
+        def validate_my_book(node, book):
+            return validate_book_exists(node, current_user, book)
+
+        def validate_other_book(node, book):
+            return validate_book_exists(node, other_user, book)
+
+        def pretty_title(book):
+            if not book.authors:
+                return book.title
+            return book.title + " by " + book.authors[0]
+
+        apples = colander.SchemaNode(
+            utf8_string(),
+            validator = validate_my_book,
+            widget = deform.widget.SelectWidget(
+                values = [(book.identifier, pretty_title(book))
+                          for book in current_user.owned.values()]))
+
+        oranges = colander.SchemaNode(
+            utf8_string(),
+            validator = validate_other_book,
+            widget = deform.widget.SelectWidget(
+                values = [(book.identifier, pretty_title(book))
+                          for book in other_user.owned.values()]))
+
+    if typ == "message":
+        return MessageSchema()
+    elif typ == "offer":
+        return OfferSchema()
+    else:
+        raise RuntimeError("unknown message schema: " + typ)
 
 @view_config(context=Messages, name='new', permission='loggedin',
              renderer='messages/new.mak')
@@ -521,7 +559,20 @@ def send_message(context, request):
     if request.method == 'POST':
         common_send_message(context, request, form, lambda msg: msg)
 
-    return {'form': form.render()}
+    return {'form': form.render(), 'typ': "message"}
+
+@view_config(context=Messages, name='offer', permission='loggedin',
+             renderer='messages/new.mak')
+def send_offer(context, request):
+    form = deform.Form(make_message_schema(request.root['users'],
+                                           request.user, request.user,
+                                           'offer'),
+                       buttons=('Send',))
+
+    if request.method == 'POST':
+        common_send_message(context, request, form, lambda msg: msg)
+
+    return {'form': form.render(), 'typ': "offer"}
 
 @view_config(context=Message, name='reply', renderer='messages/new.mak')
 def reply_to_message(context, request):

@@ -366,7 +366,7 @@ class Messages(PersistentMapping):
         super(Messages, self).__init__()
 
     def __getitem__(self, key):
-        if key in ['new', 'list']:
+        if key in ['new', 'list', 'offer']:
             raise KeyError
         return super(Messages, self).__getitem__(key)
 
