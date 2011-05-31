@@ -412,7 +412,7 @@ class VerySimpleCache(Persistent):
 
     def get(self, key, fun):
         if key not in self._values:
-            self._values[key] = fun().read()
+            self._values[key] = fun()
             self._keys.append(key)
             if len(self._keys) > self.max_keys:
                 del self._values[self._keys[0]]
