@@ -387,7 +387,6 @@ h1 a, h1 a:visited {
   background-color:#1C393F;
   color: #B3EBE8;
   font-size: 0.9em;
-  min-width: 120px;
 }
 
 .book_details .owners span, .book_details .coveters span {
@@ -395,7 +394,42 @@ h1 a, h1 a:visited {
 }
 
 .book_details .owners ul, .book_details .coveters ul {
-  margin: 0.2em 0 0 0.2em;
+  margin: 0.3em 0 0 0.2em;
+}
+
+.owners ul, .coveters ul {
+  width: 136px;
+}
+
+.owners li, .coveters li {
+  width: 32px;
+  margin: 1px;
+  float: left;
+}
+
+.owners_coveters ul li a {
+  position: relative;
+  z-index: 1;
+}
+
+.owners_coveters ul li a:hover {
+  z-index: 2;
+}
+
+.owners_coveters ul li a span {
+  display: none;
+}
+
+.owners_coveters ul li a:hover span {
+  display: block;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 0.2em;
+  color: white;
+  text-align: center;
+  margin-top: 0.1em;
+  padding: 0.3em;
+  font-size: 0.9em;
 }
 
 .book_details .owners a, .book_details .coveters a, .book_details .owners a:visited, .book_details .coveters a:visited {
@@ -522,7 +556,7 @@ h1 a, h1 a:visited {
     rgb(255,255,255) 87%
   );
   padding: 0.1em 0.4em 0.2em 0.4em;
-  border-radius: 1em;
+  border-radius: 4px;
   text-decoration: none;
   border: 1px solid #aaa;
   color: #1c393f;

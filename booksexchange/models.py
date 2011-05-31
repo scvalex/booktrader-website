@@ -21,6 +21,8 @@ import uuid
 import json
 import colander
 import datetime
+import urllib
+import hashlib
 
 class App(PersistentMapping):
     __name__   = None
@@ -131,6 +133,14 @@ class User(Persistent):
 
     def message_read(self, message):
         self.unread.remove(message)
+
+    def gravatar(self, size):
+        gravatar_url = "http://www.gravatar.com/avatar/"
+
+        gravatar =  gravatar_url + hashlib.md5(self.email.lower()).hexdigest() + "?"
+        gravatar += urllib.urlencode({'s': str(size), 'd':'identicon'})
+
+        return gravatar
 
 
 class Books(IndexFolder):
@@ -398,6 +408,15 @@ def appmaker(zodb_root):
 
         app_root['users'].new_user(User('scvalex', 'scvalex@gmail.com', 'scvalex'))
         app_root['users']['scvalex'].confirmed = True
+
+        app_root['users'].new_user(User('ciccio', 'blah@blo.com', 'ciccio'))
+        app_root['users']['ciccio'].confirmed = True
+
+        app_root['users'].new_user(User('marco', 'marco@marco.com', 'marco'))
+        app_root['users']['marco'].confirmed = True
+
+        app_root['users'].new_user(User('max', 'max@enpas.org', 'max'))
+        app_root['users']['max'].confirmed = True
 
         import transaction
         transaction.commit()

@@ -2,6 +2,10 @@
   <a href="${request.resource_url(user)}">${user.username}</a>
 </%def>
 
+<%def name="user_link_inner(user, inner)">
+  <a href="${request.resource_url(user)}">${inner}</a>
+</%def>
+
 <%def name="format_book_title(book)">
   ${book.title}
   % if book.subtitle:
@@ -54,3 +58,4 @@
 <%def name="format_date_simple(date)">
   ${date.strftime("%A %d %B %Y %I:%M%p")}
 </%def>
+

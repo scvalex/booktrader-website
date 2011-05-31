@@ -49,21 +49,31 @@
     </div>
 
     % if len(book.owners) > 0:
-        <div class="owners">
+        <div class="owners owners_coveters">
           <span>Owners:</span><br/>
           <ul>
             % for u in book.owners.values():
-                <li>${common.user_link(u)}</li>
+                <li>
+                  <a href="${request.resource_url(u)}">
+                    <img src="${u.gravatar(32)}" alt="${u.username}"/>
+                    <span>${u.username}</span>
+                  </a>
+                </li>
             % endfor
           </ul>
         </div>
     % endif
     % if len(book.coveters) > 0:
-        <div class="coveters">
+        <div class="coveters owners_coveters">
           <span>Coveters:</span><br/>
           <ul>
             % for u in book.coveters.values():
-                <li>${common.user_link(u)}</li>
+                <li>
+                  <a href="${request.resource_url(u)}">
+                    <img src="${u.gravatar(32)}" alt="${u.username}"/>
+                    <span>${u.username}</span>
+                  </a>
+                </li>
             % endfor
           </ul>
         </div>
