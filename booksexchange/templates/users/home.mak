@@ -8,18 +8,20 @@ current_user = request.context == request.user
 username     = request.context.username
 %>
 
+<h2>${request.context.username}</h2>
+
 % if current_user:
-  <h3>Your books!</h3>
+  <h3>Your books</h3>
 % else:
-  <h3>${username}'s books!</h3>
+  <h3>${username}'s books</h3>
 % endif
 
 ${books_common.books_list(owned)}
 
 % if current_user:
-  <h3>Books you want!</h3>
+  <h3>Books you want</h3>
 % else:
-  <h3>Books ${username} wants!</h3>
+  <h3>Books ${username} wants</h3>
 % endif
 
 ${books_common.books_list(want)}
