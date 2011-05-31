@@ -182,6 +182,7 @@ h1 a, h1 a:visited {
 .books_list {
   border-spacing: 0.5em;
   border-collapse: separate;
+  width: 100%;
 }
 
 .books_list .blank {
@@ -264,7 +265,7 @@ h1 a, h1 a:visited {
   margin: 0.2em;
 }
 
-.have_want a, .have_want span{
+.have_want a, .have_want span {
   color: white;
   background-color: #1c393f;
   font-family: Cabin, Helvetica, Arial, sans-serif;
@@ -273,6 +274,12 @@ h1 a, h1 a:visited {
   border-radius: 0.2em;
   text-decoration: none;
   text-shadow: -1px 1px black;
+}
+
+.have_want .remove_book {
+  color: red;
+  font-weight: bold;
+  background-color: transparent;
 }
 
 /* Messages */

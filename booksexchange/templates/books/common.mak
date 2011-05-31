@@ -24,7 +24,7 @@
 </%def>
 
 <%def name="books_list(books)">
-  <table class="books_list" style="border-spacing: 10px;">
+  <table class="books_list">
     <% books.reverse() %>
     % while len(books) > 1:
         <tr>
@@ -108,9 +108,12 @@
 <%def name="have_want(book)">
   <div class="have_want">
     % if request.user and book.identifier in request.user.owned:
-      <span>You have this book.</span><a href="${request.resource_url(book, 'remove')}">X</a>
+      <span>You have this book.</span>
+      <a href="${request.resource_url(book, 'remove')}" class="remove_book">✖</a>
     % elif request.user and book.identifier in request.user.want:
-      <a href="${request.resource_url(book, 'have')}">Have</a><span>You want this book.</span><a href="${request.resource_url(book, 'remove')}">X</a>
+      <a href="${request.resource_url(book, 'have')}">Have</a>
+      <span>You want this book.</span>
+      <a href="${request.resource_url(book, 'remove')}" class="remove_book">✖</a>
     % else:
       <a href="${request.resource_url(book, 'have')}">Have</a>
       <a href="${request.resource_url(book, 'want')}">Want</a>
