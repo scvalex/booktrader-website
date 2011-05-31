@@ -50,3 +50,7 @@
       ${text}
   % endif
 </%def>
+
+<%def name="format_date_simple(date)">
+  ${date.strftime("%A %d %B %Y %I:%M%p")}
+</%def>

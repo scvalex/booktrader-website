@@ -4,38 +4,41 @@
 
 <h2>Inbox</h2>
 
-<h3>
-  % if unread:
-    ${len(unread)} unread
-    % if len(unread) == 1:
-      message
+<ul class="conversation_controls">
+  <li><h3>
+    % if unread:
+      ${len(unread)} unread
+      % if len(unread) == 1:
+        message
+      % else:
+        messages
+      % endif
     % else:
-      messages
+      No unread messages
     % endif
-  % else:
-    No unread messages
-  % endif
-</h3>
-
-<ol>
+  </h3></li>
   <li><a href="${request.resource_url(request.root['messages'], 'new')}">Compose</a></li>
   <li><a href="${request.resource_url(request.root['messages'], 'list')}">Inbox</a></li>
-</ol>
+</ul>
 
 % if msg:
-  <ol>
+  <ol class="conversation">
     % for m in conversations[msg.identifier]:
-      <li><ul>
-        <li>From: ${common.user_link(m.sender)}</li>
-        <li>To: ${common.user_link(m.recipient)}</li>
-        <li>Subject: ${common.message_link(m)}</li>
-        <li>${m.body}</li>
-      </ul></li>
+      <li class="message">
+        <div class="from">${common.user_link(m.sender)}</div>
+        <div class="date">${common.format_date_simple(m.date)}</div>
+        <div class="to">${common.user_link(m.recipient)}</div>
+        <div class="subject">${common.message_link(m)}</div>
+        <div class="body">${m.body}</div>
+      </li>
     % endfor
-    <li><h3><a href="${request.resource_url(msg, 'reply')}">Reply!</a></h3></li>
   </ol>
+  <ul class="conversation_controls">
+    <li><a href="${request.resource_url(msg, 'reply')}">Reply</a></li>
+    <li><a href="${request.referer}">Back</a></li>
+  </ul>
 % else:
-  <table class="messageList">
+  <table class="inbox">
     <thead>
       <tr>
         <td>From/To</td>
@@ -58,7 +61,7 @@
             % endif
           </td>
           <td>${common.message_link(message)}</td>
-          <td>${message.date}</td>
+          <td>${common.format_date_simple(conversations[message.identifier][-1].date)}</td>
         </tr>
       % endfor
     </tbody>

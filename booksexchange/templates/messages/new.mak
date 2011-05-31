@@ -4,4 +4,8 @@
 
 ${form}
 
+<div class="conversation_controls">
+    <a href="${request.referer}">Cancel</a>
+</div>
+
 <%def name="title()">${parent.title()} - New Message</%def>
