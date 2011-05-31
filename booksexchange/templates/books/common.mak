@@ -110,7 +110,7 @@
     % if request.user and book.identifier in request.user.owned:
       <span>You have this book.</span><a href="${request.resource_url(book, 'remove')}">X</a>
     % elif request.user and book.identifier in request.user.want:
-      <span>You want this book.</span><a href="${request.resource_url(book, 'remove')}">X</a>
+      <a href="${request.resource_url(book, 'have')}">Have</a><span>You want this book.</span><a href="${request.resource_url(book, 'remove')}">X</a>
     % else:
       <a href="${request.resource_url(book, 'have')}">Have</a>
       <a href="${request.resource_url(book, 'want')}">Want</a>

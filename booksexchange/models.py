@@ -206,6 +206,17 @@ class Book(Persistent):
         check_class(user, User, "that is a cabbage, not a human")
         self.coveters[user.username] = user
 
+    def remove_user(self, user):
+        check_class(user, User, "this is a cabbage, not a human")
+        ok = False
+        if user.username in self.coveters:
+            del self.coveters[user.username]
+            ok = True
+        if user.username in self.owners:
+            del self.owners[user.username]
+            ok = True
+        return ok
+
 
 class Events(Persistent):
     def __init__(self):

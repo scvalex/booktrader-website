@@ -301,6 +301,8 @@ def add_book(book, request):
     if book.identifier not in request.root['books']:
         request.root['books'].new_book(book)
     if kind == 'have':
+        request.user.remove_book(book) # don't want it anymore
+        book.remove_user(request.user)
         user.add_owned(book)
         book.add_owner(user)
         request.root['events'].add_have(user, book)
@@ -314,8 +316,8 @@ def add_book(book, request):
 
 @view_config(context=Book, name='remove', permission='loggedin')
 def remove_book(context, request):
-    if not request.user.remove_book(context):
-        raise HTTPBadRequest('book neither owned nor wanted')
+    if not request.user.remove_book(context) or not context.remove_user(request.user):
+        raise HTTPBadRequest('bad jojo')
 
     request.session.flash('Book removed!')
     raise HTTPFound(location = request.referer)
