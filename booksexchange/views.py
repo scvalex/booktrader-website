@@ -78,7 +78,7 @@ def login(context, request):
         exc['username'] = 'Invalid username/password.'
         if value['username'] not in context:
             raise exc
-        
+
         if not context[value['username']].check_password(value['password']):
             raise exc
 
@@ -97,7 +97,7 @@ def login(context, request):
 
         raise HTTPFound(location = data['came_from'],
                         headers  = remember(request, data['username']))
-    
+
     return {'form': form.render()}
 
 @view_config(context=Users, name='logout')
@@ -288,7 +288,7 @@ def add_book(book, request):
     kind = request.view_name
     if not (kind in ['have', 'want']):
         raise HTTPBadRequest("must add to either 'have' or 'want'")
-    
+
     user = request.user
     if user is None:
         raise HTTPInternalServerError('no user found')
@@ -297,7 +297,7 @@ def add_book(book, request):
         raise HTTPBadRequest('book already owned')
     elif kind == 'want' and book.identifier in user.want:
         raise HTTPBadRequest('book already wanted')
-    
+
     if book.identifier not in request.root['books']:
         request.root['books'].new_book(book)
     if kind == 'have':
@@ -393,7 +393,7 @@ def join_group(context, request):
             email = colander.SchemaNode(colander.String(), validator=validate_email)
 
         form = deform.Form(schema=GroupEmail(), buttons=('Join',))
-        
+
         if 'Join' in request.params:
             controls = request.params.items()
 
