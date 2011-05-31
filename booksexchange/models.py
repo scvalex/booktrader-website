@@ -125,7 +125,7 @@ class User(Persistent):
             self.conversation_list.remove(first_message)
 
         self.conversations[first_message.identifier].append(message)
-        if unread:
+        if unread and first_message not in self.unread:
             self.unread.insert(0, first_message)
         self.conversation_list.insert(0, first_message)
 
