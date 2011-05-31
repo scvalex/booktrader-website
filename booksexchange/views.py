@@ -4,7 +4,8 @@ from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
 from pyramid.httpexceptions import (HTTPFound, HTTPForbidden,
                                     HTTPInternalServerError, HTTPBadRequest,
-                                    HTTPException, HTTPRedirection)
+                                    HTTPException, HTTPRedirection,
+                                    HTTPNotFound)
 
 from repoze.catalog.query   import Eq
 
@@ -168,6 +169,9 @@ def register(context, request):
 @view_config(context=User, name='generate_token',
              renderer='users/registration_token.mak')
 def registration_token(context, request):
+    if context.confirmed:
+        raise HTTPNotFound()
+    
     token = context.generate_token()
 
     confirm_url = request.resource_url(context, 'confirm',
