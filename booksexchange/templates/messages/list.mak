@@ -4,21 +4,25 @@
 
 <h2>Inbox</h2>
 
-<ul class="conversation_controls">
-  <li><h3>
-    % if unread:
-      ${len(unread)} unread
-      % if len(unread) == 1:
-        message
-      % else:
-        messages
-      % endif
+<h3>
+  % if unread:
+    ${len(unread)} unread
+    % if len(unread) == 1:
+      message
     % else:
-      No unread messages
+      messages
     % endif
-  </h3></li>
-  <li><a href="${request.resource_url(request.root['messages'], 'new')}">Compose</a></li>
-  <li><a href="${request.resource_url(request.root['messages'], 'list')}">Inbox</a></li>
+  % else:
+    No unread messages
+  % endif
+</h3>
+<ul class="conversation_controls">
+  <li>
+    <a href="${request.resource_url(request.root['messages'], 'new')}">Compose</a>
+  </li>
+  <li>
+    <a href="${request.resource_url(request.root['messages'], 'list')}">Inbox</a>
+  </li>
 </ul>
 
 % if msg:

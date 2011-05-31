@@ -337,22 +337,18 @@ h1 a, h1 a:visited {
     padding-bottom: 1.4em;
 }
 
+.conversation_controls {
+  margin: 0.8em 0.5em;
+}
+
 .conversation_controls a {
-    background-color: transparent;
     color: #000;
-    border: none;
-    font-size: 1.2em;
     font-family: Cabin;
-    text-decoration: none;
 }
 
 .conversation_controls li {
     display: inline;
     margin-right: .6em;
-}
-
-.conversation_controls h3 {
-    display: inline;
 }
 
 /* Book Details */
@@ -404,11 +400,11 @@ h1 a, h1 a:visited {
 
 /* Forms */
 
-#inner form {
+#inner form.deform {
   margin: 0.5em;
 }
 
-#inner form .req {
+#inner form.deform .req {
   color: red;
   font-weight: bold;
 }
@@ -444,6 +440,10 @@ h1 a, h1 a:visited {
 
 #inner form.deform li.buttons {
   margin:0.5em;
+}
+
+#inner form.deform button {
+  font-size: 0.9em;
 }
 
 #inner form.deform input, #inner form.deform textarea {
@@ -486,4 +486,44 @@ h1 a, h1 a:visited {
 .deformSeqAdd {
   font-size: 0.9em;
   margin: 0 0 0 0.5em;
+}
+
+/* Buttons */
+
+.conversation_controls li a, #inner form.deform button {
+  background-color: white;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.26, rgb(221,221,221)),
+    color-stop(0.87, rgb(255,255,255))
+  );
+  background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(221,221,221) 26%,
+    rgb(255,255,255) 87%
+  );
+  padding: 0.1em 0.4em 0.2em 0.4em;
+  border-radius: 1em;
+  text-decoration: none;
+  border: 1px solid #aaa;
+  color: #1c393f;
+  text-shadow: white 1px 1px 1px;
+  font-weight: bold;
+}
+
+.conversation_controls li a:active, #inner form.deform button:active {
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.26, rgb(255,255,255)),
+    color-stop(0.87, rgb(221,221,221))
+  );
+  background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(255,255,255) 26%,
+    rgb(221,221,221) 87%
+  );
 }
