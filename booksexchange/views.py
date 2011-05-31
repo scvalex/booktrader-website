@@ -498,6 +498,19 @@ def list_messages(context, request):
 
 def make_message_schema(users, current_user, other_user = None,
                         typ = "message"):
+    def pretty_title(book):
+        if not book.authors:
+            return book.title
+        return book.title + " by " + book.authors[0]
+
+    my_books = [(book.identifier, pretty_title(book))
+                for book in current_user.owned.values()]
+    if other_user is not None:
+        other_books = [(book.identifier, pretty_title(book))
+                       for book in other_user.owned.values()]
+    else:
+        other_books = []
+
     class MessageSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
             if username == current_user.username or username not in users:
@@ -523,24 +536,15 @@ def make_message_schema(users, current_user, other_user = None,
         def validate_other_book(node, book):
             return validate_book_exists(node, other_user, book)
 
-        def pretty_title(book):
-            if not book.authors:
-                return book.title
-            return book.title + " by " + book.authors[0]
-
         apples = colander.SchemaNode(
             utf8_string(),
             validator = validate_my_book,
-            widget = deform.widget.SelectWidget(
-                values = [(book.identifier, pretty_title(book))
-                          for book in current_user.owned.values()]))
+            widget = deform.widget.SelectWidget(values = my_books))
 
         oranges = colander.SchemaNode(
             utf8_string(),
             validator = validate_other_book,
-            widget = deform.widget.SelectWidget(
-                values = [(book.identifier, pretty_title(book))
-                          for book in other_user.owned.values()]))
+            widget = deform.widget.SelectWidget(values = other_books))
 
     if typ == "message":
         return MessageSchema()
@@ -561,9 +565,11 @@ def send_message(context, request):
 
     return {'form': form.render(), 'typ': "message"}
 
-@view_config(context=Messages, name='offer', permission='loggedin',
+@view_config(context=Book, name='offer', permission='loggedin',
              renderer='messages/new.mak')
 def send_offer(context, request):
+    if not isinstance(context.__parent__, User):
+        raise HTTPBadRequest('request not specific enough: owner missing')
     form = deform.Form(make_message_schema(request.root['users'],
                                            request.user, request.user,
                                            'offer'),
