@@ -75,5 +75,9 @@
     <div class="to">${common.user_link(message.recipient)}</div>
     <div class="subject">${common.message_link(message)}</div>
     <div class="body">${message.body}</div>
+    <% from booksexchange.models import Offer %>
+    % if isinstance(message, Offer):
+      <div>Offer!</div>
+    % endif
   </${top}>
 </%def>
