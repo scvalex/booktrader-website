@@ -312,7 +312,7 @@ def add_book(book, request):
         request.root['events'].add_want(user, book)
 
     request.session.flash('Book added!')
-    raise HTTPFound(location = request.resource_url(request.user))
+    raise HTTPFound(location = request.referer)
 
 @view_config(context=Book, name='remove', permission='loggedin')
 def remove_book(context, request):
