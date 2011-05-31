@@ -28,13 +28,7 @@
 % if msg:
   <ol class="conversation">
     % for m in conversations[msg.identifier]:
-      <li class="message">
-        <div class="from">${common.user_link(m.sender)}</div>
-        <div class="date">${common.format_date_simple(m.date)}</div>
-        <div class="to">${common.user_link(m.recipient)}</div>
-        <div class="subject">${common.message_link(m)}</div>
-        <div class="body">${m.body}</div>
-      </li>
+      ${show_message(m)}
     % endfor
   </ol>
   <ul class="conversation_controls">
@@ -73,3 +67,13 @@
 % endif
 
 <%def name="title()">${parent.title()} - Inbox</%def>
+
+<%def name="show_message(message, top='li')">
+  <${top} class="message">
+    <div class="from">${common.user_link(message.sender)}</div>
+    <div class="date">${common.format_date_simple(message.date)}</div>
+    <div class="to">${common.user_link(message.recipient)}</div>
+    <div class="subject">${common.message_link(message)}</div>
+    <div class="body">${message.body}</div>
+  </${top}>
+</%def>
