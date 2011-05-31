@@ -31,14 +31,14 @@
         <tr>
           <td>
             <% book = books.pop() %>
-            <div class="owners_coveters_right">
+            <div class="owners_coveters">
                 ${owners_coveters(book)}
             </div>
             ${render_book_short(book)}
           </td>
           <td>
             <% book = books.pop() %>
-            <div class="owners_coveters_left">
+            <div class="owners_coveters">
                 ${owners_coveters(book)}
             </div>
             ${render_book_short(book)}
