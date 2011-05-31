@@ -39,6 +39,7 @@ class App(PersistentMapping):
         self.setchild('events', Events())
         self.setchild('groups', Groups())
         self.setchild('messages', Messages())
+        self.setchild('cache', VerySimpleCache())
 
 
 class Users(IndexFolder):
@@ -381,6 +382,25 @@ class Message(Persistent):
     @property
     def identifier(self):
         return self._identifier
+
+
+class VerySimpleCache(Persistent):
+    def __init__(self, max_keys = 10):
+        super(VerySimpleCache, self).__init__()
+
+        self.max_keys = max_keys
+
+        self._values = PersistentMapping()
+        self._keys   = PersistentList()
+
+    def get(self, key, fun):
+        if key not in self._values:
+            self._values[key] = fun().read()
+            self._keys.append(key)
+            if len(self._keys) > self.max_keys:
+                del self._values[self._keys[0]]
+                del self._keys[0]
+        return self._values[key]
 
 
 def check_class(obj, klass, msg):
