@@ -19,8 +19,12 @@
   % endif
 </%def>
 
-<%def name="book_link(book, inner)">
-  <a href="${request.resource_url(request.root['books'], book.identifier)}">
+<%def name="book_link(book, inner, user = None)">
+  % if user is None:
+    <a href="${request.resource_url(request.root['books'], book.identifier)}">
+  % else:
+    <a href="${request.resource_url(user, book.identifier)}">
+  % endif
     ${inner}
   </a>
 </%def>

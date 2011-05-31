@@ -16,7 +16,7 @@ username     = request.context.username
   <h3>${username}'s books</h3>
 % endif
 
-${books_common.books_list(owned)}
+${books_common.books_list(owned, request.context)}
 
 % if current_user:
   <h3>Books you want</h3>

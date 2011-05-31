@@ -1,12 +1,12 @@
 <%namespace name="common" file="/common.mak" />
 
-<%def name="render_book_short(book)">
+<%def name="render_book_short(book, user = None)">
   <div class="book_short">
     <div class="cover">
-      ${common.book_link(book, common.book_cover(book))}
+      ${common.book_link(book, common.book_cover(book), user)}
     </div>
 
-    <h3>${common.book_link(book, book.title)}</h3>
+    <h3>${common.book_link(book, book.title, user)}</h3>
 
     % if book.authors:
         <p class="authors">
@@ -23,18 +23,18 @@
   </div>
 </%def>
 
-<%def name="books_list(books)">
+<%def name="books_list(books, user = None)">
   <table class="books_list">
     <% books.reverse() %>
     % while len(books) > 1:
         <tr>
-          <td>${render_book_short(books.pop())}</td>
-          <td>${render_book_short(books.pop())}</td>
+          <td>${render_book_short(books.pop(), user)}</td>
+          <td>${render_book_short(books.pop(), user)}</td>
         </tr>
     % endwhile
     % if len(books) > 0:
         <tr>
-          <td>${render_book_short(books.pop())}</td>
+          <td>${render_book_short(books.pop(), user)}</td>
           <td class="blank"></td>
         </tr>
     % endif

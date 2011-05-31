@@ -71,6 +71,12 @@ class User(Persistent):
         self.unread            = PersistentList()
         self.conversation_list = PersistentList()
 
+    def __getitem__(self, key):
+        if key in ['generate_token', 'confirm']:
+            raise KeyError
+
+        return self.owned[key]
+
     @property
     def username(self):
         return self._username

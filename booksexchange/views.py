@@ -170,8 +170,8 @@ def register(context, request):
              renderer='users/registration_token.mak')
 def registration_token(context, request):
     if context.confirmed:
-        raise HTTPNotFound()
-    
+        raise HTTPBadRequest("user already confirmed")
+
     token = context.generate_token()
 
     confirm_url = request.resource_url(context, 'confirm',
