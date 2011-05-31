@@ -393,6 +393,13 @@ class Message(Persistent):
     def identifier(self):
         return self._identifier
 
+class Offer(Message):
+    def __init__(self, sender, recipient, subject, body, apples, oranges):
+        super(Offer, self).__init__(sender, recipient, subject, body)
+
+        self.apples  = apples
+        self.oranges = oranges
+
 
 class VerySimpleCache(Persistent):
     def __init__(self, max_keys = 10):
