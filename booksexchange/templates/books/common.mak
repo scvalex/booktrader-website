@@ -8,6 +8,7 @@
 
     <h3>${common.book_link(book, book.title)}</h3>
 
+
     % if book.authors:
         <p class="authors">
           by ${', '.join(['<span class="author">' + author + '</span>'
@@ -28,8 +29,20 @@
     <% books.reverse() %>
     % while len(books) > 1:
         <tr>
-          <td>${render_book_short(books.pop())}</td>
-          <td>${render_book_short(books.pop())}</td>
+          <td>
+            <% book = books.pop() %>
+            <div class="owners_coveters_right">
+                ${owners_coveters(book)}
+            </div>
+            ${render_book_short(book)}
+          </td>
+          <td>
+            <% book = books.pop() %>
+            <div class="owners_coveters_left">
+                ${owners_coveters(book)}
+            </div>
+            ${render_book_short(book)}
+          </td>
         </tr>
     % endwhile
     % if len(books) > 0:
@@ -49,8 +62,7 @@
     </div>
 
     ${owners_coveters(book)}
-
-
+    
     <h2>${common.book_link(book, book.title)}</h2>
     % if book.subtitle:
         <h3>${book.subtitle}</h3>
@@ -104,7 +116,6 @@
 
 <%def name="owners_coveters(book)">
 
-  % if len(book.owners) > 0:
       <div class="owners">
         <span>Owners:</span><br/>
         <ul>
@@ -118,8 +129,6 @@
           % endfor
         </ul>
       </div>
-  % endif
-  % if len(book.coveters) > 0:
       <div class="coveters">
         <span>Coveters:</span><br/>
         <ul>
@@ -133,5 +142,4 @@
           % endfor
         </ul>
       </div>
-  % endif
 </%def>

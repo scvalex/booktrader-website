@@ -381,7 +381,7 @@ h1 a, h1 a:visited {
   font-size: 0.8em;
 }
 
-.book_details .owners, .book_details .coveters {
+.owners, .coveters {
   float:right;
   padding: 0.5em;
   background-color:#1C393F;
@@ -389,11 +389,11 @@ h1 a, h1 a:visited {
   font-size: 0.9em;
 }
 
-.book_details .owners span, .book_details .coveters span {
+.owners span, .coveters span {
   font-weight: bold;
 }
 
-.book_details .owners ul, .book_details .coveters ul {
+.owners ul, .coveters ul {
   margin: 0.3em 0 0 0.2em;
 }
 
@@ -432,22 +432,69 @@ h1 a, h1 a:visited {
   font-size: 0.9em;
 }
 
-.book_details .owners a, .book_details .coveters a, .book_details .owners a:visited, .book_details .coveters a:visited {
+.owners a, .coveters a, .owners a:visited, .coveters a:visited {
   color: white;
 }
 
-.book_details .coveters {
+.coveters {
   border-top-left-radius: 0.2em;
   border-bottom-left-radius: 0.2em;
-  border-right: 1px solid #f6fae0;
+  margin-right: 1px;
 
 }
 
-.book_details .owners {
-  border-left: 1px solid #f6fae0;
+.owners {
+  margin-left: 1px;
   border-top-right-radius: 0.2em;
   border-bottom-right-radius: 0.2em;
 }
+
+
+.book_short {
+  z-index: 1;
+  position: relative;
+}
+
+.books_list tr td:hover div{
+  display:block;
+
+}
+
+.owners_coveters_left, .owners_coveters_right {
+  position:relative;
+  width:310px;
+  display: none;
+}
+
+
+
+.owners_coveters_left .owners, .owners_coveters_left .coveters,
+.owners_coveters_right .owners, .owners_coveters_right .coveters
+{
+  background-color: rgba(28, 57, 63, 0.95);
+
+}
+
+.owners_coveters_left {
+  float: left;
+  z-index: 2;
+  position:relative;
+  margin-right: -310px;
+}
+
+.owners_coveters_right {
+  float: right;
+  z-index: 2;
+  position:relative;
+  margin-left: -310px;
+}
+
+.owners_coveters_left:after, .owners_coveters_right:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
 
 /* Forms */
 
