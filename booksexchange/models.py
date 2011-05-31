@@ -98,6 +98,17 @@ class User(Persistent):
         check_class(book, Book, 'not a book. GTFO')
         self.want[book.identifier] = book
 
+    def remove_book(self, book):
+        check_class(book, Book, 'not a book. GTFO')
+        ok = False
+        if book.identifier in self.owned:
+            del self.owned[book.identifier]
+            ok = True
+        if book.identifier in self.want:
+            del self.want[book.identifier]
+            ok = True
+        return ok
+
     def add_group(self, group):
         check_class(group, Group, 'not a group')
         self.groups[group.identifier] = group

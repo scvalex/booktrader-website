@@ -312,6 +312,14 @@ def add_book(book, request):
     request.session.flash('Book added!')
     raise HTTPFound(location = request.resource_url(request.user))
 
+@view_config(context=Book, name='remove', permission='loggedin')
+def remove_book(context, request):
+    if not request.user.remove_book(context):
+        raise HTTPBadRequest('book neither owned nor wanted')
+
+    request.session.flash('Book removed!')
+    raise HTTPFound(location = request.referer)
+
 @view_config(context=Groups, name='create', permission='loggedin',
              renderer='groups/create_group.mak')
 def create_group(context, request):
