@@ -58,7 +58,7 @@
         </div>
 
 
-        <h1><a href="${request.resource_url(request.root)}">BooksExchange</a></h1>
+        <h1><a href="${request.resource_url(request.root)}">BookTrader</a></h1>
 
       </div>
 
