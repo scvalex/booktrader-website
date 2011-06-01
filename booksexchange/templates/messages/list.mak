@@ -26,15 +26,15 @@
   </li>
 </ul>
 
-% if msg:
+% if msg_root:
   <ol class="conversation">
-    % for m in conversations[msg.identifier]:
+    % for m in conversations[msg_root.identifier]:
       ${show_message(m)}
     % endfor
     <li class="clear"></li>
   </ol>
   <ul class="conversation_controls clear">
-    <li><a href="${request.resource_url(msg, 'reply')}">Reply</a></li>
+    <li><a href="${request.resource_url(msg_root, 'reply')}">Reply</a></li>
     <li><a href="${request.referer}">Back</a></li>
   </ul>
 % else:
@@ -61,7 +61,7 @@
             % endif
           </td>
           <td>${common.message_link(message)}</td>
-          <td>${common.format_date_simple(conversations[message.identifier][-1].date)}</td>
+          <td>${common.format_date_simple(message.date)}</td>
         </tr>
       % endfor
     </tbody>

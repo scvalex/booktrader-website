@@ -665,10 +665,11 @@ def show_message(context, request):
     while first_message.reply_to is not None:
         first_message = first_message.reply_to
 
-    if first_message in request.user.unread:
-        request.user.unread.remove(first_message)
+    for m in request.user.conversations[first_message.identifier]:
+        if m in request.user.unread:
+            request.user.unread.remove(m)
 
     return {'conversations': request.user.conversations,
             'conversation_list': request.user.conversation_list,
             'unread': request.user.unread,
-            'msg': first_message}
+            'msg_root': first_message}

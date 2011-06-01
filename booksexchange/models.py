@@ -128,15 +128,21 @@ class User(Persistent):
         first_message = message
         while first_message.reply_to is not None:
             first_message = first_message.reply_to
+
         if first_message is message:
             self.conversations[message.identifier] = PersistentList()
         else:
-            self.conversation_list.remove(first_message)
+            aux = message
+            while aux.reply_to is not None:
+                try:
+                    self.conversation_list.remove(aux.reply_to)
+                except ValueError:
+                    break
 
         self.conversations[first_message.identifier].append(message)
         if unread and first_message not in self.unread:
-            self.unread.insert(0, first_message)
-        self.conversation_list.insert(0, first_message)
+            self.unread.insert(0, message)
+        self.conversation_list.insert(0, message)
 
     def message_read(self, message):
         self.unread.remove(message)
