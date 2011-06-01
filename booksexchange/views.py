@@ -210,7 +210,8 @@ def confirm_registration(context, request):
 @view_config(context=User, renderer='users/home.mak')
 def user_home(context, request):
     return {'owned': context.owned.values(),
-            'want':  context.want.values()}
+            'want':  context.want.values(),
+            'events': context.events}
 
 
 @view_config(context=Books, name='search', renderer='books/search.mak')

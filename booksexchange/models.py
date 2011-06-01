@@ -71,6 +71,8 @@ class User(Persistent):
         self.unread            = PersistentList()
         self.conversation_list = PersistentList()
 
+        self.events    = PersistentList()
+
     def __getitem__(self, key):
         if key in ['generate_token', 'confirm']:
             raise KeyError
@@ -154,6 +156,10 @@ class User(Persistent):
         gravatar += urllib.urlencode({'s': str(size), 'd':'identicon'})
 
         return gravatar
+
+    def add_event(self, event):
+        check_class(event, Event, "that is not eventual enough")
+        self.events.insert(0, event)
 
 
 class Books(IndexFolder):
@@ -256,6 +262,7 @@ class Events(Persistent):
         e = HaveEvent(user, book)
         self.have.insert(0, e)
         self.all.insert(0, e)
+        user.add_event(e)
 
     def add_want(self, user, book):
         check_class(user, User, "not a User")
@@ -263,6 +270,7 @@ class Events(Persistent):
         e = WantEvent(user, book)
         self.want.insert(0, e)
         self.all.insert(0, e)
+        user.add_event(e)
 
     def add_exchange(self, giver, taker, book):
         check_class(giver, User, "not a User")
@@ -271,6 +279,8 @@ class Events(Persistent):
         e = ExchangeEvent(giver, taker, book)
         self.exchange.insert(0, e)
         self.all.insert(0, e)
+        giver.add_event(e)
+        taker.add_event(e)
 
 class Event(Persistent):
     def __init__(self):
