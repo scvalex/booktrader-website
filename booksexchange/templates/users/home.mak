@@ -8,7 +8,9 @@ current_user = request.context == request.user
 username     = request.context.username
 %>
 
-<h2>${request.context.username}</h2>
+<div id="user_info">
+  <h2><img src="${request.context.gravatar(64)}" alt="" />${request.context.username}</h2>
+</div>
 
 % if current_user:
   <h3>Your books</h3>
