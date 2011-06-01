@@ -580,8 +580,7 @@ def send_offer(context, request):
         raise HTTPBadRequest('request not specific enough: owner missing')
 
     form = deform.Form(make_message_schema(request.root['users'],
-                                           request.user, other,
-                                           'offer'),
+                                           request.user, other, 'offer'),
                        buttons=('Send',))
 
     set_recipient(form, other)
@@ -589,6 +588,30 @@ def send_offer(context, request):
     if request.method == 'POST':
         common_send_message(context, request, form, lambda msg: msg,
                             other, 'offer')
+
+    return {'form': form.render(), 'typ': "offer"}
+
+@view_config(context=Message, name='offer', renderer='messages/new.mak')
+def reply_to_message_offer(context, request):
+    if request.user is not context.sender and request.user is not context.recipient:
+        raise Forbidden()
+
+    recipient = context.sender
+    if recipient is request.user:
+        recipient = context.recipient
+
+    form = deform.Form(make_message_schema(request.root['users'],
+                                           request.user, recipient, 'offer'),
+                       buttons=('Send',))
+    set_recipient(form, recipient)
+
+    form.schema['subject'].default = "Re: " + context.subject
+
+    if request.method == 'POST':
+        def extra_fun(message):
+            message.reply_to = request.user.conversations[context.identifier][-1] # reply to the *last* message in the conversation context
+        common_send_message(context, request, form, extra_fun,
+                            recipient, 'offer')
 
     return {'form': form.render(), 'typ': "offer"}
 

@@ -35,6 +35,7 @@
   </ol>
   <ul class="conversation_controls clear">
     <li><a href="${request.resource_url(msg_root, 'reply')}">Reply</a></li>
+    <li><a href="${request.resource_url(msg_root, 'offer')}">Make Offer</a></li>
     <li><a href="${request.referer}">Back</a></li>
   </ul>
 % else:
