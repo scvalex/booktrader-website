@@ -715,6 +715,10 @@ a.blue_button {
     width: 32%;
 }
 
+#stuff_in_flux li {
+    margin-top: 1em;
+}
+
 /* Search page */
 #pagination {
     text-align: center;
