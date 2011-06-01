@@ -58,7 +58,7 @@
     </div>
 
     ${owners_coveters(book)}
-    
+
     <h2>${common.book_link(book, book.title)}</h2>
     % if book.subtitle:
         <h3>${book.subtitle}</h3>
@@ -140,7 +140,7 @@
         </div>
     % endif
 </%def>
-    
+
 <%def name="owners_coveters(book)">
 
       <div class="owners">
