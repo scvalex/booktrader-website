@@ -584,6 +584,7 @@ def send_offer(context, request):
                        buttons=('Send',))
 
     set_recipient(form, other)
+    form.schema['oranges'].default = context.identifier
 
     if request.method == 'POST':
         common_send_message(context, request, form, lambda msg: msg,
