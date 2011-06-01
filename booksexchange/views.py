@@ -567,6 +567,10 @@ def send_message(context, request):
 
     return {'form': form.render(), 'typ': "message"}
 
+def set_recipient(form, user):
+    form.schema['recipient'].default = user.username
+    form.schema['recipient'].widget.template = form.schema['recipient'].widget.readonly_template
+
 @view_config(context=Book, name='offer', permission='loggedin',
              renderer='messages/new.mak')
 def send_offer(context, request):
@@ -580,12 +584,11 @@ def send_offer(context, request):
                                            'offer'),
                        buttons=('Send',))
 
-    form.schema['recipient'].default = other.username
-    form.schema['recipient'].widget.template = form.schema['recipient'].widget.readonly_template
-
+    set_recipient(form, other)
 
     if request.method == 'POST':
-        common_send_message(context, request, form, lambda msg: msg, other)
+        common_send_message(context, request, form, lambda msg: msg,
+                            other, 'offer')
 
     return {'form': form.render(), 'typ': "offer"}
 
@@ -597,20 +600,22 @@ def reply_to_message(context, request):
     form = deform.Form(make_message_schema(request.root['users'],
                                            request.user),
                        buttons=('Send',))
-    recipient = context.sender.username
-    if recipient == request.user.username:
-        recipient = context.recipient.username
-    form.schema['recipient'].default = recipient
+    recipient = context.sender
+    if recipient is request.user:
+        recipient = context.recipient
+    set_recipient(form, recipient)
+
     form.schema['subject'].default = "Re: " + context.subject
 
     if request.method == 'POST':
         def extra_fun(message):
             message.reply_to = request.user.conversations[context.identifier][-1] # reply to the *last* message in the conversation context
-        common_send_message(context, request, form, extra_fun)
+        common_send_message(context, request, form, extra_fun, recipient)
 
     return {'form': form.render(), 'typ': 'message'}
 
-def common_send_message(context, request, form, extra_fun, other = None):
+def common_send_message(context, request, form, extra_fun, other = None,
+                        typ = 'message'):
     controls = request.POST.items()
 
     if other is not None:
@@ -623,7 +628,7 @@ def common_send_message(context, request, form, extra_fun, other = None):
         form.schema['recipient'].default = controls.get('recipient', '')
         form.schema['subject'].default = controls.get('subject', '')
         form.schema['body'].default = controls.get('body', '')
-        if other is not None:
+        if typ == 'offer':
             form.schema['apples'].default = controls.get('apples', '')
             form.schema['oranges'].default = controls.get('oranges', '')
 
@@ -634,11 +639,13 @@ def common_send_message(context, request, form, extra_fun, other = None):
     def id_to_book(id):
         return request.root['books'][id]
 
-    if other is None:
+    if typ == 'message':
         m = Message(request.user, recipient, data['subject'], data['body'])
-    else:
+    elif typ == 'offer':
         m = Offer(request.user, recipient, data['subject'], data['body'],
                   id_to_book(data['apples']), id_to_book(data['oranges']))
+    else:
+        raise HTTPInternalServerError('unknown message type: ' + typ)
     extra_fun(m)
     request.root['messages'].new_message(m)
     recipient.add_message(m)
