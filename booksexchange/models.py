@@ -193,8 +193,8 @@ class Books(IndexFolder):
                            b['publisher'], b['publishedDate'],
                            identifiers, b['description'],
                            b['imageLinks'])
-        book.owners = {}
-        book.coveters = {}
+        book.owners = PersistentMapping()
+        book.coveters = PersistentMapping()
         book.__name__ = id
         book.__parent__ = self
         return book
