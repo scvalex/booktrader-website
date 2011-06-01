@@ -315,13 +315,17 @@ h1 a, h1 a:visited {
 
 .conversation {
     background-color: #fff;
-    max-width: 40em;
     padding-top: 2em;
+}
+
+.clear {
+    clear: both;
 }
 
 .message {
     border-bottom: 1px dotted #333;
     margin: 0 1em 1em;
+    width: 60em;
     padding: 0 2em;
 }
 
@@ -352,6 +356,23 @@ h1 a, h1 a:visited {
 .message .body {
     margin-top: 1em;
     padding-bottom: 1.4em;
+}
+
+.actual_message {
+    float: left;
+    width: 30em;
+}
+
+.vs_text {
+    color: #f00;
+    font-size: 2em;
+    width: 15em;
+    text-align: center;
+}
+
+.offer_info {
+    float: left;
+    width: 30em;
 }
 
 .conversation_controls {
