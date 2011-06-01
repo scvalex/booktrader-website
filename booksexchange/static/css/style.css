@@ -666,3 +666,38 @@ a.blue_button {
     clear: right;
     float: right;
 }
+
+/* Index styles */
+
+#have_list, #want_list, #exchange_list {
+    float: left;
+    min-height: 20em;
+    width: 31%;
+}
+
+#want_list, #exchange_list {
+    margin-left: 2%;
+}
+
+#have_list li, #want_list li, #exchange_list li {
+    margin-top: 1em;
+    border-radius: 4px;
+    padding: 1%;
+}
+
+#have_list li {
+    background-color: #cec;
+}
+
+#want_list li {
+    background-color: #eda;
+}
+
+#exchange_list li {
+    background-color: #cce;
+}
+
+.front_page_cover {
+    float: left;
+    margin-right: 1em;
+}
