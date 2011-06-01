@@ -411,7 +411,10 @@ class Offer(Message):
     def __init__(self, sender, recipient, subject, body, apples, oranges):
         super(Offer, self).__init__(sender, recipient, subject, body)
 
+        # the sender offers apples
         self.apples  = apples
+
+        # the receiver offer oranges
         self.oranges = oranges
 
 

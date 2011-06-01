@@ -83,9 +83,17 @@
     <div class="offer_info">
       <% from booksexchange.models import Offer %>
       % if isinstance(message, Offer):
-        <div>${books_common.render_book_short(message.apples, request.user)}</div>
+        % if message.sender is request.user:
+          <div>${books_common.render_book_short(message.apples, request.user)}</div>
+        % else:
+          <div>${books_common.render_book_short(message.oranges, request.user)}</div>
+        % endif
         <div class="vs_text">for</div>
-        <div>${books_common.render_book_short(message.oranges, message.sender)}</div>
+        % if message.sender is request.user:
+          <div>${books_common.render_book_short(message.oranges, message.sender)}</div>
+        % else:
+          <div>${books_common.render_book_short(message.apples, message.sender)}</div>
+        % endif
       % endif
     </div>
     <div class="clear"></div>
