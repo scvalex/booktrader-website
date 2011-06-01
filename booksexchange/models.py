@@ -248,6 +248,16 @@ class Book(Persistent):
             ok = True
         return ok
 
+    def format_title(book):
+        r = book.title
+        if book.subtitle:
+            r += "- " + book.subtitle
+        if book.authors:
+            r += "by "
+            for author in book.authors:
+                r += author + ", "
+        return r
+
 
 class Events(Persistent):
     def __init__(self):

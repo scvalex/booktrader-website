@@ -6,19 +6,6 @@
   <a href="${request.resource_url(user)}">${inner}</a>
 </%def>
 
-<%def name="format_book_title(book)">
-  ${book.title}
-  % if book.subtitle:
-    - ${book.subtitle}
-  % endif
-  % if book.authors:
-    by
-    % for author in book.authors:
-      ${author}, 
-    % endfor
-  % endif
-</%def>
-
 <%def name="book_link(book, inner, user = None)">
   % if user is None:
     <a href="${request.resource_url(request.root['books'], book.identifier)}">
@@ -78,7 +65,7 @@
     <div>
       ${user_link(event.owner)}
       has
-      ${book_link(event.book, format_book_title(event.book))}
+      ${book_link(event.book, event.book.format_title(), event.owner)}
     </div>
   % elif isinstance(event, WantEvent):
     <div>${format_date_simple(event.date)}</div>
@@ -86,7 +73,7 @@
     <div>
       ${user_link(event.coveter)}
       wants
-      ${book_link(event.book, format_book_title(event.book))}
+      ${book_link(event.book, event.book.format_title())}
     </div>
   % elif isinstance(event, ExchangeEvent):
     <div>${format_date_simple(event.date)}</div>
@@ -95,7 +82,7 @@
       ${user_link(event.giver)}
       gave
       ${user_link(event.taker)}
-      ${book_link(event.book, format_book_title(event.book))}
+      ${book_link(event.book, event.book.format_title(), event.taker)}
     </div>
   % endif
 </%def>
