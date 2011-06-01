@@ -697,7 +697,20 @@ a.blue_button {
     background-color: #cce;
 }
 
-.front_page_cover {
+.event_page_cover {
     float: left;
     margin-right: 1em;
+}
+
+/* User homepage */
+
+#real_stuff {
+    float: left;
+    width: 65%;
+}
+
+#stuff_in_flux {
+    float: left;
+    margin-left: 1%;
+    width: 32%;
 }

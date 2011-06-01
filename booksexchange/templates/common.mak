@@ -74,7 +74,7 @@
   <% from booksexchange.models import HaveEvent, WantEvent, ExchangeEvent %>
   % if isinstance(event, HaveEvent):
     <div>${format_date_simple(event.date)}</div>
-    <div class="front_page_cover">${book_cover(event.book)}</div>
+    <div class="event_page_cover">${book_cover(event.book)}</div>
     <div>
       ${user_link(event.owner)}
       has
@@ -82,7 +82,7 @@
     </div>
   % elif isinstance(event, WantEvent):
     <div>${format_date_simple(event.date)}</div>
-    <div class="front_page_cover">${book_cover(event.book)}</div>
+    <div class="event_page_cover">${book_cover(event.book)}</div>
     <div>
       ${user_link(event.coveter)}
       wants
@@ -90,7 +90,7 @@
     </div>
   % elif isinstance(event, ExchangeEvent):
     <div>${format_date_simple(event.date)}</div>
-    <div class="front_page_cover">${book_cover(event.book)}</div>
+    <div class="event_page_cover">${book_cover(event.book)}</div>
     <div>
       ${user_link(event.giver)}
       gave
