@@ -622,3 +622,38 @@ h1 a, h1 a:visited {
     rgb(221,221,221) 87%
   );
 }
+
+/* Owners and coveters list on details page */
+
+#owners_list a, #coveters_list a {
+    text-decoration: none;
+}
+
+#owners_list, #coveters_list {
+    background-color: #f6fae0;
+    border-radius: 4px;
+    float: left;
+    margin-top: 1em;
+    min-height: 20em;
+    padding: 1%;
+    width: 46%;
+}
+
+#coveters_list {
+    margin-left: 4%;
+}
+
+.bad_news {
+    color: #999;
+    margin-top: .6em;
+    font-weight: bold;
+    text-align: center;
+}
+
+#owners_list ul, #owners_list ul {
+    margin-top: .4em;
+}
+
+#owners_list li, #coveters_list li {
+    margin-left: .4em;
+}

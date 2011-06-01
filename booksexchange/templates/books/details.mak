@@ -5,22 +5,30 @@
 
 ${books_common.render_book(book)}
 
-<div>
-  <h3>Owners:</h3>
-  <ul>
-  % for user in book.owners.values():
-    <li>${common.user_link(user)}</li>
-  % endfor
-  </ul>
+<div id="owners_list">
+  <h3>Owners</h3>
+  % if book.owners:
+    <ul>
+      % for user in book.owners.values():
+        <li>${common.gravatar(user)}</li>
+      % endfor
+    </ul>
+  % else:
+    <div class="bad_news">No one owns this book :|</div>
+  % endif
 </div>
 
-<div>
-  <h3>Coveters:</h3>
-  <ul>
-  % for user in book.coveters.values():
-    <li>${common.user_link(user)}</li>
-  % endfor
-  </ul>
+<div id="coveters_list">
+  <h3>Coveters</h3>
+  % if book.coveters:
+    <ul>
+      % for user in book.coveters.values():
+        <li>${common.gravatar(user)}</li>
+      % endfor
+    </ul>
+  % else:
+    <div class="bad_news">No one wants this book ;(</div>
+  % endif
 </div>
 
 <%def name="title()">${parent.title()} - Details</%def>

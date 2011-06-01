@@ -125,10 +125,7 @@
           <ul>
             % for u in display:
                 <li>
-                  <a href="${request.resource_url(u)}">
-                    <img src="${u.gravatar(32)}" alt="${u.username}"/>
-                    <span>${u.username}</span>
-                  </a>
+                  ${common.gravatar(u)}
                 </li>
             % endfor
          </ul>
