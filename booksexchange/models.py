@@ -282,11 +282,12 @@ class Events(Persistent):
         self.all.insert(0, e)
         user.add_event(e)
 
-    def add_exchange(self, giver, taker, book):
+    def add_exchange(self, giver, taker, apples, oranges, rating):
         check_class(giver, User, "not a User")
         check_class(taker, User, "not a User")
-        check_class(book, Book, "not a Book")
-        e = ExchangeEvent(giver, taker, book)
+        check_class(apples, Book, "not a Book")
+        check_class(oranges, Book, "not a Book")
+        e = ExchangeEvent(giver, taker, apples, oranges, rating)
         self.exchange.insert(0, e)
         self.all.insert(0, e)
         giver.add_event(e)
@@ -314,12 +315,14 @@ class WantEvent(Event):
         self.book    = book
 
 class ExchangeEvent(Event):
-    def __init__(self, giver, taker, book):
+    def __init__(self, giver, taker, apples, oranges, rating):
         super(ExchangeEvent, self).__init__()
 
-        self.giver = giver
-        self.taker = taker
-        self.book  = book
+        self.giver   = giver
+        self.taker   = taker
+        self.apples  = apples
+        self.oranges = oranges
+        self.rating  = rating
 
 
 class Groups(IndexFolder):
@@ -436,6 +439,15 @@ class Offer(Message):
 
         # the receiver offer oranges
         self.oranges = oranges
+
+class Feedback(Message):
+    def __init__(self, sender, recipient, rating, comment):
+        super(Feedback, self).__init__(sender, recipient,
+                                       "You've got feedback",
+                                       "How about you return the favour?")
+
+        self.rating  = rating
+        self.comment = comment
 
 
 class VerySimpleCache(Persistent):

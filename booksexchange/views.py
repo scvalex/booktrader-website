@@ -644,7 +644,40 @@ def reply_to_message(context, request):
 @view_config(context=Message, name='complete', renderer='messages/new.mak',
              permission='loggedin')
 def complete_exchange(context, request):
-    return {'form': "", 'typ': 'feedback'}
+    if not isinstance(context, Offer) or request.user is not context.recipient:
+        raise Forbidden()
+
+    class FeedbackSchema(colander.MappingSchema):
+        def validate_user_exists(node, username):
+            if username == request.user.username or username not in request.root['users']:
+                raise colander.Invalid(node, 'User "' + username +
+                                       '" does not exist.')
+
+        recipient = colander.SchemaNode(
+            utf8_string(),
+            validator = validate_user_exists,
+            widget = deform.widget.TextInputWidget())
+        rating = colander.SchemaNode(
+            colander.Boolean(),
+            widget = deform.widget.SelectWidget(values =
+                                                ((1, 'Yes'), (0, 'No'))),
+            title = "In hindsight, would you make this trade again?")
+        comment      = colander.SchemaNode(
+            utf8_string(),
+            widget = deform.widget.TextInputWidget())
+
+    form = deform.Form(FeedbackSchema(), buttons=('Submit',))
+
+    set_recipient(form, context.sender)
+
+    if request.method == 'POST':
+        def extra_fun(message):
+            message.reply_to = context # reply to the *last* message in the conversation context
+            request.root['events'].add_exchange(context.sender, context.recipient, context.apples, context.oranges, message.rating)
+        common_send_message(context, request, form, extra_fun,
+                            context.sender, 'feedback')
+
+    return {'form': form.render(), 'typ': 'feedback'}
 
 def common_send_message(context, request, form, extra_fun, other = None,
                         typ = 'message'):
@@ -658,11 +691,15 @@ def common_send_message(context, request, form, extra_fun, other = None,
     except deform.ValidationFailure, e:
         controls = dict(controls)
         form.schema['recipient'].default = controls.get('recipient', '')
-        form.schema['subject'].default = controls.get('subject', '')
-        form.schema['body'].default = controls.get('body', '')
+        if typ in ['message', 'offer']:
+            form.schema['subject'].default = controls.get('subject', '')
+            form.schema['body'].default = controls.get('body', '')
         if typ == 'offer':
             form.schema['apples'].default = controls.get('apples', '')
             form.schema['oranges'].default = controls.get('oranges', '')
+        if typ == 'feedback':
+            form.schema['rating'].default = controls.get('rating', 1)
+            form.schema['comment'].default = controls.get('comment', '')
 
         return {'form': e.render()}
 
@@ -676,6 +713,8 @@ def common_send_message(context, request, form, extra_fun, other = None,
     elif typ == 'offer':
         m = Offer(request.user, recipient, data['subject'], data['body'],
                   id_to_book(data['apples']), id_to_book(data['oranges']))
+    elif typ == 'feedback':
+        m = Feedback(request.user, recipient, data['rating'], data['comment'])
     else:
         raise HTTPInternalServerError('unknown message type: ' + typ)
     extra_fun(m)
