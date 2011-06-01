@@ -10,7 +10,13 @@ ${books_common.render_book(book)}
   % if book.owners:
     <ul>
       % for user in book.owners.values():
-        <li>${common.gravatar(user)}</li>
+        <li>
+          ${common.gravatar(user)}
+          <a href="${request.resource_url(user, book.identifier, 'offer')}"
+             class="blue_button">
+            Make offer
+          </a>
+        </li>
       % endfor
     </ul>
   % else:

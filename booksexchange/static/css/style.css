@@ -282,7 +282,7 @@ h1 a, h1 a:visited {
   margin: 0.2em;
 }
 
-.have_want a, .have_want span {
+.have_want a, .have_want span, .blue_button {
   color: white;
   background-color: #1c393f;
   font-family: Cabin, Helvetica, Arial, sans-serif;
@@ -656,4 +656,13 @@ h1 a, h1 a:visited {
 
 #owners_list li, #coveters_list li {
     margin-left: .4em;
+}
+
+a.blue_button {
+    color: #fff;
+}
+
+#owners_list .blue_button {
+    clear: right;
+    float: right;
 }
