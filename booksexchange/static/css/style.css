@@ -714,3 +714,8 @@ a.blue_button {
     margin-left: 1%;
     width: 32%;
 }
+
+/* Search page */
+#pagination {
+    text-align: center;
+}
