@@ -8,6 +8,7 @@
 
     <h3>${common.book_link(book, book.title, user)}</h3>
 
+
     % if book.authors:
         <p class="authors">
           by ${', '.join(['<span class="author">' + author + '</span>'
@@ -28,8 +29,16 @@
     <% books.reverse() %>
     % while len(books) > 1:
         <tr>
-          <td>${render_book_short(books.pop(), user)}</td>
-          <td>${render_book_short(books.pop(), user)}</td>
+          <td>
+            <% book = books.pop() %>
+            ${list_owners(book)}
+            ${render_book_short(book, user)}
+          </td>
+          <td>
+            <% book = books.pop() %>
+            ${list_owners(book)}
+            ${render_book_short(book, user)}
+          </td>
         </tr>
     % endwhile
     % if len(books) > 0:
@@ -49,8 +58,7 @@
     </div>
 
     ${owners_coveters(book)}
-
-
+    
     <h2>${common.book_link(book, book.title)}</h2>
     % if book.subtitle:
         <h3>${book.subtitle}</h3>
@@ -102,9 +110,39 @@
   </div>
 </%def>
 
+<%def name="list_owners(book)">
+    <%
+    from random import shuffle
+    owners = book.owners.values()
+    shuffle(owners)
+    display = owners[:3]
+    rest = owners [3:]
+    %>
+
+    % if display:
+        <div class="owners">
+          <span>Owners:</span>
+          <ul>
+            % for u in display:
+                <li>
+                  <a href="${request.resource_url(u)}">
+                    <img src="${u.gravatar(32)}" alt="${u.username}"/>
+                    <span>${u.username}</span>
+                  </a>
+                </li>
+            % endfor
+         </ul>
+          % if len(rest) == 1:
+              <span> and 1 other.</span>
+          % elif len(rest) > 1:
+              <span> and ${len(rest)} others.</span>
+          % endif
+        </div>
+    % endif
+</%def>
+    
 <%def name="owners_coveters(book)">
 
-  % if len(book.owners) > 0:
       <div class="owners">
         <span>Owners:</span><br/>
         <ul>
@@ -118,8 +156,6 @@
           % endfor
         </ul>
       </div>
-  % endif
-  % if len(book.coveters) > 0:
       <div class="coveters">
         <span>Coveters:</span><br/>
         <ul>
@@ -133,5 +169,4 @@
           % endfor
         </ul>
       </div>
-  % endif
 </%def>
