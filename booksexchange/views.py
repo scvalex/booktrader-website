@@ -653,7 +653,7 @@ def common_send_message(context, request, form, extra_fun, other = None,
 
     request.session.flash('Message sent!')
 
-    raise HTTPFound(location = request.resource_url(request.root['messages'], 'list'))
+    raise HTTPFound(location = request.resource_url(m))
 
 
 @view_config(context=Message, renderer='messages/list.mak')
