@@ -316,6 +316,7 @@ h1 a, h1 a:visited {
 .conversation {
     background-color: #fff;
     padding-top: 2em;
+    width: 65em;
 }
 
 .clear {
@@ -323,14 +324,9 @@ h1 a, h1 a:visited {
 }
 
 .message {
-    border-bottom: 1px dotted #333;
     margin: 0 1em 1em;
     width: 60em;
     padding: 0 2em;
-}
-
-.message:last-child {
-    border-bottom: none;
 }
 
 .message .from:before {
@@ -359,6 +355,7 @@ h1 a, h1 a:visited {
 }
 
 .actual_message {
+    border-bottom: 1px dotted #333;
     float: left;
     width: 30em;
 }

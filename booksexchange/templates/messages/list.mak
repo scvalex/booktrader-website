@@ -87,5 +87,6 @@
         <div>${books_common.render_book_short(message.oranges, message.sender)}</div>
       % endif
     </div>
+    <div class="clear"></div>
   </${top}>
 </%def>

@@ -524,8 +524,7 @@ def make_message_schema(users, current_user, other_user = None,
         subject   = colander.SchemaNode(utf8_string())
         body      = colander.SchemaNode(
             utf8_string(),
-            widget = deform.widget.TextAreaWidget(),
-            validator = colander.Length(min = 17))
+            widget = deform.widget.TextAreaWidget())
 
     def validate_book_exists(node, user, book):
         if user is None or book not in user.owned:
@@ -609,7 +608,7 @@ def reply_to_message(context, request):
             message.reply_to = request.user.conversations[context.identifier][-1] # reply to the *last* message in the conversation context
         common_send_message(context, request, form, extra_fun)
 
-    return {'form': form.render()}
+    return {'form': form.render(), 'typ': 'message'}
 
 def common_send_message(context, request, form, extra_fun, other = None):
     controls = request.POST.items()
