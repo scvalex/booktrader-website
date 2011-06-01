@@ -593,7 +593,8 @@ def send_offer(context, request):
 
     return {'form': form.render(), 'typ': "offer"}
 
-@view_config(context=Message, name='offer', renderer='messages/new.mak')
+@view_config(context=Message, name='offer', renderer='messages/new.mak',
+             permission='loggedin')
 def reply_to_message_offer(context, request):
     if request.user is not context.sender and request.user is not context.recipient:
         raise Forbidden()
@@ -617,7 +618,8 @@ def reply_to_message_offer(context, request):
 
     return {'form': form.render(), 'typ': "offer"}
 
-@view_config(context=Message, name='reply', renderer='messages/new.mak')
+@view_config(context=Message, name='reply', renderer='messages/new.mak',
+             permission='loggedin')
 def reply_to_message(context, request):
     if request.user is not context.sender and request.user is not context.recipient:
         raise Forbidden()
@@ -638,6 +640,11 @@ def reply_to_message(context, request):
         common_send_message(context, request, form, extra_fun, recipient)
 
     return {'form': form.render(), 'typ': 'message'}
+
+@view_config(context=Message, name='complete', renderer='messages/new.mak',
+             permission='loggedin')
+def complete_exchange(context, request):
+    return {'form': "", 'typ': 'feedback'}
 
 def common_send_message(context, request, form, extra_fun, other = None,
                         typ = 'message'):

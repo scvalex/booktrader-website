@@ -36,6 +36,10 @@
   <ul class="conversation_controls clear">
     <li><a href="${request.resource_url(msg_root, 'reply')}">Reply</a></li>
     <li><a href="${request.resource_url(msg_root, 'offer')}">Make Offer</a></li>
+    <% from booksexchange.models import Offer %>
+    % if request.user is not m.sender and isinstance(m, Offer):
+      <li><a href="${request.resource_url(m, 'complete')}">Trade completed</a></li>
+    % endif
     <li><a href="${request.referer}">Back</a></li>
   </ul>
 % else:
