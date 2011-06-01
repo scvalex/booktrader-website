@@ -517,25 +517,28 @@ def make_message_schema(users, current_user, other_user = None,
                 raise colander.Invalid(node, 'User "' + username +
                                        '" does not exist.')
 
-        recipient = colander.SchemaNode(utf8_string(),
-                                        validator = validate_user_exists)
+        recipient = colander.SchemaNode(
+            utf8_string(),
+            validator = validate_user_exists,
+            widget = deform.widget.TextInputWidget())
         subject   = colander.SchemaNode(utf8_string())
-        body      = colander.SchemaNode(utf8_string(),
-                                        widget = deform.widget.TextAreaWidget(),
-                                        validator = colander.Length(min = 17))
+        body      = colander.SchemaNode(
+            utf8_string(),
+            widget = deform.widget.TextAreaWidget(),
+            validator = colander.Length(min = 17))
+
+    def validate_book_exists(node, user, book):
+        if user is None or book not in user.owned:
+            raise colander.Invalid(node, 'User "' + user.username +
+                                   '" does not have book "' + book + '"')
+
+    def validate_my_book(node, book):
+        return validate_book_exists(node, current_user, book)
+
+    def validate_other_book(node, book):
+        return validate_book_exists(node, other_user, book)
 
     class OfferSchema(MessageSchema):
-        def validate_book_exists(node, user, book):
-            if user is None or book not in user.owned:
-                raise colander.Invalid(node, 'User "' + user.username +
-                                       '" does not have book "' + book + '"')
-
-        def validate_my_book(node, book):
-            return validate_book_exists(node, current_user, book)
-
-        def validate_other_book(node, book):
-            return validate_book_exists(node, other_user, book)
-
         apples = colander.SchemaNode(
             utf8_string(),
             validator = validate_my_book,
@@ -568,15 +571,22 @@ def send_message(context, request):
 @view_config(context=Book, name='offer', permission='loggedin',
              renderer='messages/new.mak')
 def send_offer(context, request):
-    if not isinstance(context.__parent__, User):
+    try:
+        other = request.root['users'][request.path.split('/')[2]]
+    except Exception:
         raise HTTPBadRequest('request not specific enough: owner missing')
+
     form = deform.Form(make_message_schema(request.root['users'],
-                                           request.user, request.user,
+                                           request.user, other,
                                            'offer'),
                        buttons=('Send',))
 
+    form.schema['recipient'].default = other.username
+    form.schema['recipient'].widget.template = form.schema['recipient'].widget.readonly_template
+
+
     if request.method == 'POST':
-        common_send_message(context, request, form, lambda msg: msg)
+        common_send_message(context, request, form, lambda msg: msg, other)
 
     return {'form': form.render(), 'typ': "offer"}
 
@@ -601,8 +611,11 @@ def reply_to_message(context, request):
 
     return {'form': form.render()}
 
-def common_send_message(context, request, form, extra_fun):
+def common_send_message(context, request, form, extra_fun, other = None):
     controls = request.POST.items()
+
+    if other is not None:
+        controls.append(('recipient', other.username))
 
     try:
         data = form.validate(controls)
@@ -611,11 +624,22 @@ def common_send_message(context, request, form, extra_fun):
         form.schema['recipient'].default = controls.get('recipient', '')
         form.schema['subject'].default = controls.get('subject', '')
         form.schema['body'].default = controls.get('body', '')
+        if other is not None:
+            form.schema['apples'].default = controls.get('apples', '')
+            form.schema['oranges'].default = controls.get('oranges', '')
+
         return {'form': e.render()}
 
     recipient = request.root['users'][data['recipient']]
 
-    m = Message(request.user, recipient, data['subject'], data['body'])
+    def id_to_book(id):
+        return request.root['books'][id]
+
+    if other is None:
+        m = Message(request.user, recipient, data['subject'], data['body'])
+    else:
+        m = Offer(request.user, recipient, data['subject'], data['body'],
+                  id_to_book(data['apples']), id_to_book(data['oranges']))
     extra_fun(m)
     request.root['messages'].new_message(m)
     recipient.add_message(m)

@@ -1,6 +1,7 @@
 <%inherit file="/base.mak"/>
 
 <%namespace name="common" file="/common.mak" />
+<%namespace name="books_common" file="/books/common.mak" />
 
 <h2>Inbox</h2>
 
@@ -77,7 +78,9 @@
     <div class="body">${message.body}</div>
     <% from booksexchange.models import Offer %>
     % if isinstance(message, Offer):
-      <div>Offer!</div>
+      <div>${books_common.render_book_short(message.apples, request.user)}</div>
+      for
+      <div>${books_common.render_book_short(message.oranges, message.sender)}</div>
     % endif
   </${top}>
 </%def>
