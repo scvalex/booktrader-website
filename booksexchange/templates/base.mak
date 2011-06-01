@@ -40,7 +40,8 @@
       <div id="header">
         <div id="user">
           % if request.user is not None:
-              logged in as ${common.user_link(request.user)}
+              logged in as
+              ${common.user_link(request.user)}
               &middot;
               % if request.user.unread:
                 <a class="unread" href="${request.resource_url(request.root['messages'], 'list')}">${len(request.user.unread)} unread</a>
