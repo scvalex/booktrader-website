@@ -95,11 +95,11 @@
 <%def name="have_want(book)">
   <div class="have_want">
     % if request.user and book.identifier in request.user.owned:
-      <span>You have this book.</span>
+      <span>You have this book</span>
       <a href="${request.resource_url(book, 'remove')}" class="remove_book">✖</a>
     % elif request.user and book.identifier in request.user.want:
       <a href="${request.resource_url(book, 'have')}">Have</a>
-      <span>You want this book.</span>
+      <span>You want this book</span>
       <a href="${request.resource_url(book, 'remove')}" class="remove_book">✖</a>
     % else:
       <a href="${request.resource_url(book, 'have')}">Have</a>
