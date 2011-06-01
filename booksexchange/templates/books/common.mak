@@ -31,16 +31,12 @@
         <tr>
           <td>
             <% book = books.pop() %>
-            <div class="owners_coveters">
-                ${owners_coveters(book)}
-            </div>
+            ${list_owners(book)}
             ${render_book_short(book)}
           </td>
           <td>
             <% book = books.pop() %>
-            <div class="owners_coveters">
-                ${owners_coveters(book)}
-            </div>
+            ${list_owners(book)}
             ${render_book_short(book)}
           </td>
         </tr>
@@ -114,6 +110,37 @@
   </div>
 </%def>
 
+<%def name="list_owners(book)">
+    <%
+    from random import shuffle
+    owners = book.owners.values()
+    shuffle(owners)
+    display = owners[:3]
+    rest = owners [3:]
+    %>
+
+    % if display:
+        <div class="owners">
+          <span>Owners:</span>
+          <ul>
+            % for u in display:
+                <li>
+                  <a href="${request.resource_url(u)}">
+                    <img src="${u.gravatar(32)}" alt="${u.username}"/>
+                    <span>${u.username}</span>
+                  </a>
+                </li>
+            % endfor
+         </ul>
+          % if len(rest) == 1:
+              <span> and 1 other.</span>
+          % elif len(rest) > 1:
+              <span> and ${len(rest)} others.</span>
+          % endif
+        </div>
+    % endif
+</%def>
+    
 <%def name="owners_coveters(book)">
 
       <div class="owners">
