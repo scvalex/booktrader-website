@@ -43,7 +43,11 @@
     % endwhile
     % if len(books) > 0:
         <tr>
-          <td>${render_book_short(books.pop(), user)}</td>
+          <td>
+            <% book = books.pop() %>
+            ${list_owners(book)}
+            ${render_book_short(book, user)}
+          </td>
           <td class="blank"></td>
         </tr>
     % endif
