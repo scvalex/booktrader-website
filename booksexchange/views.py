@@ -72,7 +72,8 @@ def login(context, request):
                                         widget  = deform.widget.PasswordWidget())
         came_from = colander.SchemaNode(colander.String(),
                                         widget  = deform.widget.HiddenWidget(),
-                                        default = referer)
+                                        default = referer,
+                                        missing = "/")
 
     def validate_login(form, value):
         exc = colander.Invalid(form, '')
