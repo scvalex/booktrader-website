@@ -280,7 +280,7 @@ def search(context, request):
                 'make_url': make_url,
                 'next_url': next_url, 'prev_url': prev_url}
 
-    return {'result': []}
+    return {'result': None}
 
 
 @view_config(context=Book, renderer='books/details.mak')
