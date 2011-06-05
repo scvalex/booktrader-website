@@ -29,8 +29,7 @@ class UsersTests(unittest.TestCase):
         from booksexchange.models import User
         from repoze.catalog.query import Eq, NotEq
         
-        user = User('francesco', '', 'francesco')
-        users.new_user(User('francesco', '', 'francesco'))
+        users.new_user(User('francesco', 'f@mazzo.li', 'francesco'))
         users['francesco'].username = 'max'
         users.update(users['francesco'])
         
@@ -70,88 +69,88 @@ class UserTests(unittest.TestCase):
         self.assertEqual(bcrypt.hashpw('friday', user._password), user._password)
     
             
-class LoginTests(unittest.TestCase):
-    def _callFUT(self, context, request):
-        from booksexchange.views import login
-        return login(context, request)
+# class LoginTests(unittest.TestCase):
+#     def _callFUT(self, context, request):
+#         from booksexchange.views import login
+#         return login(context, request)
 
-    def test_notlogged(self):
-        from pyramid.url import resource_url
-        from pyramid.security import authenticated_userid
+#     def test_notlogged(self):
+#         from pyramid.url import resource_url
+#         from pyramid.security import authenticated_userid
         
-        context = testing.DummyResource()
-        request = testing.DummyRequest()
-        request.subpath = ['users', 'login']
+#         context = testing.DummyResource()
+#         request = testing.DummyRequest()
+#         request.subpath = ['users', 'login']
         
-        res = self._callFUT(context, request)
+#         res = self._callFUT(context, request)
 
-        if authenticated_userid(request):
-            self.assertEqual(res.status, '302 Found')
-        else:
-            self.assertIn('came_from', res)
-            self.assertIn('username', res)
+#         if authenticated_userid(request):
+#             self.assertEqual(res.status, '302 Found')
+#         else:
+#             self.assertIn('came_from', res)
+#             self.assertIn('username', res)
     
-    def test_logged_correct(self):
-        from booksexchange.models import Users, User
-        context = Users()
-        context.new_user(User('francesco', 'none', 'francesco'))
+#     def test_logged_correct(self):
+#         from booksexchange.models import Users, User
+#         context = Users()
+#         context.new_user(User('francesco', 'none', 'francesco'))
         
-        request = testing.DummyRequest(params={'username'       : 'francesco',
-                                               'password'       : 'francesco',
-                                               'form.submitted' : True})
-        request.subpath = ['users', 'login']
+#         request = testing.DummyRequest(params={'username'       : 'francesco',
+#                                                'password'       : 'francesco',
+#                                                'form.submitted' : True})
+#         request.subpath = ['users', 'login']
         
-        res = self._callFUT(context, request)
+#         res = self._callFUT(context, request)
 
-        # Right now I'm just checking that when the login is correct,
-        # it redirects, but that's not quite right. I don't know how
-        # to easily verify that the userid has been remembered from
-        # the response, and not from the request.
+#         # Right now I'm just checking that when the login is correct,
+#         # it redirects, but that's not quite right. I don't know how
+#         # to easily verify that the userid has been remembered from
+#         # the response, and not from the request.
 
-        self.assertEqual(res.status, '302 Found')
+#         self.assertEqual(res.status, '302 Found')
 
-    def test_logged_wrong(self):
-        from booksexchange.models import Users, User
-        context = Users()
-        context.new_user(User('francesco', 'none', 'francesco'))
+#     def test_logged_wrong(self):
+#         from booksexchange.models import Users, User
+#         context = Users()
+#         context.new_user(User('francesco', 'none', 'francesco'))
         
-        request = testing.DummyRequest(params={'username'       : 'francesco',
-                                               'password'       : 'wrong',
-                                               'form.submitted' : True})
-        request.subpath = ['users', 'login']
+#         request = testing.DummyRequest(params={'username'       : 'francesco',
+#                                                'password'       : 'wrong',
+#                                                'form.submitted' : True})
+#         request.subpath = ['users', 'login']
         
-        res = self._callFUT(context, request)
+#         res = self._callFUT(context, request)
 
-        self.assertTrue(not ('status' in res) or res.status != '302 Found')
+#         self.assertTrue(not ('status' in res) or res.status != '302 Found')
 
 
-class ForbiddenTests(unittest.TestCase):
-    def _callFUT(self, request):
-        from booksexchange.views import forbidden
-        from booksexchange.models import appmaker
+# class ForbiddenTests(unittest.TestCase):
+#     def _callFUT(self, request):
+#         from booksexchange.views import forbidden
+#         from booksexchange.models import appmaker
         
-        request.root = appmaker({})
+#         request.root = appmaker({})
         
-        return forbidden(request)
+#         return forbidden(request)
 
-    def test_forbidden_user(self):
-        from pyramid.testing import setUp, tearDown
+#     def test_forbidden_user(self):
+#         from pyramid.testing import setUp, tearDown
         
-        self.config = setUp()
-        self.config.testing_securitypolicy(userid='francesco')
+#         self.config = setUp()
+#         self.config.testing_securitypolicy(userid='francesco')
 
-        request = testing.DummyRequest()
+#         request = testing.DummyRequest()
 
-        res = self._callFUT(request)
+#         res = self._callFUT(request)
 
-        self.assertEqual(res.status, '403 Forbidden')
+#         self.assertEqual(res.status, '403 Forbidden')
 
-        tearDown(self.config)
+#         tearDown(self.config)
         
-    def test_forbidden_redirect(self):
-        request = testing.DummyRequest()
+#     def test_forbidden_redirect(self):
+#         request = testing.DummyRequest()
         
-        res = self._callFUT(request)
+#         res = self._callFUT(request)
         
-        self.assertEqual(res.status, '302 Found')
+#         self.assertEqual(res.status, '302 Found')
 

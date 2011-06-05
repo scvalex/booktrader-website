@@ -10,8 +10,6 @@ from pyramid.response       import Response
 
 from repoze.catalog.query   import Eq
 
-from sets import Set
-
 import colander
 import deform
 import json
@@ -47,7 +45,10 @@ def forbidden(request):
 
 
 def already_logged_in(request):
-    # If the user is logged in already, redirect
+    """
+    Function to use in views in which you need to redirect the user is
+    already logged in.
+    """
     if authenticated_userid(request):
         request.session.flash('You are already logged in.')
         return True
@@ -126,7 +127,7 @@ def register(context, request):
     def validate_user(node, value):
         colander.Length(min=5, max=200)(node, value)
 
-        if context.query(Eq('username', value))[0] != 0:
+        if value in context:
             raise colander.Invalid(node, '"' + value + '" is already taken.')
 
     def validate_email(node, value):

@@ -46,8 +46,7 @@ class App(PersistentMapping):
 
 class Users(IndexFolder):
     def __init__(self):
-        super(Users, self).__init__(email    = CatalogFieldIndex('email'),
-                                    username = CatalogFieldIndex('username'))
+        super(Users, self).__init__(email = CatalogFieldIndex('email'))
 
     def new_user(self, user):
         self[user.username] = user
