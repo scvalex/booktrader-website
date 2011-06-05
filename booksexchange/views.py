@@ -233,7 +233,8 @@ def search(context, request):
         return {"title": book.title,
                 "subtitle": book.subtitle,
                 "authors": book.authors,
-                "publisher": book.publisher}
+                "publisher": book.publisher,
+                "image_links": book.image_links}
 
     query = request.params.items()
 
