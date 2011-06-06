@@ -67,16 +67,19 @@ def login(context, request):
 
 @view_config(context=Users, name='logout')
 def logout(context, request):
+    if not authenticated_userid(request):
+        raise HTTPForbidden("You are not logged in.")
+
     headers = forget(request)
 
-    referrer = request.url
-
-    if referrer == request.path_url:
-        referrer = '/'
-
     request.session.flash('You are now logged out.')
+    
+    if request.referer:
+        referer = request.referer
+    else:
+        referer = '/'
 
-    raise HTTPFound(location = referrer,
+    raise HTTPFound(location = referer,
                     headers = headers)
 
 

@@ -2,25 +2,26 @@ import unittest
 
 from pyramid import testing
 
+def dummy_users():
+    from booksexchange.models import Users, User
+
+    users = Users()
+
+    user1 = User('francesco', 'f@mazzo.li', 'francesco')
+    user2 = User('ciccio', 'ciccio@gmail.com', 'ciccio')
+
+    users.new_user(user1)
+    users.new_user(user2)
+
+    return users
 
 class UsersTests(unittest.TestCase):
-    def _getTargetClass(self):
-        from booksexchange.models import Users
-        return Users
-
-    def _makeOne(self, *args):
-        return self._getTargetClass()(*args)
-
     def test_new_user(self):
         from booksexchange.models import User
         from repoze.catalog.query import Eq, NotEq
         
-        users = self._makeOne()
+        users = dummy_users()
 
-        user = User('francesco', 'f@mazzo.li', 'francesco')
-        users.new_user(user)
-
-        self.assertEqual(users['francesco'], user)
         self.assertEqual(users['francesco'].__name__, 'francesco')
         self.assertEqual(users['francesco'].__parent__, users)
         self.assertEqual(users['francesco'].username, 'francesco')
@@ -28,16 +29,13 @@ class UsersTests(unittest.TestCase):
         n, res = users.query(Eq('email', 'f@mazzo.li'))
         
         self.assertEqual(n, 1)
-        self.assertEqual(res[0], user)
+        self.assertEqual(res[0], users['francesco'])
 
     def test_update_user(self):
         from booksexchange.models import User
         from repoze.catalog.query import Eq, NotEq
 
-        users = self._makeOne()
-
-        user = User('francesco', 'f@mazzo.li', 'francesco')
-        users.new_user(user)
+        users = dummy_users()
 
         users['francesco'].email = 'e.imhotep@gmail.com'
         users.update(users['francesco'])
@@ -48,15 +46,14 @@ class UsersTests(unittest.TestCase):
         self.assertEqual(n1, 0)
 
         self.assertEqual(n2, 1)
-        self.assertEqual(res2[0], user)
+        self.assertEqual(res2[0], users['francesco'])
 
     def test_remove_user(self):
         from booksexchange.models import User
         from repoze.catalog.query import Eq, NotEq
 
-        users = self._makeOne()
+        users = dummy_users()
         
-        users.new_user(User('francesco', 'f@mazzo.li', 'francesco'))
         del users['francesco']
         
         self.assertFalse('francesco' in users)
@@ -124,7 +121,7 @@ class UserTests(unittest.TestCase):
         self.assertTrue(user.remove_book(book1))
         self.assertFalse(book1.identifier in user.want)
 
-            
+
 class LoginTests(unittest.TestCase):
     def _callFUT(self, context, request):
         from booksexchange.views import login
@@ -135,23 +132,23 @@ class LoginTests(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
-    
+
     def test_login_simple(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
         
         context = Users()
         context.new_user(User('francesco', '', 'francesco'))
-        
+
         request = testing.DummyRequest(params={'username'  : 'francesco',
                                                'password'  : 'francesco',
                                                'Login'     : None})
         request.referer = None
 
-
         with self.assertRaises(HTTPFound) as cm:
             self._callFUT(context, request)
 
+        # TODO: I have to check that remember() is called correctly
         self.assertEqual(cm.exception.status_int, 302)
         self.assertEqual(cm.exception.location, '/')
     
@@ -211,12 +208,98 @@ class LoginTests(unittest.TestCase):
         res = self._callFUT(context, request)
         self.assertTrue(isinstance(res, dict))
 
+    def test_login_already_logged(self):
+        from booksexchange.models import Users, User
+        from booksexchange.views.common import HTTPFound
+        
+        self.config.testing_securitypolicy(userid='francesco')
+
+        context = Users()
+        request = testing.DummyRequest()
+        
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.status_int, 302)
 
 
-# class ForbiddenTests(unittest.TestCase):
-#     def _callFUT(self, request):
-#         from booksexchange.views import forbidden
-#         from booksexchange.models import appmaker
+class LogoutTests(unittest.TestCase):
+    def _callFUT(self, context, request):
+        from booksexchange.views import logout
+        return logout(context, request)
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_logout_not_logged(self):
+        from booksexchange.views.common import HTTPForbidden
+        
+        context = None
+        request = testing.DummyRequest()
+
+        with self.assertRaises(HTTPForbidden) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.status_int, 403)
+
+    def test_logout_simple(self):
+        from booksexchange.views.common import HTTPFound
+        
+        self.config.testing_securitypolicy(userid='francesco')
+
+        context = None
+        request = testing.DummyRequest()
+        request.referer = None
+
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.status_int, 302)
+        self.assertEqual(cm.exception.location, '/')
+
+
+    def test_logout_redirect(self):
+        from booksexchange.views.common import HTTPFound
+
+        self.config.testing_securitypolicy(userid='francesco')
+        
+        context = None
+        request = testing.DummyRequest()
+        request.referer = '/foo'
+
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.status_int, 302)
+        self.assertEqual(cm.exception.location, '/foo')
+
+
+# class RegisterTests(unittest.TestCase):
+#     def _callFUT(self, context, request):
+#         from booksexchange.views import register
+#         return register(context, request)
+
+#     def setUp(self):
+#         self.config = testing.setUp()
+
+#     def tearDown(self):
+#         testing.tearDown()
+
+#     def test_register_simple(self):
+#         context = dummy_users()
+        
+#         request = testing.DummyRequest(params={'username' : 'max',
+#                                                'password' : 'max',
+#                                                'email'    : 'max@enpas.org'})
+
+#         res = 
+# # class ForbiddenTests(unittest.TestCase):
+# #     def _callFUT(self, request):
+# #         from booksexchange.views import forbidden
+# #         from booksexchange.models import appmaker
         
 #         request.root = appmaker({})
         
