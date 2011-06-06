@@ -7,11 +7,10 @@ from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError
 from repoze.folder           import Folder
 from repoze.catalog.catalog  import Catalog
 from repoze.catalog.document import DocumentMap
-from repoze.catalog.query    import Eq
 
 import smtplib
-from email import Header
-from email.mime.text import MIMEText
+from email                   import Header
+from email.mime.text         import MIMEText
 
 from urllib                  import urlencode
 from urllib2                 import urlopen, URLError
@@ -27,10 +26,8 @@ class AppRequest(Request):
     def user(self):
         userid = unauthenticated_userid(self)
 
-        if userid is not None:
-            (nusers, users) = self.root['users'].query(Eq('username', userid))
-            if nusers > 0:
-                return users[0]
+        if userid is not None and userid in self.root['users']:
+            return self.root['users'][userid]
 
         return None
 
