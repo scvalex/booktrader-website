@@ -135,51 +135,82 @@ class LoginTests(unittest.TestCase):
 
     def tearDown(self):
         testing.tearDown()
-
-    def test_notlogged(self):
-        from pyramid.url import resource_url
-        from pyramid.security import authenticated_userid
-        
-        context = testing.DummyResource()
-        request = testing.DummyRequest()
-        request.subpath = ['users', 'login']
-        
-        res = self._callFUT(context, request)
-
-        self.assertEqual(res.status, '302 Found')
     
-    # def test_logged_correct(self):
-    #     from booksexchange.models import Users, User
-    #     context = Users()
-    #     context.new_user(User('francesco', 'none', 'francesco'))
+    def test_login_simple(self):
+        from booksexchange.models import Users, User
+        from booksexchange.views.common import HTTPFound
         
-    #     request = testing.DummyRequest(params={'username'       : 'francesco',
-    #                                            'password'       : 'francesco',
-    #                                            'form.submitted' : True})
-    #     request.subpath = ['users', 'login']
+        context = Users()
+        context.new_user(User('francesco', '', 'francesco'))
         
-    #     res = self._callFUT(context, request)
+        request = testing.DummyRequest(params={'username'  : 'francesco',
+                                               'password'  : 'francesco',
+                                               'Login'     : None})
+        request.referer = None
 
-    #     # Right now I'm just checking that when the login is correct,
-    #     # it redirects, but that's not quite right. I don't know how
-    #     # to easily verify that the userid has been remembered from
-    #     # the response, and not from the request.
 
-    #     self.assertEqual(res.status, '302 Found')
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(context, request)
 
-    # def test_logged_wrong(self):
-    #     from booksexchange.models import Users, User
-    #     context = Users()
-    #     context.new_user(User('francesco', 'none', 'francesco'))
+        self.assertEqual(cm.exception.status_int, 302)
+        self.assertEqual(cm.exception.location, '/')
+    
+    def test_login_came_from(self):
+        from booksexchange.models import Users, User
+        from booksexchange.views.common import HTTPFound
         
-    #     request = testing.DummyRequest(params={'username'       : 'francesco',
-    #                                            'password'       : 'wrong',
-    #                                            'form.submitted' : True})
-    #     request.subpath = ['users', 'login']
+        context = Users()
+        context.new_user(User('francesco', '', 'francesco'))
         
-    #     res = self._callFUT(context, request)
+        request = testing.DummyRequest(params={'username'  : 'francesco',
+                                               'password'  : 'francesco',
+                                               'came_from' : '/foo',
+                                               'Login'     : None})
+        request.referer = None
 
-    #     self.assertTrue(not ('status' in res) or res.status != '302 Found')
+
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.status_int, 302)
+        self.assertEqual(cm.exception.location, '/foo')
+
+    def test_login_came_from_same(self):
+        from booksexchange.models import Users, User
+        from booksexchange.views.common import HTTPFound
+        
+        context = Users()
+        context.new_user(User('francesco', '', 'francesco'))
+        
+        request = testing.DummyRequest(params={'username'  : 'francesco',
+                                               'password'  : 'francesco',
+                                               'came_from' : '/users/login',
+                                               'Login'     : None})
+        request.path = '/users/login'
+        request.referer = None
+
+
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.status_int, 302)
+        self.assertEqual(cm.exception.location, '/')
+
+    def test_login_wrong(self):
+        from booksexchange.models import Users, User
+        from booksexchange.views.common import HTTPFound
+        
+        context = Users()
+        context.new_user(User('francesco', '', 'francesco'))
+        
+        request = testing.DummyRequest(params={'username'  : 'francesco',
+                                               'password'  : 'wrong',
+                                               'Login'     : None})
+        request.referer = None
+
+        res = self._callFUT(context, request)
+        self.assertTrue(isinstance(res, dict))
+
 
 
 # class ForbiddenTests(unittest.TestCase):

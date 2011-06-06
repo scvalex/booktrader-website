@@ -20,8 +20,10 @@ def login(context, request):
     if already_logged_in(request):
         raise HTTPFound(location = '/')
 
-    if 'ref' in request.params:
-        referer = request.params['ref']
+    if 'came_from' in request.params:
+        referer = request.params['came_from']
+    elif request.referer:
+        referer = request.referer
     else:
         referer = '/'
 
@@ -34,8 +36,8 @@ def login(context, request):
                                         widget  = deform.widget.PasswordWidget())
         came_from = colander.SchemaNode(colander.String(),
                                         widget  = deform.widget.HiddenWidget(),
-                                        default = referer,
-                                        missing = "/")
+                                        missing = '/',
+                                        default = referer)
 
     def validate_login(form, value):
         exc = colander.Invalid(form, '')
@@ -46,8 +48,7 @@ def login(context, request):
         if not context[value['username']].check_password(value['password']):
             raise exc
 
-    form = deform.Form(LoginSchema(validator = validate_login),
-                       buttons = ('Login',))
+    form = deform.Form(LoginSchema(validator = validate_login), buttons = ('Login',))
 
     if 'Login' in request.params:
         controls = request.params.items()
@@ -59,7 +60,7 @@ def login(context, request):
 
         request.session.flash('You are now logged in.')
 
-        raise HTTPFound(location = data['came_from'],
+        raise HTTPFound(location = referer,
                         headers  = remember(request, data['username']))
 
     return {'form': form.render()}
