@@ -10,14 +10,30 @@ def search(context, request):
         items = BooksSchema(missing=[])
         totalItems = colander.SchemaNode(colander.Integer())
 
+    def json_response(obj):
+        return Response(body = json.dumps(obj),
+                        content_type = "text/json")
+
+    def json_book(book):
+        return {"title": book.title,
+                "subtitle": book.subtitle,
+                "authors": book.authors,
+                "publisher": book.publisher,
+                "image_links": book.image_links}
+
+    query = request.params.items()
+
+    json_query = dict(query).get("format", "html") == "json"
+
     if 'Search' in request.params:
         search_form = deform.Form(SearchSchema(), buttons=('Search',))
-
-        query = request.params.items()
 
         try:
             query = search_form.validate(query)
         except deform.ValidationFailure, e:
+            if json_query:
+                return json_response({"status": "error",
+                                      "reason": "invalid fields"})
             return {'form': e.render()}
 
         search_form.schema['query'].default = query['query']
@@ -60,14 +76,20 @@ def search(context, request):
             num_items = total_items / 10 - page_indices
         page_indices = range(page_indices, page_indices + num_items)
 
+        if json_query:
+            return json_response({"status": "ok",
+                                  "total_items": total_items,
+                                  "result": [json_book(b) for b in books]})
         return {'form': search_form.render(),
                 'total_items': total_items, 'result': books,
                 'page_indices': page_indices, 'page_index': start_index / 10,
                 'make_url': make_url,
                 'next_url': next_url, 'prev_url': prev_url}
 
-    return {'result': []}
-
+    if json_query:
+        return json_response({"status": "error",
+                              "reason": "missing parameters"})
+    return {'result': None}
 
 @view_config(context=Book, renderer='books/details.mak')
 def view_book(context, request):
