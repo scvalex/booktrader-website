@@ -15,12 +15,16 @@ def search(context, request):
                         content_type = "text/json")
 
     def json_book(book):
-        return {"title": book.title,
-                "subtitle": book.subtitle,
-                "authors": book.authors,
-                "publisher": book.publisher,
-                "thumbnail": book.image_links['thumbnail'],
-                "smallThumbnail": book.image_links['smallThumbnail']}
+        r = {"title": book.title,
+             "subtitle": book.subtitle,
+             "authors": book.authors,
+             "publisher": book.publisher,
+             "thumbnail": "",
+             "smallThumbnail": ""}
+        if book.image_links is not None:
+            r['thumbnail'] = book.image_links.get('thumbnail', '')
+            r['smallThumbnail'] = book.image_links.get('smallThumbnail', '')
+        return r
 
     query = request.params.items()
 
