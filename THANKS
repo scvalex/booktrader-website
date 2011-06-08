@@ -9,5 +9,11 @@
    * License :: Public domain
    * Source  :: http://meyerweb.com/eric/tools/css/reset/
 ** booksexchange/utils.py
+   Took inspiration from a webpage to write a function to send emails
+   in unicode (send_email)
    * License :: Public domain
    * Source  :: http://mg.pov.lt/blog/unicode-emails-in-python
+** booksexchange/tests.py
+   Monkey patch to test if some function is actually sending emails.
+   * License :: Public domain
+   * Source  :: http://www.psychicorigami.com/2007/09/20/monkey-patching-pythons-smtp-lib-for-unit-testing/

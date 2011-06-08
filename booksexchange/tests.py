@@ -2,6 +2,46 @@ import unittest
 
 from pyramid import testing
 
+###############################################################################
+
+# monkey-patch smtplib so we don't send actual emails
+smtp  = None
+inbox = []
+
+class Message(object):
+    def __init__(self, sender, recipients, message):
+        self.sender     = sender
+        self.recipients = recipients
+        self.message    = message
+
+class DummySMTP(object):
+    def __init__(self, *args, **kwargs):
+        global smtp
+        smtp = self
+
+        self.username = None
+        self.password = None
+        self.has_quit = False
+
+    def login(self, username, password):
+        self.username = username
+        self.password = password
+
+    def sendmail(self, sender, recipients, message):
+        global inbox
+        inbox.append(Message(sender, recipients, message))
+        return []
+
+    def quit(self):
+        self.has_quit = True
+
+# this is the actual monkey patch (simply replacing one class with another)
+import smtplib
+smtplib.SMTP     = DummySMTP
+smtplib.SMTP_SSL = DummySMTP
+
+###############################################################################
+
 def dummy_users():
     from booksexchange.models import Users, User
 
@@ -122,6 +162,16 @@ class UserTests(unittest.TestCase):
         self.assertFalse(book1.identifier in user.want)
 
 
+
+###############################################################################
+
+email_settings = {'smtp_email'    : '',
+                  'smtp_server'   : '',
+                  'smtp_port'     : '',
+                  'smtp_username' : '',
+                  'smtp_password' : '',
+                  }
+                  
 class LoginTests(unittest.TestCase):
     def _callFUT(self, context, request):
         from booksexchange.views import login
@@ -289,40 +339,115 @@ class LogoutTests(unittest.TestCase):
 #         testing.tearDown()
 
 #     def test_register_simple(self):
+#         from booksexchange.views.common import HTTPFound
+        
 #         context = dummy_users()
-        
-#         request = testing.DummyRequest(params={'username' : 'max',
-#                                                'password' : 'max',
-#                                                'email'    : 'max@enpas.org'})
 
-#         res = 
-# # class ForbiddenTests(unittest.TestCase):
-# #     def _callFUT(self, request):
-# #         from booksexchange.views import forbidden
-# #         from booksexchange.models import appmaker
-        
-#         request.root = appmaker({})
-        
-#         return forbidden(request)
+#         request = testing.DummyRequest(POST = {'_charset_'  : 'UTF-8',
+#                                                '__formid__' : 'deform',
+#                                                'username'   : 'foo',
+#                                                '__start__'  : 'password:mapping',
+#                                                'value'      : 'password',
+#                                                'confirm'    : 'password',
+#                                                '__end__'    : 'password:mapping',
+#                                                'email'      : 'foo@foo.com',
+#                                                'Register'   : 'Register'
+#                                                }
+#                                        )
 
-#     def test_forbidden_user(self):
-#         from pyramid.testing import setUp, tearDown
+#         with self.assertRaises(HTTPFound) as cm:
+#             res = self._callFUT(context, request)
+#             print res['form']
+
+#         self.assertEqual(cm.exception.status_int, 302)
+#         self.assertEqual(cm.exception.location, '/users/max/generate_token')
+
+
         
-#         self.config = setUp()
-#         self.config.testing_securitypolicy(userid='francesco')
+class RegistrationTokenTests(unittest.TestCase):
+    def _callFUT(self, user, request):
+        from booksexchange.views import registration_token
+        return registration_token(user, request)
 
-#         request = testing.DummyRequest()
+    def setUp(self):
+        self.config = testing.setUp()
 
-#         res = self._callFUT(request)
+    def tearDown(self):
+        testing.tearDown()
 
-#         self.assertEqual(res.status, '403 Forbidden')
-
-#         tearDown(self.config)
+    def test_token_normal(self):
+        from booksexchange.models import User
         
-#     def test_forbidden_redirect(self):
-#         request = testing.DummyRequest()
-        
-#         res = self._callFUT(request)
-        
-#         self.assertEqual(res.status, '302 Found')
+        email = 'foo@gmail.com'
+        user  = User('francesco', email, 'francesco')
 
+        request                   = testing.DummyRequest()
+        request.resource_url      = lambda *args, **kwargs: ''
+        request.registry.settings = email_settings
+
+        self._callFUT(user, request)
+
+        self.assertTrue(len(inbox) > 0)
+        message = inbox.pop()
+        self.assertEqual(len(message.recipients), 1)
+        self.assertEqual(message.recipients[0], email)
+        self.assertTrue(hasattr(user, '_token'))
+
+    def test_token_already_confirmed(self):
+        from booksexchange.models import User
+        from booksexchange.views.common import HTTPBadRequest
+
+        user           = User('francesco', '', 'francesco')
+        user.confirmed = True
+        
+        request = testing.DummyRequest()
+
+        with self.assertRaises(HTTPBadRequest):
+            self._callFUT(user, request)
+
+
+class ConfirmRegistrationTests(unittest.TestCase):
+    def _callFUT(self, user, request):
+        from booksexchange.views import confirm_registration
+        return confirm_registration(user, request)
+
+    def test_confirm_normal(self):
+        from booksexchange.models import User
+        from booksexchange.views.common import HTTPFound
+
+        user  = User('francesco', 'foo@gmail.com', 'francesco')
+        token = user.generate_token()
+
+        request = testing.DummyRequest(params = {'token':token})
+
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(user, request)
+
+        self.assertTrue(user.confirmed)
+        self.assertEqual(cm.exception.location, '/')
+
+    def test_confirm_already_confirmed(self):
+        from booksexchange.models import User
+        from booksexchange.views.common import HTTPBadRequest
+
+        user           = User('francesco', '', 'francesco')
+        user.confirmed = True
+
+        request = testing.DummyRequest(params = {'token':''})
+
+        with self.assertRaises(HTTPBadRequest):
+            self._callFUT(user, request)
+
+    def test_confirm_no_token(self):
+        from booksexchange.models import User
+        from booksexchange.views.common import HTTPBadRequest
+
+        user = User('francesco', '', 'francesco')
+
+        request = testing.DummyRequest()
+
+        with self.assertRaises(HTTPBadRequest):
+            self._callFUT(user, request)
+        
+
+###############################################################################

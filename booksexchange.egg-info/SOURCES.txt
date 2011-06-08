@@ -1,9 +1,7 @@
-.gitignore
 CHANGES.txt
 DoC.ini
 MANIFEST.in
 README.txt
-THANKS
 development.ini
 production.ini
 setup.cfg
@@ -14,7 +12,6 @@ booksexchange/schemas.py
 booksexchange/security.py
 booksexchange/tests.py
 booksexchange/utils.py
-booksexchange/views.py
 booksexchange.egg-info/PKG-INFO
 booksexchange.egg-info/SOURCES.txt
 booksexchange.egg-info/dependency_links.txt
@@ -45,7 +42,9 @@ booksexchange/templates/users/home.mak
 booksexchange/templates/users/login.mak
 booksexchange/templates/users/register.mak
 booksexchange/templates/users/registration_token.mak
-scripts/deploy.sh
-scripts/hello.cgi
-scripts/remote_deploy.sh
-scripts/run.cgi
+booksexchange/views/__init__.py
+booksexchange/views/book.py
+booksexchange/views/common.py
+booksexchange/views/group.py
+booksexchange/views/message.py
+booksexchange/views/user.py

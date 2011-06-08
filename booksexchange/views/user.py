@@ -15,6 +15,29 @@ def already_logged_in(request):
 
     return False
 
+
+def login_schema(users, referer):
+
+    class LoginSchema(colander.Schema):
+        username  = colander.SchemaNode(colander.String())
+        password  = colander.SchemaNode(colander.String(),
+                                        widget  = deform.widget.PasswordWidget())
+        came_from = colander.SchemaNode(colander.String(),
+                                        widget  = deform.widget.HiddenWidget(),
+                                        missing = '/',
+                                        default = referer)
+
+    def validate_login(form, value):
+        exc = colander.Invalid(form, '')
+        exc['username'] = 'Invalid username/password.'
+        if value['username'] not in users:
+            raise exc
+
+        if not users[value['username']].check_password(value['password']):
+            raise exc
+
+    return LoginSchema(validator = validate_login)
+    
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def login(context, request):
     if already_logged_in(request):
@@ -30,25 +53,7 @@ def login(context, request):
     if referer == request.path:
         referer = '/'
 
-    class LoginSchema(colander.Schema):
-        username  = colander.SchemaNode(colander.String())
-        password  = colander.SchemaNode(colander.String(),
-                                        widget  = deform.widget.PasswordWidget())
-        came_from = colander.SchemaNode(colander.String(),
-                                        widget  = deform.widget.HiddenWidget(),
-                                        missing = '/',
-                                        default = referer)
-
-    def validate_login(form, value):
-        exc = colander.Invalid(form, '')
-        exc['username'] = 'Invalid username/password.'
-        if value['username'] not in context:
-            raise exc
-
-        if not context[value['username']].check_password(value['password']):
-            raise exc
-
-    form = deform.Form(LoginSchema(validator = validate_login), buttons = ('Login',))
+    form = deform.Form(login_schema(context, referer), buttons = ('Login',))
 
     if 'Login' in request.params:
         controls = request.params.items()
@@ -82,22 +87,17 @@ def logout(context, request):
     raise HTTPFound(location = referer,
                     headers = headers)
 
-
-@view_config(context=Users, name='register', renderer='users/register.mak')
-def register(context, request):
-    if already_logged_in(request):
-        raise HTTPFound(location = '/')
-
+def register_schema(users):
     def validate_user(node, value):
-        colander.Length(min=5, max=200)(node, value)
+        colander.Length(min=2, max=200)(node, value)
 
-        if value in context:
+        if value in users:
             raise colander.Invalid(node, '"' + value + '" is already taken.')
 
     def validate_email(node, value):
         colander.Email()(node, value)
 
-        if context.query(Eq('email', value))[0] != 0:
+        if users.query(Eq('email', value))[0] != 0:
             raise colander.Invalid(node, 'The email you inserted is already present.')
 
     class RegisterSchema(colander.Schema):
@@ -110,9 +110,15 @@ def register(context, request):
         email    = colander.SchemaNode(colander.String(),
                                        validator = validate_email)
 
+    return RegisterSchema()
 
-    schema = RegisterSchema()
-    form   = deform.Form(schema, buttons=('Register',))
+@view_config(context=Users, name='register', renderer='users/register.mak')
+def register(context, request):
+    if already_logged_in(request):
+        raise HTTPFound(location = '/')
+
+
+    form = deform.Form(register_schema(context), buttons=('Register',))
 
     if 'Register' in request.params:
         controls = request.params.items()
@@ -137,7 +143,7 @@ def register(context, request):
              renderer='users/registration_token.mak')
 def registration_token(context, request):
     if context.confirmed:
-        raise HTTPBadRequest("user already confirmed")
+        raise HTTPBadRequest('User already confirmed.')
 
     token = context.generate_token()
 
@@ -158,8 +164,10 @@ def registration_token(context, request):
 
 @view_config(context=User, name='confirm')
 def confirm_registration(context, request):
-    if not 'token' in request.params or context.confirmed:
-        raise Forbidden()
+    if context.confirmed:
+        raise HTTPBadRequest('User already confirmed')
+    if not 'token' in request.params:
+        raise HTTPBadRequest('No token')
 
     token = request.params['token']
 
