@@ -19,7 +19,8 @@ def search(context, request):
                 "subtitle": book.subtitle,
                 "authors": book.authors,
                 "publisher": book.publisher,
-                "image_links": book.image_links}
+                "thumbnail": book.image_links['thumbnail'],
+                "smallThumbnail": book.image_links['smallThumbnail']}
 
     query = request.params.items()
 
