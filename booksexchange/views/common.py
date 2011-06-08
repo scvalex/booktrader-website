@@ -2,6 +2,7 @@ from pyramid.view           import view_config
 from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
 from pyramid.security       import remember, forget, authenticated_userid
+from pyramid.response       import Response
 from pyramid.httpexceptions import (HTTPFound, HTTPForbidden,
                                     HTTPInternalServerError, HTTPBadRequest,
                                     HTTPException, HTTPRedirection,
