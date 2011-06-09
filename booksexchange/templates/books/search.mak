@@ -1,3 +1,4 @@
+
 <%inherit file="/base.mak"/>
 
 <%namespace name="books_common" file="/books/common.mak" />

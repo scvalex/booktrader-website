@@ -470,7 +470,7 @@ class SearchTests(unittest.TestCase):
         self.assertTrue('total_items' in res)
         self.assertTrue('result' in res)
 
-    def test_search_json(self):
+    def test_search_normal_json(self):
         from booksexchange.models import App
         import json
 
@@ -488,3 +488,45 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(dumps['status'], 'ok')
         self.assertTrue('total_items' in dumps)
         self.assertTrue('result' in dumps)
+
+
+    def test_search_no_search(self):
+        from booksexchange.models import App
+        from booksexchange.views.common import HTTPBadRequest
+
+        request = testing.DummyRequest()
+        request.root = App()
+        context = request.root['books']
+
+        with self.assertRaises(HTTPBadRequest) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.detail, 'No search.')
+            
+    def test_search_invalid(self):
+        from booksexchange.models import App
+        from booksexchange.views.common import HTTPFound
+
+        request = testing.DummyRequest(params = {'Search':None})
+        request.root = App()
+        request.referer = None
+        context = request.root['books']
+
+        with self.assertRaises(HTTPFound):
+            self._callFUT(context, request)
+
+    def test_search_invalid_json(self):
+        from booksexchange.models import App
+        from booksexchange.views.common import HTTPFound
+        import json
+
+        request = testing.DummyRequest(params = {'Search' : None,
+                                                 'format' : 'json'})
+        request.root = App()
+        context = request.root['books']
+
+        res = json.loads(self._callFUT(context, request).body)
+
+        self.assertTrue('status' in res)
+        self.assertEqual(res['status'], 'error')
+        self.assertTrue('reason' in res)
