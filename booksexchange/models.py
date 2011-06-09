@@ -257,6 +257,14 @@ class Book(Persistent):
                 r += author + ", "
         return r
 
+    def to_dict(self):
+        return {"title": self.title,
+                "subtitle": self.subtitle,
+                "authors": self.authors,
+                "publisher": self.publisher,
+                "image_links": self.image_links
+                }
+
 
 class Events(Persistent):
     def __init__(self):

@@ -14,13 +14,6 @@ def search(context, request):
         return Response(body = json.dumps(obj),
                         content_type = "text/json")
 
-    def json_book(book):
-        return {"title": book.title,
-                "subtitle": book.subtitle,
-                "authors": book.authors,
-                "publisher": book.publisher,
-                "image_links": book.image_links}
-
     query = request.params.items()
 
     json_query = dict(query).get("format", "html") == "json"
@@ -79,7 +72,7 @@ def search(context, request):
         if json_query:
             return json_response({"status": "ok",
                                   "total_items": total_items,
-                                  "result": [json_book(b) for b in books]})
+                                  "result": [b.to_dict() for b in books]})
         return {'form': search_form.render(),
                 'total_items': total_items, 'result': books,
                 'page_indices': page_indices, 'page_index': start_index / 10,
