@@ -469,26 +469,6 @@ class SearchTests(unittest.TestCase):
         self.assertTrue('total_items' in res)
         self.assertTrue('result' in res)
 
-    def test_search_normal_json(self):
-        from booksexchange.models import App
-        import json
-
-        request = testing.DummyRequest(params = {'query'  : 'rings',
-                                                 'format' : 'json',
-                                                 'Search' : 'Search'})
-        request.root = App()
-        context = request.root['books']
-
-        res = self._callFUT(context, request)
-        self.assertEqual(res.content_type, 'text/json')
-
-        dumps = json.loads(res.body)
-        self.assertTrue('status' in dumps)
-        self.assertEqual(dumps['status'], 'ok')
-        self.assertTrue('total_items' in dumps)
-        self.assertTrue('result' in dumps)
-
-
     def test_search_no_search(self):
         from booksexchange.models import App
         from booksexchange.views.common import HTTPBadRequest
@@ -514,18 +494,14 @@ class SearchTests(unittest.TestCase):
         with self.assertRaises(HTTPFound):
             self._callFUT(context, request)
 
-    def test_search_invalid_json(self):
-        from booksexchange.models import App
-        from booksexchange.views.common import HTTPFound
-        import json
+# @wsgify.middleware
+# def superspecial_factory(app, req):
+#     try:
+#         return app(req)
+#     except HTTPInternalServerError:
+#         raise
+#     except HTTPException as e:
+#         body = Template(filename = "booksexchange/templates/exception.mak")
+#         body = resp.render(**{'status': e.status, 'detail': e.detail})
 
-        request = testing.DummyRequest(params = {'Search' : None,
-                                                 'format' : 'json'})
-        request.root = App()
-        context = request.root['books']
-
-        res = json.loads(self._callFUT(context, request).body)
-
-        self.assertTrue('status' in res)
-        self.assertEqual(res['status'], 'error')
-        self.assertTrue('reason' in res)
+#         return Response(e.status, body=body, headers=dict(e.headers.items()))

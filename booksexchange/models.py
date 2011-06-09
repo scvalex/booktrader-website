@@ -257,14 +257,17 @@ class Book(Persistent):
                 r += author + ", "
         return r
 
-    def to_dict(self):
-        return {"title": self.title,
-                "subtitle": self.subtitle,
-                "authors": self.authors,
-                "publisher": self.publisher,
-                "image_links": self.image_links
-                }
-
+    def __dict__(self):
+        r = {"title": self.title,
+             "subtitle": self.subtitle,
+             "authors": self.authors,
+             "publisher": self.publisher,
+             "thumbnail": "",
+             "smallThumbnail": ""}
+        if self.image_links is not None:
+            r['thumbnail'] = self.image_links.get('thumbnail', '')
+            r['smallThumbnail'] = self.image_links.get('smallThumbnail', '')
+        return r
 
 class Events(Persistent):
     def __init__(self):

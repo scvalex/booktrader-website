@@ -15,12 +15,7 @@ def search(context, request):
         items = BooksSchema(missing=[])
         totalItems = colander.SchemaNode(colander.Integer())
 
-    def json_response(obj):
-        return Response(body = json.dumps(obj),
-                        content_type = "text/json")
-
     query = request.params.items()
-    json_query = request.GET.get("format", "html") == "json"
 
     search_form = deform.Form(SearchSchema(), buttons=('Search',))
 
@@ -28,15 +23,12 @@ def search(context, request):
         query = search_form.validate(query)
     except deform.ValidationFailure, e:
         # This basically means that there is no query
-        if json_query:
-            return json_response({"status": "error",
-                                  "reason": "invalid fields"})
         redir = request.referer and request.referer or '/'
         raise HTTPFound(location = redir)
-
+    
     search_form.schema['query'].default = query['query']
     start_index = query['start_index']
-
+    
     try:
         rsp = request.root['cache'].get(
             request.path_qs,
@@ -63,10 +55,6 @@ def search(context, request):
         num_items = total_items / books_per_page - page_indices
     page_indices = range(page_indices, page_indices + num_items + 1)
 
-    if json_query:
-        return json_response({"status": "ok",
-                              "total_items": total_items,
-                              "result": [b.to_dict() for b in books]})
     return {'total_items': total_items,
             'result': books,
             'page_indices': page_indices,

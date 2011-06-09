@@ -3,10 +3,13 @@ from pyramid.request         import Request
 from pyramid.decorator       import reify
 from pyramid.security        import unauthenticated_userid
 from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError
+from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 
 from repoze.folder           import Folder
 from repoze.catalog.catalog  import Catalog
 from repoze.catalog.document import DocumentMap
+
+from webob.dec               import wsgify
 
 import smtplib
 from email                   import Header
@@ -20,6 +23,9 @@ import deform
 from mako.template           import Template
 
 from booksexchange.schemas   import SearchSchema
+
+import json
+
 
 class AppRequest(Request):
     @reify
@@ -40,6 +46,28 @@ class AppRequest(Request):
                            formid  = 'search_bar',
                            method  = 'GET').render()
 
+def json_page(params):
+    return params.get('format', 'html') == 'json'
+
+class AppEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, '__dict__'):
+            return obj.__dict__()
+        return json.JSONEncoder.default(self, obj)
+
+def app_renderer_factory(info):
+    def render(value, system):
+        request = system['request']
+        
+        if json_page(request.params):
+            request.response_content_type = 'application/json'
+            value['status'] = 'ok'
+            return json.dumps(value, cls=AppEncoder)
+        
+        return mako_renderer_factory(info)(value, system)
+    
+    return render
+    
 class IndexFolder(Folder):
     def __init__(self, **kwargs):
         super(IndexFolder, self).__init__()
@@ -156,7 +184,25 @@ class GoogleBooksCatalogue(object):
             raise CatalogueException(str(e), url = url)
 
 
+
+@wsgify.middleware
+def superspecial(app, req):
+    try:
+        return app
+    except HTTPInternalServerError:
+        raise
+    except HTTPException, e:
+        resp = Template(filename = "booksexchange/templates/exception.mak")
+        resp = resp.render(**{'status': e.status, 'detail': e.detail})
+        
+        headers = dict(e.headers.items())
+        headers['Content-Length'] = len(resp)
+        start_response(e.status, headers.items())
+        return resp
+    
+
 def superspecial_factory(conf, **kw):
+
     class SuperSpecial(object):
         """ Exception capturing middleware"""
 
@@ -171,10 +217,10 @@ def superspecial_factory(conf, **kw):
             except HTTPException, e:
                 resp = Template(filename = "booksexchange/templates/exception.mak")
                 resp = resp.render(**{'status': e.status, 'detail': e.detail})
+                
                 headers = dict(e.headers.items())
                 headers['Content-Length'] = len(resp)
                 start_response(e.status, headers.items())
                 return resp
 
     return SuperSpecial
-
