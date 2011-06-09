@@ -493,15 +493,3 @@ class SearchTests(unittest.TestCase):
 
         with self.assertRaises(HTTPFound):
             self._callFUT(context, request)
-
-# @wsgify.middleware
-# def superspecial_factory(app, req):
-#     try:
-#         return app(req)
-#     except HTTPInternalServerError:
-#         raise
-#     except HTTPException as e:
-#         body = Template(filename = "booksexchange/templates/exception.mak")
-#         body = resp.render(**{'status': e.status, 'detail': e.detail})
-
-#         return Response(e.status, body=body, headers=dict(e.headers.items()))

@@ -8,7 +8,7 @@ from repoze.zodbconn.finder import PersistentApplicationFinder
 
 from booksexchange.models   import appmaker
 from booksexchange.security import groupfinder
-from booksexchange.utils    import AppRequest
+from booksexchange.utils    import AppRequest, catch_exc
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -42,4 +42,8 @@ def main(global_config, **settings):
     config.add_renderer('.mako', 'booksexchange.utils.app_renderer_factory')
 
     config.scan('booksexchange')
-    return config.make_wsgi_app()
+
+    pyr_app      = config.make_wsgi_app()
+    app          = catch_exc(pyr_app)
+    app.registry = pyr_app.registry
+    return app

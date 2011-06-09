@@ -4,6 +4,7 @@ from pyramid.decorator       import reify
 from pyramid.security        import unauthenticated_userid
 from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError
 from pyramid.mako_templating import renderer_factory as mako_renderer_factory
+from pyramid.response        import Response
 
 from repoze.folder           import Folder
 from repoze.catalog.catalog  import Catalog
@@ -182,45 +183,15 @@ class GoogleBooksCatalogue(object):
             return urlopen(url, timeout=10)
         except URLError, e:
             raise CatalogueException(str(e), url = url)
-
-
-
+    
 @wsgify.middleware
-def superspecial(app, req):
+def catch_exc(req, app):
     try:
-        return app
+        return req.get_response(app)
     except HTTPInternalServerError:
         raise
-    except HTTPException, e:
+    except HTTPException as e:
         resp = Template(filename = "booksexchange/templates/exception.mak")
         resp = resp.render(**{'status': e.status, 'detail': e.detail})
         
-        headers = dict(e.headers.items())
-        headers['Content-Length'] = len(resp)
-        start_response(e.status, headers.items())
-        return resp
-    
-
-def superspecial_factory(conf, **kw):
-
-    class SuperSpecial(object):
-        """ Exception capturing middleware"""
-
-        def __init__(self, application):
-            self.app = application
-
-        def __call__(self, environ, start_response):
-            try:
-                return self.app(environ, start_response)
-            except HTTPInternalServerError:
-                raise
-            except HTTPException, e:
-                resp = Template(filename = "booksexchange/templates/exception.mak")
-                resp = resp.render(**{'status': e.status, 'detail': e.detail})
-                
-                headers = dict(e.headers.items())
-                headers['Content-Length'] = len(resp)
-                start_response(e.status, headers.items())
-                return resp
-
-    return SuperSpecial
+        return Response(body=resp, status=e.status)
