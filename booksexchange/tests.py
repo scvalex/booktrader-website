@@ -451,3 +451,57 @@ class ConfirmRegistrationTests(unittest.TestCase):
         
 
 ###############################################################################
+
+class SearchTests(unittest.TestCase):
+    def _callFUT(self, books, request):
+        from booksexchange.views import search
+        return search(books, request)
+
+    def test_search_normal(self):
+        from booksexchange.models import App
+
+        request = testing.DummyRequest(params = {'query'  : 'rings',
+                                                 'Search' : 'Search'})
+        request.root = App()
+        context = request.root['books']
+
+        res = self._callFUT(context, request)
+        self.assertTrue('total_items' in res)
+        self.assertTrue('result' in res)
+
+    def test_search_no_search(self):
+        from booksexchange.models import App
+        from booksexchange.views.common import HTTPBadRequest
+
+        request = testing.DummyRequest()
+        request.root = App()
+        context = request.root['books']
+
+        with self.assertRaises(HTTPBadRequest) as cm:
+            self._callFUT(context, request)
+
+        self.assertEqual(cm.exception.detail, 'No search.')
+            
+    def test_search_invalid(self):
+        from booksexchange.models import App
+        from booksexchange.views.common import HTTPFound
+
+        request = testing.DummyRequest(params = {'Search':None})
+        request.root = App()
+        request.referer = None
+        context = request.root['books']
+
+        with self.assertRaises(HTTPFound):
+            self._callFUT(context, request)
+
+# @wsgify.middleware
+# def superspecial_factory(app, req):
+#     try:
+#         return app(req)
+#     except HTTPInternalServerError:
+#         raise
+#     except HTTPException as e:
+#         body = Template(filename = "booksexchange/templates/exception.mak")
+#         body = resp.render(**{'status': e.status, 'detail': e.detail})
+
+#         return Response(e.status, body=body, headers=dict(e.headers.items()))

@@ -38,5 +38,8 @@ def main(global_config, **settings):
     config.add_static_view('static', 'booksexchange:static')
     config.add_static_view('deform', 'deform:static')
 
+    config.add_renderer('.mak', 'booksexchange.utils.app_renderer_factory')
+    config.add_renderer('.mako', 'booksexchange.utils.app_renderer_factory')
+
     config.scan('booksexchange')
     return config.make_wsgi_app()

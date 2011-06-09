@@ -14,16 +14,14 @@ import colander
 import deform
 import json
 import re
+import urllib
 
 from booksexchange.models   import *
 from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
-
-
-
 @view_config(context=HTTPRedirection)
-def httpexception(context, request):
+def http_redirect(context, request):
     return context
 
 

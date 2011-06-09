@@ -257,7 +257,7 @@ class Book(Persistent):
                 r += author + ", "
         return r
 
-    def to_dict(self):
+    def __dict__(self):
         r = {"title": self.title,
              "subtitle": self.subtitle,
              "authors": self.authors,

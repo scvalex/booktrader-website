@@ -1,3 +1,4 @@
+
 <%inherit file="/base.mak"/>
 
 <%namespace name="books_common" file="/books/common.mak" />
@@ -8,18 +9,20 @@
   ${books_common.books_list(result)}
 
   <div id="pagination">
-    % if prev_url:
-      <a href="${prev_url}">Previous</a>
+    % if page_index > 0:
+      <a href="${books_common.paginate_url(page_index - 1, books_per_page)}">
+        Previous</a>
     % endif
     % for i in page_indices:
       % if i == page_index:
         ${i}
       % else:
-        <a href="${make_url(i)}">${i}</a>
+        <a href="${books_common.paginate_url(i, books_per_page)}">${i}</a>
       % endif
     % endfor
-    % if next_url:
-      <a href="${next_url}">Next</a>
+    % if (page_index + 1) * books_per_page < total_items:
+      <a href="${books_common.paginate_url(page_index + 1, books_per_page)}">
+        Next</a>
     % endif
   </div>
 % endif
