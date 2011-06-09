@@ -14,6 +14,7 @@ import colander
 import deform
 import json
 import re
+import urllib
 
 from booksexchange.models   import *
 from booksexchange.schemas  import *

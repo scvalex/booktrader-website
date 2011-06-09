@@ -169,3 +169,12 @@
         </ul>
       </div>
 </%def>
+
+<%def name="paginate_url(i, books_per_page)">
+  <%
+  import urllib
+  query = request.GET
+  query['start_index'] = str(i * 10)
+  return request.path + '?' + urllib.urlencode(query)
+  %>
+</%def>

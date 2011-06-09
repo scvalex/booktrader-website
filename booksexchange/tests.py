@@ -466,7 +466,6 @@ class SearchTests(unittest.TestCase):
         context = request.root['books']
 
         res = self._callFUT(context, request)
-        self.assertTrue('form' in res)
         self.assertTrue('total_items' in res)
         self.assertTrue('result' in res)
 

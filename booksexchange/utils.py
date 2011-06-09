@@ -40,7 +40,6 @@ class AppRequest(Request):
                            formid  = 'search_bar',
                            method  = 'GET').render()
 
-
 class IndexFolder(Folder):
     def __init__(self, **kwargs):
         super(IndexFolder, self).__init__()
@@ -178,3 +177,4 @@ def superspecial_factory(conf, **kw):
                 return resp
 
     return SuperSpecial
+
