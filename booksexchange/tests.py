@@ -451,3 +451,40 @@ class ConfirmRegistrationTests(unittest.TestCase):
         
 
 ###############################################################################
+
+class SearchTests(unittest.TestCase):
+    def _callFUT(self, books, request):
+        from booksexchange.views import search
+        return search(books, request)
+
+    def test_search_normal(self):
+        from booksexchange.models import App
+
+        request = testing.DummyRequest(params = {'query'  : 'rings',
+                                                 'Search' : 'Search'})
+        request.root = App()
+        context = request.root['books']
+
+        res = self._callFUT(context, request)
+        self.assertTrue('form' in res)
+        self.assertTrue('total_items' in res)
+        self.assertTrue('result' in res)
+
+    def test_search_json(self):
+        from booksexchange.models import App
+        import json
+
+        request = testing.DummyRequest(params = {'query'  : 'rings',
+                                                 'format' : 'json',
+                                                 'Search' : 'Search'})
+        request.root = App()
+        context = request.root['books']
+
+        res = self._callFUT(context, request)
+        self.assertEqual(res.content_type, 'text/json')
+
+        dumps = json.loads(res.body)
+        self.assertTrue('status' in dumps)
+        self.assertEqual(dumps['status'], 'ok')
+        self.assertTrue('total_items' in dumps)
+        self.assertTrue('result' in dumps)
