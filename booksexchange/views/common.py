@@ -20,10 +20,6 @@ from booksexchange.models   import *
 from booksexchange.schemas  import *
 from booksexchange.utils    import send_email, CatalogueException
 
-@view_config(context=HTTPRedirection)
-def http_redirect(context, request):
-    return context
-
 
 @view_config(context=App, renderer='home.mak')
 def home(context, request):

@@ -47,8 +47,8 @@ class AppRequest(Request):
                            formid  = 'search_bar',
                            method  = 'GET').render()
 
-def json_page(params):
-    return params.get('format', 'html') == 'json'
+def json_request(request):
+    return request.params.get('format', 'html') == 'json'
 
 class AppEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -60,7 +60,7 @@ def app_renderer_factory(info):
     def render(value, system):
         request = system['request']
         
-        if json_page(request.params):
+        if json_request(request):
             request.response_content_type = 'application/json'
             value['status'] = 'ok'
             return json.dumps(value, cls=AppEncoder)
@@ -191,7 +191,14 @@ def catch_exc(req, app):
     except HTTPInternalServerError:
         raise
     except HTTPException as e:
-        resp = Template(filename = "booksexchange/templates/exception.mak")
-        resp = resp.render(**{'status': e.status, 'detail': e.detail})
-        
-        return Response(body=resp, status=e.status)
+        if json_request(req):
+            resp = json.dumps({'status': 'error', 'reason': e.detail})
+        else:
+            resp = Template(filename = "booksexchange/templates/exception.mak")
+            resp = resp.render(**{'status': e.status, 'detail': e.detail})
+
+        headers = e.headers
+        if 'Content-Length' in headers:
+            del headers['Content-Length']
+
+        return Response(body=resp, status=e.status, headers=headers)
