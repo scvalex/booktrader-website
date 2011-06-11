@@ -243,7 +243,23 @@ class LoginTests(unittest.TestCase):
         self.assertEqual(cm.exception.status_int, 302)
         self.assertEqual(cm.exception.location, '/')
 
-    def test_login_wrong(self):
+
+    def test_login_wrong1(self):
+        from booksexchange.models import Users, User
+        from booksexchange.views.common import HTTPFound
+        
+        context = Users()
+        context.new_user(User('francesco', '', 'francesco'))
+        
+        request = testing.DummyRequest(params={'username'  : 'imnotther',
+                                               'password'  : 'wrong',
+                                               'Login'     : None})
+        request.referer = None
+
+        res = self._callFUT(context, request)
+        self.assertTrue(isinstance(res, dict))
+
+    def test_login_wrong2(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
         
@@ -715,3 +731,5 @@ class RemoveBookTests(unittest.TestCase):
             self._callFUT(book, request)
 
         
+###############################################################################
+
