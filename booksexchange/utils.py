@@ -2,7 +2,7 @@ from pyramid.traversal       import resource_path, find_resource, find_root
 from pyramid.request         import Request
 from pyramid.decorator       import reify
 from pyramid.security        import unauthenticated_userid
-from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError
+from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound
 from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 from pyramid.response        import Response
 
@@ -198,7 +198,10 @@ def catch_exc(req, app):
         raise
     except HTTPException as e:
         if json_request(req):
-            resp = json.dumps({'status': 'error', 'reason': e.detail})
+            if isinstance(e, HTTPFound):
+                resp = json.dumps({'status': 'ok'})
+            else:
+                resp = json.dumps({'status': 'error', 'reason': str(e)})
         else:
             resp = Template(filename = "booksexchange/templates/exception.mak")
             resp = resp.render(**{'status': e.status, 'detail': e.detail})
