@@ -258,7 +258,8 @@ class Book(Persistent):
         return r
 
     def __dict__(self):
-        r = {"title": self.title,
+        r = {"identifier": self.identifier,
+             "title": self.title,
              "subtitle": self.subtitle,
              "authors": self.authors,
              "publisher": self.publisher,
