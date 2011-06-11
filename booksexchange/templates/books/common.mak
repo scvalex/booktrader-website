@@ -174,7 +174,7 @@
   <%
   import urllib
   query = request.GET
-  query['start_index'] = str(i * 10)
+  query['start_index'] = str(i * books_per_page)
   return request.path + '?' + urllib.urlencode(query)
   %>
 </%def>

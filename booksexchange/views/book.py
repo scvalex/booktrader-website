@@ -3,8 +3,6 @@ from booksexchange.views.common import *
 
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
-    books_per_page = 10
-
     if 'Search' not in request.params:
         raise HTTPBadRequest('No search.')
 
@@ -37,6 +35,8 @@ def search(context, request):
     except CatalogueException, e:
         raise HTTPInternalServerError("no response from catalogue: " +
                                       str(e))
+
+    books_per_page = query['limit']
 
     books = json.loads(rsp)
     try:
