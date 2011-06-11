@@ -53,7 +53,9 @@ def json_request(request):
 class AppEncoder(json.JSONEncoder):
     def default(self, obj):
         if hasattr(obj, '__dict__'):
-            return obj.__dict__()
+            if (callable(obj.__dict__)):
+                return obj.__dict__()
+            return obj.__dict__
         return json.JSONEncoder.default(self, obj)
 
 def app_renderer_factory(info):

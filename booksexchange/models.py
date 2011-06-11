@@ -160,6 +160,10 @@ class User(Persistent):
         check_class(event, Event, "that is not eventual enough")
         self.events.insert(0, event)
 
+    def __dict__(self):
+        return {"owned": self.owned,
+                "want": self.want}
+
 
 class Books(IndexFolder):
     def __init__(self):
