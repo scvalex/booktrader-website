@@ -162,7 +162,9 @@ class User(Persistent):
 
     def __dict__(self):
         return {"owned": self.owned,
-                "want": self.want}
+                "want": self.want,
+                "events": self.events,
+                "gravatar": self.gravatar(64)}
 
 
 class Books(IndexFolder):

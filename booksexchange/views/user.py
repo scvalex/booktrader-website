@@ -186,4 +186,5 @@ def confirm_registration(context, request):
 def user_home(context, request):
     return {'owned': context.owned.values(),
             'want':  context.want.values(),
-            'events': context.events}
+            'events': context.events,
+            'gravatar': context.gravatar(64)}
