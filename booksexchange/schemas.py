@@ -10,6 +10,9 @@ class SearchSchema(colander.Schema):
     start_index = colander.SchemaNode(colander.Integer(),
                                       missing = 0,
                                       widget = deform.widget.HiddenWidget())
+    limit = colander.SchemaNode(colander.Integer(),
+                                missing = 10,
+                                widget = deform.widget.HiddenWidget())
 
 class AuthorsSchema(colander.SequenceSchema):
     author = colander.SchemaNode(utf8_string())

@@ -167,10 +167,11 @@ class GoogleBooksCatalogue(object):
     key = 'AIzaSyCwMw-h8bLntjsRydO8AXjwinfD5HnGpz4' # scvalex
     base_url = 'https://www.googleapis.com/books/v1'
 
-    def query(self, qstr, start_index = 0):
+    def query(self, qstr, start_index = 0, limit = 10):
         url = "%s/volumes?%s" % (GoogleBooksCatalogue.base_url,
                                  urlencode({"q": qstr, "key": self.key,
-                                            "startIndex": start_index}))
+                                            "startIndex": start_index,
+                                            "maxResults": limit}))
         try:
             return urlopen(url, timeout=10)
         except URLError, e:

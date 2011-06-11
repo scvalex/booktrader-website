@@ -32,7 +32,8 @@ def search(context, request):
     try:
         rsp = request.root['cache'].get(
             request.path_qs,
-            lambda: context.catalogue.query(query['query'], start_index).read())
+            lambda: context.catalogue.query(query['query'], start_index,
+                                            query['limit']).read())
     except CatalogueException, e:
         raise HTTPInternalServerError("no response from catalogue: " +
                                       str(e))
