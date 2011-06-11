@@ -63,7 +63,7 @@ class BookSchema(colander.MappingSchema):
 
 class GroupSchema(colander.MappingSchema):
     types       = ['public', 'private']
-    
+
     name        = colander.SchemaNode(utf8_string(),
                                       validator = colander.Length(min=5, max=400),
                                       title     = "Group name")
@@ -77,5 +77,3 @@ class GroupSchema(colander.MappingSchema):
         title     = "Group privacy",
         widget    = deform.widget.SelectWidget(values=[(t, t.capitalize())
                                                        for t in types]))
-
-        
