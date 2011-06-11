@@ -4,10 +4,10 @@ from booksexchange.views.common import *
 @view_config(context=Books, name='search', renderer='books/search.mak')
 def search(context, request):
     books_per_page = 10
-    
+
     if 'Search' not in request.params:
         raise HTTPBadRequest('No search.')
-    
+
     class BooksSchema(colander.SequenceSchema):
         book = BookSchema()
 
@@ -25,10 +25,10 @@ def search(context, request):
         # This basically means that there is no query
         redir = request.referer and request.referer or '/'
         raise HTTPFound(location = redir)
-    
+
     search_form.schema['query'].default = query['query']
     start_index = query['start_index']
-    
+
     try:
         rsp = request.root['cache'].get(
             request.path_qs,
@@ -42,7 +42,7 @@ def search(context, request):
         books = ResultSchema().deserialize(books)
     except colander.Invalid, e:
         raise HTTPInternalServerError(str(e.asdict()) + str(books))
-    
+
     total_items = books['totalItems']
     books = [context.json_to_book(vi) for vi in books['items']]
 

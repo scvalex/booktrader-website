@@ -59,16 +59,16 @@ class AppEncoder(json.JSONEncoder):
 def app_renderer_factory(info):
     def render(value, system):
         request = system['request']
-        
+
         if json_request(request):
             request.response_content_type = 'application/json'
             value['status'] = 'ok'
             return json.dumps(value, cls=AppEncoder)
-        
+
         return mako_renderer_factory(info)(value, system)
-    
+
     return render
-    
+
 class IndexFolder(Folder):
     def __init__(self, **kwargs):
         super(IndexFolder, self).__init__()
@@ -183,7 +183,7 @@ class GoogleBooksCatalogue(object):
             return urlopen(url, timeout=10)
         except URLError, e:
             raise CatalogueException(str(e), url = url)
-    
+
 @wsgify.middleware
 def catch_exc(req, app):
     try:
