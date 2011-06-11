@@ -320,6 +320,9 @@ class Event(Persistent):
 
         self.date = datetime.datetime.utcnow()
 
+    def __dict__(self):
+        return {'date': self.date}
+
 
 class HaveEvent(Event):
     def __init__(self, user, book):
@@ -328,12 +331,27 @@ class HaveEvent(Event):
         self.owner = user
         self.book  = book
 
+    def __dict__(self):
+        r = super(HaveEvent, self).__dict__()
+        r['event'] = 'have'
+        r['book'] = self.book.identifier
+        r['owner'] = self.owner.username
+        return r
+
 class WantEvent(Event):
     def __init__(self, user, book):
         super(WantEvent, self).__init__()
 
         self.coveter = user
         self.book    = book
+
+    def __dict__(self):
+        r = super(WantEvent, self).__dict__()
+        r['event'] = 'want'
+        r['book'] = self.book.identifier
+        r['coveter'] = self.coveter.username
+        return r
+
 
 class ExchangeEvent(Event):
     def __init__(self, giver, taker, apples, oranges, rating):
@@ -344,6 +362,16 @@ class ExchangeEvent(Event):
         self.apples  = apples
         self.oranges = oranges
         self.rating  = rating
+
+    def __dict__(self):
+        r = super(ExchangeEvent, self).__dict__()
+        r['event'] = 'exchange'
+        r['apples'] = [book.identifier for book in self.apples]
+        r['oranges'] = [book.identifier for book in self.oranges]
+        r['giver'] = self.giver.username
+        r['taker'] = self.taker.username
+        r['rating'] = self.rating
+        return r
 
 
 class Groups(IndexFolder):
