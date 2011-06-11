@@ -27,7 +27,7 @@ import hashlib
 class App(PersistentMapping):
     __name__   = None
     __parent__ = None
-    __acl__    = [ (Allow, 'group:users', 'loggedin') ]
+    __acl__    = [(Allow, 'group:users', 'loggedin')]
 
     def setchild(self, name, obj):
         self[name]     = obj
@@ -171,24 +171,6 @@ class Books(IndexFolder):
 
         self.catalogue = GoogleBooksCatalogue()
 
-    def __getitem__(self, key):
-        if key in ['search', 'add']:
-            raise KeyError
-
-        try:
-            return super(Books, self).__getitem__(key)
-        except KeyError, e:
-            try:
-                b = BookSchema().deserialize(json.load(self.catalogue.volume(key)))
-                return self.json_to_book(b)
-            except CatalogueException, e:
-                raise HTTPInternalServerError('no response from catalogue: ' + str(e))
-            except colander.Invalid, e:
-                raise HTTPInternalServerError(str(e.asdict()) + str(key))
-
-    def new_book(self, book):
-        self[book.identifier] = book
-
     def json_to_book(self, b):
         id          = b['id']
 
@@ -208,6 +190,23 @@ class Books(IndexFolder):
         book.__parent__ = self
         return book
 
+    def __getitem__(self, key):
+        if key in ['search', 'add']:
+            raise KeyError
+
+        try:
+            return super(Books, self).__getitem__(key)
+        except KeyError, e:
+            try:
+                b = BookSchema().deserialize(json.load(self.catalogue.volume(key)))
+                return self.json_to_book(b)
+            except CatalogueException, e:
+                raise HTTPInternalServerError('no response from catalogue: ' + str(e))
+            except colander.Invalid, e:
+                raise HTTPInternalServerError(str(e.asdict()) + str(key))
+
+    def new_book(self, book):
+        self[book.identifier] = book
 
 class Book(Persistent):
     def __init__(self, id, title, subtitle, authors, publisher, date,
