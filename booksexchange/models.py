@@ -218,7 +218,10 @@ class Book(Persistent):
         self.publisher   = publisher
         self.year        = date
         if self.year and isinstance(self.year, basestring):
-            self.year = int(self.year[:4])
+            try:
+                self.year = int(self.year[:4])
+            except:
+                pass
         self.identifiers = identifiers
         self.description = description
         self.image_links = image_links
