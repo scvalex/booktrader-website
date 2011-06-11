@@ -9,5 +9,5 @@ def groupfinder(userid, request):
                 groups.append(group.owners_group)
         
         return groups
-    
+
     return None

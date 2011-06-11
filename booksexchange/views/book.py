@@ -75,8 +75,6 @@ def add_book(book, request):
         raise HTTPBadRequest("must add to either 'have' or 'want'")
 
     user = request.user
-    if user is None:
-        raise HTTPInternalServerError('no user found')
 
     if kind == 'have' and book.identifier in user.owned:
         raise HTTPBadRequest('book already owned')
@@ -105,4 +103,8 @@ def remove_book(context, request):
         raise HTTPBadRequest('bad jojo')
 
     request.session.flash('Book removed!')
-    raise HTTPFound(location = request.referer)
+
+    if request.referer:
+        raise HTTPFound(location = request.referer)
+    else:
+        raise HTTPFound(location = '/')

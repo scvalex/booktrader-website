@@ -243,7 +243,23 @@ class LoginTests(unittest.TestCase):
         self.assertEqual(cm.exception.status_int, 302)
         self.assertEqual(cm.exception.location, '/')
 
-    def test_login_wrong(self):
+
+    def test_login_wrong1(self):
+        from booksexchange.models import Users, User
+        from booksexchange.views.common import HTTPFound
+        
+        context = Users()
+        context.new_user(User('francesco', '', 'francesco'))
+        
+        request = testing.DummyRequest(params={'username'  : 'imnotther',
+                                               'password'  : 'wrong',
+                                               'Login'     : None})
+        request.referer = None
+
+        res = self._callFUT(context, request)
+        self.assertTrue(isinstance(res, dict))
+
+    def test_login_wrong2(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
         
@@ -452,6 +468,19 @@ class ConfirmRegistrationTests(unittest.TestCase):
 
 ###############################################################################
 
+def dummy_book(id):
+    from booksexchange.models import Book
+    return Book(id, 'title', 'subtitle', 'authors',
+                'publisher', None, 'identifiers',
+                'description', None)
+
+def dummy_books():
+    from booksexchange.models import Books
+    books = Books()
+    books.new_book(dummy_book('book1'))
+    books.new_book(dummy_book('book2'))
+    books.new_book(dummy_book('book3'))
+
 class SearchTests(unittest.TestCase):
     def _callFUT(self, books, request):
         from booksexchange.views import search
@@ -493,3 +522,214 @@ class SearchTests(unittest.TestCase):
 
         with self.assertRaises(HTTPFound):
             self._callFUT(context, request)
+
+class AddBookTests(unittest.TestCase):
+    def _callFUT(self, book, request):
+        from booksexchange.views import add_book
+        return add_book(book, request)
+
+    def test_add_book_have(self):
+        from booksexchange.views.common import HTTPFound
+        from booksexchange.models import User, App
+
+        request = testing.DummyRequest()
+        request.view_name = 'have'
+        user = User('francesco', '', '')
+        request.user = user
+        request.referer = None
+
+        request.root = App()
+
+        book = dummy_book('foo')
+
+        self.assertTrue(book.identifier not in request.root['books'])
+
+        with self.assertRaises(HTTPFound):
+            self._callFUT(book, request)
+
+        self.assertTrue(book.identifier in user.owned)
+        self.assertTrue(user.username in book.owners)
+        self.assertTrue(book.identifier in request.root['books'])
+
+
+    def test_add_book_want(self):
+        from booksexchange.views.common import HTTPFound
+        from booksexchange.models import User, App
+
+        request = testing.DummyRequest()
+        request.view_name = 'want'
+        user = User('francesco', '', '')
+        request.user = user
+        request.referer = None
+
+        request.root = App()
+
+        book = dummy_book('foo')
+
+        self.assertTrue(book.identifier not in request.root['books'])
+
+        with self.assertRaises(HTTPFound):
+            self._callFUT(book, request)
+
+        self.assertTrue(book.identifier in user.want)
+        self.assertTrue(user.username in book.coveters)
+        self.assertTrue(book.identifier in request.root['books'])
+
+    def test_add_book_present_want(self):
+        from booksexchange.views.common import HTTPFound
+        from booksexchange.models import User, App
+
+        request = testing.DummyRequest()
+        request.view_name = 'want'
+        user = User('francesco', '', '')
+        request.user = user
+        request.referer = None
+
+        request.root = App()
+
+        book = dummy_book('foo')
+        request.root['books'].new_book(book)
+
+        self.assertTrue(book.identifier in request.root['books'])
+
+        with self.assertRaises(HTTPFound):
+            self._callFUT(book, request)
+
+        self.assertTrue(book.identifier in user.want)
+        self.assertTrue(user.username in book.coveters)
+        self.assertTrue(book.identifier in request.root['books'])
+
+
+    def test_add_book_present_have(self):
+        from booksexchange.views.common import HTTPFound
+        from booksexchange.models import User, App
+
+        request = testing.DummyRequest()
+        request.view_name = 'have'
+        user = User('francesco', '', '')
+        request.user = user
+        request.referer = None
+
+        request.root = App()
+
+        book = dummy_book('foo')
+        request.root['books'].new_book(book)
+
+        self.assertTrue(book.identifier in request.root['books'])
+
+        with self.assertRaises(HTTPFound):
+            self._callFUT(book, request)
+
+        self.assertTrue(book.identifier in user.owned)
+        self.assertTrue(user.username in book.owners)
+        self.assertTrue(book.identifier in request.root['books'])
+
+    def test_add_book_already_owned(self):
+        from booksexchange.views.common import HTTPBadRequest
+        from booksexchange.models import User, App
+
+        request = testing.DummyRequest()
+        request.view_name = 'have'
+        user = User('francesco', '', '')
+        request.user = user
+        request.referer = None
+
+        request.root = App()
+
+        book = dummy_book('foo')
+
+        user.add_owned(book)
+        book.add_owner(user)
+        
+        with self.assertRaises(HTTPBadRequest):
+            self._callFUT(book, request)
+
+    def test_add_book_already_wanted(self):
+        from booksexchange.views.common import HTTPBadRequest
+        from booksexchange.models import User, App
+
+        request = testing.DummyRequest()
+        request.view_name = 'want'
+        user = User('francesco', '', '')
+        request.user = user
+        request.referer = None
+
+        request.root = App()
+
+        book = dummy_book('foo')
+
+        user.add_want(book)
+        book.add_coveter(user)
+        
+        with self.assertRaises(HTTPBadRequest):
+            self._callFUT(book, request)
+        
+    def test_add_invalid_kind(self):
+        from booksexchange.views.common import HTTPBadRequest
+
+        request = testing.DummyRequest()
+        request.view_name = 'foo'
+
+        book = None
+
+        with self.assertRaises(HTTPBadRequest):
+            self._callFUT(book, request)
+
+class RemoveBookTests(unittest.TestCase):
+    def _callFUT(self, book, request):
+        from booksexchange.views import remove_book
+        return remove_book(book, request)
+
+    def test_remove_book_normal(self):
+        from booksexchange.models import User
+        from booksexchange.views.common import HTTPFound
+
+        user = User('francesco', '', '')
+        request = testing.DummyRequest()
+        request.user = user
+        request.referer = None
+        book = dummy_book('foo')
+        user.add_owned(book)
+        book.add_owner(user)
+
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(book, request)
+
+        self.assertTrue(book.identifier not in user.owned)
+        self.assertTrue(user.username not in book.owners)
+        self.assertEqual(cm.exception.location, '/')
+
+    def test_remove_book_normal_referer(self):
+        from booksexchange.models import User
+        from booksexchange.views.common import HTTPFound
+
+        user = User('francesco', '', '')
+        request = testing.DummyRequest()
+        request.user = user
+        request.referer = '/foo'
+        book = dummy_book('foo')
+        user.add_owned(book)
+        book.add_owner(user)
+
+        with self.assertRaises(HTTPFound) as cm:
+            self._callFUT(book, request)
+
+        self.assertTrue(book.identifier not in user.owned)
+        self.assertTrue(user.username not in book.owners)
+        self.assertEqual(cm.exception.location, '/foo')
+
+    def test_remove_book_invalid(self):
+        from booksexchange.models import User
+        from booksexchange.views.common import HTTPBadRequest
+
+        user = User('francesco', '', '')
+        request = testing.DummyRequest()
+        request.user = user
+        book = dummy_book('foo')
+
+        with self.assertRaises(HTTPBadRequest):
+            self._callFUT(book, request)
+
+        
+###############################################################################
+

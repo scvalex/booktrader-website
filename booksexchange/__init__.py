@@ -41,7 +41,7 @@ def main(global_config, **settings):
     config.add_renderer('.mak', 'booksexchange.utils.app_renderer_factory')
     config.add_renderer('.mako', 'booksexchange.utils.app_renderer_factory')
 
-    config.scan('booksexchange')
+    config.scan('booksexchange.views')
 
     pyr_app      = config.make_wsgi_app()
     app          = catch_exc(pyr_app)
