@@ -263,6 +263,8 @@ class Book(Persistent):
              "subtitle": self.subtitle,
              "authors": self.authors,
              "publisher": self.publisher,
+             "owners": self.owners.keys(),
+             "coveters": self.coveters.keys(),
              "thumbnail": "",
              "smallThumbnail": ""}
         if self.image_links is not None:
