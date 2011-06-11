@@ -56,6 +56,8 @@ class AppEncoder(json.JSONEncoder):
             if (callable(obj.__dict__)):
                 return obj.__dict__()
             return obj.__dict__
+        if isinstance(obj, datetime.datetime):
+            obj = obj.isoformat()
         return json.JSONEncoder.default(self, obj)
 
 def app_renderer_factory(info):
