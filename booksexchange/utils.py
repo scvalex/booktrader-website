@@ -1,36 +1,34 @@
-from pyramid.traversal       import resource_path, find_resource, find_root
-from pyramid.request         import Request
-from pyramid.decorator       import reify
-from pyramid.security        import unauthenticated_userid
-from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound
-from pyramid.mako_templating import renderer_factory as mako_renderer_factory
-from pyramid.response        import Response
-
-from repoze.folder           import Folder
-from repoze.catalog.catalog  import Catalog
-from repoze.catalog.document import DocumentMap
-
-from webob.dec               import wsgify
-
-import smtplib
 from email                   import Header
 from email.mime.text         import MIMEText
+
+from mako.template           import Template
+
+from pyramid.decorator       import reify
+from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound
+from pyramid.mako_templating import renderer_factory as mako_renderer_factory
+from pyramid.request         import Request
+from pyramid.response        import Response
+from pyramid.security        import unauthenticated_userid
+from pyramid.traversal       import resource_path, find_resource, find_root
+
+from repoze.catalog.catalog  import Catalog
+from repoze.catalog.document import DocumentMap
+from repoze.folder           import Folder
 
 from urllib                  import urlencode
 from urllib2                 import urlopen, URLError
 
-import datetime
-import deform
-
-from mako.template           import Template
-
-from booksexchange.schemas   import SearchSchema
-
-import json
-
-import markdown
 from webhelpers.html.builder import literal
 
+from webob.dec               import wsgify
+
+import datetime
+import deform
+import json
+import markdown
+import smtplib
+
+from booksexchange.schemas   import SearchSchema
 
 class AppRequest(Request):
     @reify

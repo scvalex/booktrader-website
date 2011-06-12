@@ -1,28 +1,27 @@
-import datetime
-
 from exceptions                   import RuntimeError
-
-from pyramid.security             import Allow, Everyone, Deny
-from pyramid.traversal            import resource_path
-from pyramid.httpexceptions       import HTTPInternalServerError
 
 from persistent                   import Persistent
 from persistent.list              import PersistentList
 from persistent.mapping           import PersistentMapping
 
+from pyramid.httpexceptions       import HTTPInternalServerError
+from pyramid.security             import Allow, Everyone, Deny
+from pyramid.traversal            import resource_path
+
 from repoze.catalog.indexes.field import CatalogFieldIndex
 
-from booksexchange.utils          import (IndexFolder, GoogleBooksCatalogue,
-                                          CatalogueException)
-from booksexchange.schemas        import BookSchema
-
 import bcrypt
-import uuid
-import json
 import colander
 import datetime
-import urllib
+import datetime
 import hashlib
+import json
+import urllib
+import uuid
+
+from booksexchange.schemas        import BookSchema
+from booksexchange.utils          import (IndexFolder, GoogleBooksCatalogue,
+                                          CatalogueException)
 
 class App(PersistentMapping):
     __name__   = None
