@@ -8,3 +8,5 @@ ZODB3
 WebError
 py-bcrypt
 deform
+Markdown
+WebHelpers

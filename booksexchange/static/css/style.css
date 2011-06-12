@@ -43,7 +43,11 @@ a:visited {
 }
 
 p {
-  margin: 0.2em 0.5em;
+  margin: 0.2em 0.7em 0.4em 0.5em;
+}
+
+strong {
+  font-weight: bold;
 }
 
 /* Header */
@@ -722,4 +726,22 @@ a.blue_button {
 /* Search page */
 #pagination {
     text-align: center;
+}
+
+/* profile */
+ul.user_info {
+  margin: 0.2em 0.5em;
+}
+
+.user_info li {
+  margin:0.2em 0;
+}
+
+img.gravatar {
+  float:left;
+  margin: 0 0.3em 0.5em 0.3em;
+}
+
+#real_stuff {
+  clear:both;
 }

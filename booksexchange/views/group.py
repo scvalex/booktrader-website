@@ -139,6 +139,8 @@ def admin_group(context, request):
     form.schema['type'].widget.values  = choices
     form.schema['name'].default        = context.name
     form.schema['description'].default = context.description
+    if context.image:
+        form.schema['image'].default   = context.image
 
     if 'Submit' in request.params:
         controls = request.params.items()
@@ -151,6 +153,8 @@ def admin_group(context, request):
         context.name        = data['name']
         context.description = data['description']
         context.type        = data['type']
+        context.image       = data['image']
+            
         if 'domains' in data:
             context.domains = data['domains']
 

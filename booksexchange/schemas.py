@@ -1,6 +1,8 @@
 import colander
 import deform
 
+import urlparse
+
 
 utf8_string = lambda: colander.String(encoding="utf-8")
 
@@ -64,6 +66,13 @@ class BookSchema(colander.MappingSchema):
 
 
 
+def url_validator(form, value):
+    url = urlparse.urlparse(value)
+
+    if not url.netloc or not (url.scheme == 'http' or url.scheme == 'https'):
+        raise colander.Invalid(form, 'Invalid url.')
+
+
 class GroupSchema(colander.MappingSchema):
     types       = ['public', 'private']
 
@@ -74,6 +83,10 @@ class GroupSchema(colander.MappingSchema):
                                       validator = colander.Length(max=10000),
                                       widget    = deform.widget.TextAreaWidget(),
                                       missing   = u'')
+    image       = colander.SchemaNode(utf8_string(),
+                                      missing   = None,
+                                      validator = url_validator,
+                                      title     = "Group image (URL)")
     type = colander.SchemaNode(
         utf8_string(),
         validator = colander.OneOf(types),

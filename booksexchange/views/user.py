@@ -181,6 +181,58 @@ def confirm_registration(context, request):
                                                     'generate_token',
                                                     query = {'wrong':True}))
 
+def user_cp_schema(user):
+    def validate_password(form, value):
+        if value and not user.check_password(value):
+            raise colander.Invalid(form, 'Wrong old password.')
+
+    class UserCPSchema(colander.Schema):
+        location      = colander.SchemaNode(colander.String(),
+                                            validator = colander.Length(max = 300),
+                                            missing   = '')
+
+        about         = colander.SchemaNode(colander.String(),
+                                            validator = colander.Length(max=10000),
+                                            widget    = deform.widget.TextAreaWidget(),
+                                            missing   = '')
+        old_password  = colander.SchemaNode(colander.String(),
+                                            widget    = deform.widget.PasswordWidget(),
+                                            validator = validate_password)
+        
+        password      = colander.SchemaNode(
+            colander.String(),
+            validator = colander.Length(min=5, max=100),
+            widget    = deform.widget.CheckedPasswordWidget(size=20),
+            title     = "New password:",
+            missing   = None)
+
+    return UserCPSchema()
+
+@view_config(context=Users, name='cp', renderer='users/cp.mak', permission='loggedin')
+def user_cp(context, request):
+    form = deform.Form(user_cp_schema(request.user), buttons = ('Submit',))
+
+    if 'Submit' in request.params:
+        controls = request.params.items()
+
+        try:
+            data = form.validate(controls)
+        except deform.ValidationFailure, e:
+            return {'form': e.render()}
+
+        if data['password']:
+            request.user.password = data['password']
+        if data['location']:
+            request.user.location = data['location']
+        request.user.about        = data['about']
+
+        form = deform.Form(user_cp_schema(request.user), buttons = ('Submit',))
+        
+    if request.user.location:
+        form.schema['location'].default = request.user.location
+    form.schema['about'].default        = request.user.about
+    
+    return {'form':form.render()}
 
 @view_config(context=User, renderer='users/home.mak')
 def user_home(context, request):

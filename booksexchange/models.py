@@ -56,7 +56,7 @@ class User(Persistent):
     def __init__(self, username, email, password):
         self._username  = username
         self.email      = email
-        self._password  = bcrypt.hashpw(password, bcrypt.gensalt())
+        self.password   = password
         self.created    = datetime.datetime.utcnow()
 
         self.confirmed = False
@@ -72,6 +72,9 @@ class User(Persistent):
 
         self.events    = PersistentList()
 
+        self.location  = None
+        self.about     = ''
+
     def __getitem__(self, key):
         if key in ['generate_token', 'confirm']:
             raise KeyError
@@ -82,6 +85,14 @@ class User(Persistent):
     def username(self):
         return self._username
 
+    def get_password(self):
+        return self._password
+
+    def set_password(self, plain_password):
+        self._password = bcrypt.hashpw(plain_password, bcrypt.gensalt())
+
+    password = property(get_password, set_password)
+    
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
 
@@ -397,6 +408,8 @@ class Group(Persistent):
 
         self.domains     = PersistentList()
         self.tokens      = PersistentMapping()
+
+        self.image       = None
 
     @property
     def identifier(self):

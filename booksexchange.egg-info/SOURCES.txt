@@ -38,6 +38,7 @@ booksexchange/templates/groups/join.mak
 booksexchange/templates/groups/view.mak
 booksexchange/templates/messages/list.mak
 booksexchange/templates/messages/new.mak
+booksexchange/templates/users/cp.mak
 booksexchange/templates/users/home.mak
 booksexchange/templates/users/login.mak
 booksexchange/templates/users/register.mak

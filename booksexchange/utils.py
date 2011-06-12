@@ -31,6 +31,9 @@ from booksexchange.schemas   import SearchSchema
 
 import json
 
+import markdown
+from webhelpers.html.builder import literal
+
 
 class AppRequest(Request):
     @reify
@@ -50,6 +53,10 @@ class AppRequest(Request):
                            action  = action,
                            formid  = 'search_bar',
                            method  = 'GET').render()
+
+    def markdown(self, text):
+        return literal(markdown.markdown(text))
+
 
 def json_request(request):
     return request.params.get('format', 'html') == 'json'
