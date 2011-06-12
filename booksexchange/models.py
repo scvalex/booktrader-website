@@ -73,6 +73,7 @@ class User(Persistent):
         self.events    = PersistentList()
 
         self.location  = None
+        self.about     = ''
 
     def __getitem__(self, key):
         if key in ['generate_token', 'confirm']:

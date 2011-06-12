@@ -188,8 +188,13 @@ def user_cp_schema(user):
 
     class UserCPSchema(colander.Schema):
         location      = colander.SchemaNode(colander.String(),
-                                            validator = colander.Length(max = 300))
-        
+                                            validator = colander.Length(max = 300),
+                                            missing   = '')
+
+        about         = colander.SchemaNode(colander.String(),
+                                            validator = colander.Length(max=10000),
+                                            widget    = deform.widget.TextAreaWidget(),
+                                            missing   = '')
         old_password  = colander.SchemaNode(colander.String(),
                                             widget    = deform.widget.PasswordWidget(),
                                             validator = validate_password)
@@ -219,11 +224,13 @@ def user_cp(context, request):
             request.user.password = data['password']
         if data['location']:
             request.user.location = data['location']
+        request.user.about        = data['about']
 
         form = deform.Form(user_cp_schema(request.user), buttons = ('Submit',))
         
     if request.user.location:
         form.schema['location'].default = request.user.location
+    form.schema['about'].default        = request.user.about
     
     return {'form':form.render()}
 
