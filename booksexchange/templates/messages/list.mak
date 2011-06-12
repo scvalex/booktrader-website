@@ -28,45 +28,37 @@
 
 % if msg_root:
   <ol class="conversation">
-    % for m in conversations[msg_root.identifier]:
+    % for m in msg_root:
       ${show_message(m)}
     % endfor
     <li class="clear"></li>
   </ol>
   <ul class="conversation_controls clear">
-    <li><a href="${request.resource_url(msg_root, 'reply')}">Reply</a></li>
-    <li><a href="${request.resource_url(msg_root, 'offer')}">Make Offer</a></li>
-    <% from booksexchange.models import Offer %>
-    % if request.user is not m.sender and isinstance(m, Offer):
-      <li><a href="${request.resource_url(m, 'complete')}">Trade completed</a></li>
-    % endif
+    <li><a href="${request.resource_url(msg_root[-1], 'reply')}">Reply</a></li>
+    <li><a href="${request.resource_url(msg_root[-1], 'offer')}">Make Offer</a></li>
     <li><a href="${request.referer}">Back</a></li>
   </ul>
 % else:
   <table class="inbox">
     <thead>
       <tr>
-        <td>From/To</td>
-        <td>Subject</td>
-        <td>Date</td>
+        <td>User</td>
+        <td>Title</td>
+        <td>Last message</td>
       </tr>
     </thead>
     <tbody>
-      % for message in conversation_list:
-        % if message in unread:
+      % for username in conversation_list:
+        % if username in unread:
           <tr class="unread">
         % else:
           <tr>
         % endif
+          <td>${common.user_link(request.root['users'][username])}</td>
+          <td>${common.message_link(conversations[username][-1])}</td>
           <td>
-            % if message.sender == request.user:
-              ${common.user_link(message.recipient)}
-            % else:
-              ${common.user_link(message.sender)}
-            % endif
+            ${common.format_date_simple(conversations[username][-1].date)}
           </td>
-          <td>${common.message_link(message)}</td>
-          <td>${common.format_date_simple(message.date)}</td>
         </tr>
       % endfor
     </tbody>

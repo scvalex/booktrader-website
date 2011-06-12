@@ -24,6 +24,9 @@ import deform
 
 from mako.template           import Template
 
+from persistent.list         import PersistentList
+from persistent.mapping      import PersistentMapping
+
 from booksexchange.schemas   import SearchSchema
 
 import json
@@ -53,6 +56,10 @@ def json_request(request):
 
 class AppEncoder(json.JSONEncoder):
     def default(self, obj):
+        if isinstance(obj, PersistentList):
+            return obj.data
+        if isinstance(obj, PersistentMapping):
+            return obj.data
         if hasattr(obj, '__dict__'):
             if (callable(obj.__dict__)):
                 return obj.__dict__()

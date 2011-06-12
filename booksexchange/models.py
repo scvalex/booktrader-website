@@ -126,24 +126,23 @@ class User(Persistent):
     def add_message(self, message, unread = True):
         check_class(message, Message, 'not a message')
 
-        first_message = message
-        while first_message.reply_to is not None:
-            first_message = first_message.reply_to
+        otheruser = message.recipient
+        if otheruser is self:
+            otheruser = message.sender
 
-        if first_message is message:
-            self.conversations[message.identifier] = PersistentList()
-        else:
-            aux = message
-            while aux.reply_to is not None:
-                try:
-                    self.conversation_list.remove(aux.reply_to)
-                except ValueError:
-                    break
+        # If this is the first message, add it to the conversations
+        # list.  Otherwise, append it to the relevant conversation.
+        if otheruser.username not in self.conversations:
+            self.conversations[otheruser.username] = PersistentList()
+        self.conversations[otheruser.username].append(message)
 
-        self.conversations[first_message.identifier].append(message)
-        if unread and first_message not in self.unread:
-            self.unread.insert(0, message)
-        self.conversation_list.insert(0, message)
+        if otheruser.username not in self.unread:
+            self.unread.insert(0, otheruser.username)
+        try:
+            self.conversation_list.remove(otheruser.username)
+        except ValueError:
+            pass
+        self.conversation_list.insert(0, otheruser.username)
 
     def message_read(self, message):
         self.unread.remove(message)
@@ -482,6 +481,7 @@ class Message(Persistent):
     def __dict__(self):
         return {"date": self.date,
                 "sender": self.sender.username,
+                "subject": self.subject,
                 "recipient": self.recipient.username,
                 "body": self.body}
 

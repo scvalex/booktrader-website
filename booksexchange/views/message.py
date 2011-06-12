@@ -7,7 +7,7 @@ def list_messages(context, request):
     return {'conversations': request.user.conversations,
             'conversation_list': request.user.conversation_list,
             'unread': request.user.unread,
-            'msg': None}
+            'msg_root': None}
 
 
 def make_message_schema(users, current_user, other_user = None,
@@ -125,7 +125,7 @@ def reply_to_message_offer(context, request):
 
     if request.method == 'POST':
         def extra_fun(message):
-            message.reply_to = request.user.conversations[context.identifier][-1] # reply to the *last* message in the conversation context
+            message.reply_to = request.user.conversations[recipient.username][-1] # reply to the *last* message in the conversation context
         common_send_message(context, request, form, extra_fun,
                             recipient, 'offer')
 
@@ -149,7 +149,7 @@ def reply_to_message(context, request):
 
     if request.method == 'POST':
         def extra_fun(message):
-            message.reply_to = request.user.conversations[context.identifier][-1] # reply to the *last* message in the conversation context
+            message.reply_to = request.user.conversations[recipient.username][-1] # reply to the *last* message in the conversation context
         common_send_message(context, request, form, extra_fun, recipient)
 
     return {'form': form.render(), 'typ': 'message'}
@@ -245,15 +245,20 @@ def show_message(context, request):
     if request.user is not context.sender and request.user is not context.recipient:
         raise Forbidden()
 
+    otheruser = context.recipient
+    if otheruser is request.user:
+        otheruser = context.sender
+
     first_message = context
     while first_message.reply_to is not None:
         first_message = first_message.reply_to
 
-    for m in request.user.conversations[first_message.identifier]:
-        if m in request.user.unread:
-            request.user.unread.remove(m)
+    try:
+        request.user.unread.remove(otheruser.username)
+    except ValueError:
+        pass
 
     return {'conversations': request.user.conversations,
             'conversation_list': request.user.conversation_list,
             'unread': request.user.unread,
-            'msg_root': first_message}
+            'msg_root': request.user.conversations[otheruser.username]}
