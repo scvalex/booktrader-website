@@ -17,7 +17,7 @@
     % endif
 
     % if book.description:
-        <p>${common.truncate(book.description, 200)}</p>
+        ${request.markdown(common.truncate(book.description, 200))}</p>
     % endif
 
     ${have_want(book)}
@@ -83,7 +83,7 @@
     </ul>
 
     % if book.description:
-        <p>${book.description}</p>
+        ${request.markdown(book.description)}</p>
     % endif
 
     ${have_want(book)}

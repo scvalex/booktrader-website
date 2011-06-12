@@ -23,13 +23,14 @@ username     = request.context.username
     % endif
     % if request.context.groups:
         <li><strong>Groups:</strong>
-          ${', '.join([common.group_link(g, g.name) for g in request.context.groups.values()])}
+          ${', '.join([common.group_link(g, g.name)
+                       for g in request.context.groups.values()])}
         </li>
     % endif
   </ul>
 
   % if request.context.about:
-      <p class="about">${request.context.about}</p>
+      ${request.markdown(request.context.about)}
   % endif
 
   % if request.user and  request.user == request.context:

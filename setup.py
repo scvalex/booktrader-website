@@ -17,6 +17,8 @@ requires = [
     'WebError',
     'py-bcrypt',
     'deform',
+    'Markdown',
+    'WebHelpers',
     ]
 
 setup(name='booksexchange',
