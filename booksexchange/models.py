@@ -479,6 +479,12 @@ class Message(Persistent):
     def identifier(self):
         return self._identifier
 
+    def __dict__(self):
+        return {"date": self.date,
+                "sender": self.sender.username,
+                "recipient": self.recipient.username,
+                "body": self.body}
+
 class Offer(Message):
     def __init__(self, sender, recipient, subject, body, apples, oranges):
         super(Offer, self).__init__(sender, recipient, subject, body)
@@ -488,6 +494,11 @@ class Offer(Message):
 
         # the receiver offer oranges
         self.oranges = oranges
+
+    def __dict__(self):
+        r = super(Offer, self).__dict__()
+        r['apples']  = self.apples
+        r['oranges'] = self.oranges
 
 class Feedback(Message):
     def __init__(self, sender, recipient, rating, comment):
