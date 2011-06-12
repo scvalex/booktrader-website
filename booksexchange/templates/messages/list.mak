@@ -40,13 +40,6 @@
   </ul>
 % else:
   <table class="inbox">
-    <thead>
-      <tr>
-        <td>User</td>
-        <td>Title</td>
-        <td>Last message</td>
-      </tr>
-    </thead>
     <tbody>
       % for username in conversation_list:
         % if username in unread:
@@ -55,7 +48,11 @@
           <tr>
         % endif
           <td>${common.user_link(request.root['users'][username])}</td>
-          <td>${common.message_link(conversations[username][-1])}</td>
+          <td class="summary_message_body">
+            ${common.message_link(conversations[username][-1])}
+            -
+            ${conversations[username][-1].body[:32]}...
+          </td>
           <td>
             ${common.format_date_simple(conversations[username][-1].date)}
           </td>
