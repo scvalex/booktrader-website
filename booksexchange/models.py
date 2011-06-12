@@ -399,6 +399,8 @@ class Group(Persistent):
         self.domains     = PersistentList()
         self.tokens      = PersistentMapping()
 
+        self.image       = None
+
     @property
     def identifier(self):
         return self._identifier
