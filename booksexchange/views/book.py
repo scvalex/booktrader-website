@@ -57,8 +57,9 @@ def search(context, request):
 
     for word in words:
         try:
-            res = context.query(Contains('title', word), Contains('subtitle', word))[1]
-            owned_books.append(res)
+            res = context.query(Contains('title', word) |
+                                Contains('subtitle', word))[1]
+            owned_books.extend(res)
         except ParseError:
             pass
 
@@ -76,7 +77,7 @@ def search(context, request):
             'page_indices': page_indices,
             'page_index': start_index / books_per_page,
             'books_per_page': books_per_page,
-            'owned_books': list(owned_books)}
+            'owned_books': owned_books}
 
 @view_config(context=Book, renderer='books/details.mak')
 def view_book(context, request):
