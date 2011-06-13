@@ -54,7 +54,7 @@
             ${conversations[username][-1].body[:32]}...
           </td>
           <td>
-            ${common.format_date_simple(conversations[username][-1].date)}
+            ${common.pretty_date_simple(conversations[username][-1].date)}
           </td>
         </tr>
       % endfor
