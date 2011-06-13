@@ -496,7 +496,8 @@ class SearchTests(unittest.TestCase):
 
         res = self._callFUT(context, request)
         self.assertTrue('total_items' in res)
-        self.assertTrue('result' in res)
+        self.assertTrue('google_books' in res)
+        self.assertTrue('owned_books' in res)
 
     def test_search_no_search(self):
         from booksexchange.models import App

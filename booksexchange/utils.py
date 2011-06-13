@@ -1,39 +1,37 @@
-from pyramid.traversal       import resource_path, find_resource, find_root
-from pyramid.request         import Request
-from pyramid.decorator       import reify
-from pyramid.security        import unauthenticated_userid
-from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound
-from pyramid.mako_templating import renderer_factory as mako_renderer_factory
-from pyramid.response        import Response
-
-from repoze.folder           import Folder
-from repoze.catalog.catalog  import Catalog
-from repoze.catalog.document import DocumentMap
-
-from webob.dec               import wsgify
-
-import smtplib
 from email                   import Header
 from email.mime.text         import MIMEText
 
-from urllib                  import urlencode
-from urllib2                 import urlopen, URLError
-
-import datetime
-import deform
-
 from mako.template           import Template
+
+from pyramid.decorator       import reify
+from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound
+from pyramid.mako_templating import renderer_factory as mako_renderer_factory
+from pyramid.request         import Request
+from pyramid.response        import Response
+from pyramid.security        import unauthenticated_userid
+from pyramid.traversal       import resource_path, find_resource, find_root
 
 from persistent.list         import PersistentList
 from persistent.mapping      import PersistentMapping
 
-from booksexchange.schemas   import SearchSchema
+from repoze.catalog.catalog  import Catalog
+from repoze.catalog.document import DocumentMap
+from repoze.folder           import Folder
 
-import json
+from urllib                  import urlencode
+from urllib2                 import urlopen, URLError
 
-import markdown
 from webhelpers.html.builder import literal
 
+from webob.dec               import wsgify
+
+import datetime
+import deform
+import json
+import markdown
+import smtplib
+
+from booksexchange.schemas   import SearchSchema
 
 class AppRequest(Request):
     @reify
@@ -99,6 +97,12 @@ class IndexFolder(Folder):
         for k, v in kwargs.iteritems():
             self._catalog[k] = v
 
+    def __setitem__(self, name, obj):
+        self.add(name, obj)
+
+    def __delitem__(self, name):
+        self.remove(name)
+    
     def add(self, name, obj, *args, **kwargs):
         super(IndexFolder, self).add(name, obj, *args, **kwargs)
 

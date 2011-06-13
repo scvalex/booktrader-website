@@ -1,28 +1,29 @@
-import datetime
-
 from exceptions                   import RuntimeError
-
-from pyramid.security             import Allow, Everyone, Deny
-from pyramid.traversal            import resource_path
-from pyramid.httpexceptions       import HTTPInternalServerError
 
 from persistent                   import Persistent
 from persistent.list              import PersistentList
 from persistent.mapping           import PersistentMapping
 
-from repoze.catalog.indexes.field import CatalogFieldIndex
+from pyramid.httpexceptions       import HTTPInternalServerError
+from pyramid.security             import Allow, Everyone, Deny
+from pyramid.traversal            import resource_path
 
-from booksexchange.utils          import (IndexFolder, GoogleBooksCatalogue,
-                                          CatalogueException)
-from booksexchange.schemas        import BookSchema
+from repoze.catalog.indexes.field import CatalogFieldIndex
+from repoze.catalog.indexes.text  import CatalogTextIndex
+
 
 import bcrypt
-import uuid
-import json
 import colander
 import datetime
-import urllib
+import datetime
 import hashlib
+import json
+import urllib
+import uuid
+
+from booksexchange.schemas        import BookSchema
+from booksexchange.utils          import (IndexFolder, GoogleBooksCatalogue,
+                                          CatalogueException)
 
 class App(PersistentMapping):
     __name__   = None
@@ -177,9 +178,17 @@ class User(Persistent):
                 "gravatar": self.gravatar(64)}
 
 
+def lowercase_title(book, default):
+    return getattr(book, 'title', default).lower()
+
+def lowercase_subtitle(book, default):
+    return getattr(book, 'subtitle', default).lower()
+
 class Books(IndexFolder):
     def __init__(self):
-        super(Books, self).__init__()
+        super(Books, self).__init__(
+            title    = CatalogTextIndex(lowercase_title),
+            subtitle = CatalogTextIndex(lowercase_subtitle))
 
         self.catalogue = GoogleBooksCatalogue()
 
