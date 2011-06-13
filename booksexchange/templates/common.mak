@@ -47,7 +47,24 @@
 </%def>
 
 <%def name="format_date_simple(date)">
-  ${date.strftime("%A %d %B %Y %I:%M%p")}
+  <% from datetime import timedelta %>
+  ${(date + timedelta(hours=1)).strftime("%A %d %B %Y %I:%M%p")}
+</%def>
+
+<%def name="pretty_date_simple(date)">
+  <span>
+    <% from datetime import datetime %>
+    <% td = (datetime.utcnow() - date).seconds %>
+    % if td < 60:
+      ${td} seconds ago
+    % elif td < 60*60:
+      ${td / 60} minutes ago
+    % elif td < 60*60*24:
+      ${td / 60 / 60} hours ago
+    % else:
+      ${format_date_simple(date)}
+    % endif
+  </span
 </%def>
 
 <%def name="gravatar(user)">
