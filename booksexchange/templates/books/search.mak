@@ -3,10 +3,10 @@
 
 <%namespace name="books_common" file="/books/common.mak" />
 
-% if result is not None:
+% if google_books is not None:
   <h3>Found ${total_items} books!</h3>
 
-  ${books_common.books_list(result)}
+  ${books_common.books_list(google_books)}
 
   <div id="pagination">
     % if page_index > 0:

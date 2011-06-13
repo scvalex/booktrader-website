@@ -165,17 +165,17 @@ h1 a, h1 a:visited {
   border: 1px solid #9cb0b8;
 }
 
-#search_bar #buttons {
-  width: 10%;
-  font-family: Cabin;
-}
+/* #search_bar #buttons { */
+/*   width: 10%; */
+/*   font-family: Cabin; */
+/* } */
 
-#search_bar button {
-  background-color: transparent;
-  border: none;
-  font-size: 1.2em;
-  font-family: Cabin;
-}
+/* #search_bar button { */
+/*   background-color: transparent; */
+/*   border: none; */
+/*   font-size: 1.2em; */
+/*   font-family: Cabin; */
+/* } */
 
 
 /*  Flash messages */
@@ -584,7 +584,7 @@ h1 a, h1 a:visited {
 
 /* Buttons */
 
-.conversation_controls  a, #inner form.deform button {
+.conversation_controls  a, #inner form.deform button, #search_bar button {
   background-color: white;
   background-image: -webkit-gradient(
     linear,
@@ -625,6 +625,11 @@ h1 a, h1 a:visited {
     rgb(255,255,255) 26%,
     rgb(221,221,221) 87%
   );
+}
+
+
+#search_bar button {
+  margin-left: 0.3em;
 }
 
 /* Owners and coveters list on details page */
