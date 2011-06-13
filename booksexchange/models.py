@@ -9,6 +9,8 @@ from pyramid.security             import Allow, Everyone, Deny
 from pyramid.traversal            import resource_path
 
 from repoze.catalog.indexes.field import CatalogFieldIndex
+from repoze.catalog.indexes.text  import CatalogTextIndex
+
 
 import bcrypt
 import colander
@@ -177,9 +179,17 @@ class User(Persistent):
                 "gravatar": self.gravatar(64)}
 
 
+def lowercase_title(book, default):
+    return getattr(book, 'title', default).lower()
+
+def lowercase_subtitle(book, default):
+    return getattr(book, 'subtitle', default).lower()
+
 class Books(IndexFolder):
     def __init__(self):
-        super(Books, self).__init__()
+        super(Books, self).__init__(
+            title    = CatalogTextIndex(lowercase_title),
+            subtitle = CatalogTextIndex(lowercase_subtitle))
 
         self.catalogue = GoogleBooksCatalogue()
 

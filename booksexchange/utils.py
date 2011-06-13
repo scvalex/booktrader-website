@@ -90,6 +90,12 @@ class IndexFolder(Folder):
         for k, v in kwargs.iteritems():
             self._catalog[k] = v
 
+    def __setitem__(self, name, obj):
+        self.add(name, obj)
+
+    def __delitem__(self, name):
+        self.remove(name)
+    
     def add(self, name, obj, *args, **kwargs):
         super(IndexFolder, self).add(name, obj, *args, **kwargs)
 

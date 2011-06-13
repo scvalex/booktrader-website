@@ -1,14 +1,14 @@
-from pyramid.view           import view_config
-from pyramid.traversal      import resource_path
 from pyramid.exceptions     import Forbidden
-from pyramid.security       import remember, forget, authenticated_userid
-from pyramid.response       import Response
 from pyramid.httpexceptions import (HTTPFound, HTTPForbidden,
-                                    HTTPInternalServerError, HTTPBadRequest,
                                     HTTPException, HTTPRedirection,
+                                    HTTPInternalServerError, HTTPBadRequest,
                                     HTTPNotFound)
+from pyramid.response       import Response
+from pyramid.security       import remember, forget, authenticated_userid
+from pyramid.traversal      import resource_path
+from pyramid.view           import view_config
 
-from repoze.catalog.query   import Eq
+from repoze.catalog.query   import Eq, Contains
 
 import colander
 import deform

@@ -27,6 +27,8 @@ def search(context, request):
     search_form.schema['query'].default = query['query']
     start_index = query['start_index']
 
+    ###########################################################################
+    # Google results
     try:
         rsp = request.root['cache'].get(
             request.path_qs,
@@ -38,14 +40,23 @@ def search(context, request):
 
     books_per_page = query['limit']
 
-    books = json.loads(rsp)
+    google_books = json.loads(rsp)
     try:
-        books = ResultSchema().deserialize(books)
+        google_books = ResultSchema().deserialize(google_books)
     except colander.Invalid, e:
-        raise HTTPInternalServerError(str(e.asdict()) + str(books))
+        raise HTTPInternalServerError(str(e.asdict()) + str(google_books))
 
-    total_items = books['totalItems']
-    books = [context.json_to_book(vi) for vi in books['items']]
+    total_items = google_books['totalItems']
+    google_books = [context.json_to_book(vi) for vi in google_books['items']]
+
+    ###########################################################################
+    # Internal results
+    words = query['query'].lower().split()
+    catalog_query = lambda i: reduce(lambda q, w: q | Contains(i, w),
+                                     words[1:], Contains(i, words[0]))
+                                     
+    owned_books = context.query(catalog_query('title') | catalog_query('subtitle'))[1]
+    
 
     # Compute -3 and +3 page indices around the current page
     page_indices = start_index / books_per_page - 3
@@ -57,10 +68,11 @@ def search(context, request):
     page_indices = range(page_indices, page_indices + num_items + 1)
 
     return {'total_items': total_items,
-            'result': books,
+            'google_books': google_books,
             'page_indices': page_indices,
             'page_index': start_index / books_per_page,
-            'books_per_page': books_per_page}
+            'books_per_page': books_per_page,
+            'owned_books': owned_books}
 
 @view_config(context=Book, renderer='books/details.mak')
 def view_book(context, request):
@@ -81,8 +93,6 @@ def add_book(book, request):
     elif kind == 'want' and book.identifier in user.want:
         raise HTTPBadRequest('book already wanted')
 
-    if book.identifier not in request.root['books']:
-        request.root['books'].new_book(book)
     if kind == 'have':
         request.user.remove_book(book) # don't want it anymore
         book.remove_user(request.user)
@@ -93,6 +103,9 @@ def add_book(book, request):
         user.add_want(book)
         book.add_coveter(user)
         request.root['events'].add_want(user, book)
+
+    if book.identifier not in request.root['books']:
+        request.root['books'].new_book(book)
 
     request.session.flash('Book added!')
     raise HTTPFound(location = request.referer)
