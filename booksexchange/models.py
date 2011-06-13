@@ -92,7 +92,7 @@ class User(Persistent):
         self._password = bcrypt.hashpw(plain_password, bcrypt.gensalt())
 
     password = property(get_password, set_password)
-    
+
     def check_password(self, plain_password):
         return bcrypt.hashpw(plain_password, self._password) == self._password
 
@@ -137,23 +137,35 @@ class User(Persistent):
     def add_message(self, message, unread = True):
         check_class(message, Message, 'not a message')
 
+        # Who's the other mofo?
         otheruser = message.recipient
         if otheruser is self:
             otheruser = message.sender
 
+        # What conversation is this message part of?
+        if message.reply_to is not None:
+            message.conversation = message.reply_to.conversation
+        elif not isinstance(message, Offer):
+            message.conversation = otheruser.username
+        else:
+            message.conversation = str(uuid.uuid1())
+
         # If this is the first message, add it to the conversations
         # list.  Otherwise, append it to the relevant conversation.
-        if otheruser.username not in self.conversations:
-            self.conversations[otheruser.username] = PersistentList()
-        self.conversations[otheruser.username].append(message)
+        if message.conversation not in self.conversations:
+            self.conversations[message.conversation] = PersistentList()
+        self.conversations[message.conversation].append(message)
 
-        if otheruser.username not in self.unread:
-            self.unread.insert(0, otheruser.username)
+        # Add the current conversation to the unread list
+        if message.conversation not in self.unread:
+            self.unread.insert(0, message.conversation)
+
+        # Re-add to the top of the conversation_list
         try:
-            self.conversation_list.remove(otheruser.username)
+            self.conversation_list.remove(message.conversation)
         except ValueError:
             pass
-        self.conversation_list.insert(0, otheruser.username)
+        self.conversation_list.insert(0, message.conversation)
 
     def message_read(self, message):
         self.unread.remove(message)
@@ -482,6 +494,7 @@ class Message(Persistent):
         self.body      = body
 
         self.reply_to  = None
+        self.conversation = None
 
         self.date        = datetime.datetime.utcnow()
         self._identifier = str(uuid.uuid1())
@@ -496,6 +509,7 @@ class Message(Persistent):
                 "sender": self.sender.username,
                 "subject": self.subject,
                 "recipient": self.recipient.username,
+                "conversation": self.conversation,
                 "body": self.body}
 
 class Offer(Message):
@@ -503,10 +517,10 @@ class Offer(Message):
         super(Offer, self).__init__(sender, recipient, subject, body)
 
         # the sender offers apples
-        self.apples  = apples
+        self.apples  = PersistentList(apples)
 
         # the receiver offer oranges
-        self.oranges = oranges
+        self.oranges = PersistentList(oranges)
 
     def __dict__(self):
         r = super(Offer, self).__dict__()

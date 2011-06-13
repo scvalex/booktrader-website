@@ -50,6 +50,11 @@
   ${date.strftime("%A %d %B %Y %I:%M%p")}
 </%def>
 
+<%def name="pretty_date_simple(date)">
+  <%
+     %>
+</%def>
+
 <%def name="gravatar(user)">
   <a href="${request.resource_url(user)}">
     <img src="${user.gravatar(32)}" alt="${user.username}"/>
