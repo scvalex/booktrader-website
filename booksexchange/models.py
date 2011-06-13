@@ -143,29 +143,32 @@ class User(Persistent):
             otheruser = message.sender
 
         # What conversation is this message part of?
+        conversation = None
         if message.reply_to is not None:
             message.conversation = message.reply_to.conversation
-        elif not isinstance(message, Offer):
-            message.conversation = otheruser.username
-        else:
+            conversation = message.conversation
+        elif isinstance(message, Offer):
             message.conversation = str(uuid.uuid1())
+            conversation = message.conversation
+        if conversation is None:
+            conversation = otheruser.username
 
         # If this is the first message, add it to the conversations
         # list.  Otherwise, append it to the relevant conversation.
-        if message.conversation not in self.conversations:
-            self.conversations[message.conversation] = PersistentList()
-        self.conversations[message.conversation].append(message)
+        if conversation not in self.conversations:
+            self.conversations[conversation] = PersistentList()
+        self.conversations[conversation].append(message)
 
         # Add the current conversation to the unread list
-        if message.conversation not in self.unread:
-            self.unread.insert(0, message.conversation)
+        if conversation not in self.unread:
+            self.unread.insert(0, conversation)
 
         # Re-add to the top of the conversation_list
         try:
-            self.conversation_list.remove(message.conversation)
+            self.conversation_list.remove(conversation)
         except ValueError:
             pass
-        self.conversation_list.insert(0, message.conversation)
+        self.conversation_list.insert(0, conversation)
 
     def message_read(self, message):
         self.unread.remove(message)
