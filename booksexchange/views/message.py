@@ -143,7 +143,7 @@ def reply_to_message(context, request):
 
     set_recipient(form, recipient)
 
-    form.schema['subject'].default = "Re: " + context.subject
+    form.schema['subject'].default = context.subject
 
     if request.method == 'POST':
         def extra_fun(message):
