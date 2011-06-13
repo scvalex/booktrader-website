@@ -41,20 +41,23 @@
 % else:
   <table class="inbox">
     <tbody>
-      % for username in conversation_list:
-        % if username in unread:
+      % for conversation in conversation_list:
+        <% other = conversations[conversation][-1].sender %>
+        <% if other is request.user:
+               other = conversations[conversation][-1].recipient %>
+        % if conversation in unread:
           <tr class="unread">
         % else:
           <tr>
         % endif
-          <td>${common.user_link(request.root['users'][username])}</td>
+          <td>${common.user_link(other)}</td>
           <td class="summary_message_body">
-            ${common.message_link(conversations[username][-1])}
+            ${common.message_link(conversations[conversation][-1])}
             -
-            ${conversations[username][-1].body[:32]}...
+            ${conversations[conversation][-1].body[:32]}...
           </td>
           <td>
-            ${common.pretty_date_simple(conversations[username][-1].date)}
+            ${common.pretty_date_simple(conversations[conversation][-1].date)}
           </td>
         </tr>
       % endfor
@@ -77,18 +80,24 @@
       <% from booksexchange.models import Offer %>
       % if isinstance(message, Offer):
         % if message.sender is request.user:
-          <div>${books_common.render_book_short(message.apples, request.user)}</div>
+          <div>${render_book_list(message.apples, request.user)}</div>
         % else:
-          <div>${books_common.render_book_short(message.oranges, request.user)}</div>
+          <div>${render_book_list(message.oranges, request.user)}</div>
         % endif
         <div class="vs_text">for</div>
         % if message.sender is request.user:
-          <div>${books_common.render_book_short(message.oranges, message.sender)}</div>
+          <div>${render_book_list(message.oranges, message.sender)}</div>
         % else:
-          <div>${books_common.render_book_short(message.apples, message.sender)}</div>
+          <div>${render_book_list(message.apples, message.sender)}</div>
         % endif
       % endif
     </div>
     <div class="clear"></div>
   </${top}>
+</%def>
+
+<%def name="render_book_list(books, owner)">
+  % for book in books:
+    <div>${books_common.render_book_short(book, owner)}</div>
+  % endfor
 </%def>

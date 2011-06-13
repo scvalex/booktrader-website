@@ -144,11 +144,11 @@ class User(Persistent):
 
         # What conversation is this message part of?
         conversation = None
-        if message.reply_to is not None:
-            message.conversation = message.reply_to.conversation
-            conversation = message.conversation
-        elif isinstance(message, Offer):
+        if isinstance(message, Offer): # offers always start new conversatiosn
             message.conversation = str(uuid.uuid1())
+            conversation = message.conversation
+        elif message.reply_to is not None:
+            message.conversation = message.reply_to.conversation
             conversation = message.conversation
         if conversation is None:
             conversation = otheruser.username
@@ -520,9 +520,13 @@ class Offer(Message):
         super(Offer, self).__init__(sender, recipient, subject, body)
 
         # the sender offers apples
+        if not hasattr(apples, "__iter__"):
+            apples = [apples]
         self.apples  = PersistentList(apples)
 
         # the receiver offer oranges
+        if not hasattr(oranges, "__iter__"):
+            oranges = [oranges]
         self.oranges = PersistentList(oranges)
 
     def __dict__(self):

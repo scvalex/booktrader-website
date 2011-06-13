@@ -119,7 +119,7 @@ def reply_to_message_offer(context, request):
                        buttons=('Send',))
     set_recipient(form, recipient)
 
-    form.schema['subject'].default = "Re: " + context.subject
+    form.schema['subject'].default = context.subject
 
     if request.method == 'POST':
         def extra_fun(message):
