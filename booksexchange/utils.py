@@ -120,8 +120,9 @@ class IndexFolder(Folder):
 
     def query(self, *args, **kwargs):
         res   = self._catalog.query(*args, **kwargs)
-        items = [find_resource(find_root(self), self._docmap.address_for_docid(index))
-                 for index in res[1]]
+
+        items = (find_resource(find_root(self), self._docmap.address_for_docid(index))
+                 for index in res[1])
         return (res[0], items)
 
     def update(self, obj):
@@ -130,7 +131,8 @@ class IndexFolder(Folder):
 
 
 def send_email(body, subject, recipients, settings, sender=None):
-    """Send an email.
+    """
+    Send an email.
 
     All arguments should be Unicode strings (plain ASCII works as well).
 
