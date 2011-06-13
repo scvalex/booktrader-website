@@ -217,9 +217,12 @@ def catch_exc(req, app):
     except HTTPInternalServerError:
         raise
     except HTTPException as e:
+        status = e.status
+
         if json_request(req):
             if isinstance(e, HTTPFound):
                 resp = json.dumps({'status': 'ok'})
+                status = 200
             else:
                 resp = json.dumps({'status': 'error', 'reason': str(e)})
         else:
@@ -230,4 +233,4 @@ def catch_exc(req, app):
         if 'Content-Length' in headers:
             del headers['Content-Length']
 
-        return Response(body=resp, status=e.status, headers=headers)
+        return Response(body=resp, status=status, headers=headers)

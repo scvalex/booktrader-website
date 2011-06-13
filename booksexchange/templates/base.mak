@@ -77,7 +77,7 @@
       </div>
 
       <div id="footer">
-        foot foot foot
+        füt füt füt
         ${self.footer()}
       </div>
 
