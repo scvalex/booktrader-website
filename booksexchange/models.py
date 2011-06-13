@@ -145,7 +145,9 @@ class User(Persistent):
         # What conversation is this message part of?
         conversation = None
         if isinstance(message, Offer): # offers always start new conversatiosn
-            message.conversation = str(uuid.uuid1())
+            message.reply_to = None
+            if message.conversation is None:
+                message.conversation = str(uuid.uuid1())
             conversation = message.conversation
         elif message.reply_to is not None:
             message.conversation = message.reply_to.conversation

@@ -147,7 +147,10 @@ def reply_to_message(context, request):
 
     if request.method == 'POST':
         def extra_fun(message):
-            message.reply_to = request.user.conversations[recipient.username][-1] # reply to the *last* message in the conversation context
+            if context.conversation is not None:
+                message.reply_to = request.user.conversations[context.conversation][-1]
+            else:
+                message.reply_to = request.user.conversations[recipient.username][-1] # reply to the *last* message in the conversation context
         common_send_message(context, request, form, extra_fun, recipient)
 
     return {'form': form.render(), 'typ': 'message'}
@@ -243,21 +246,19 @@ def show_message(context, request):
     if request.user is not context.sender and request.user is not context.recipient:
         raise Forbidden()
 
-    otheruser = get_other(context, request)
-
-    first_message = context
-    while first_message.reply_to is not None:
-        first_message = first_message.reply_to
+    conversation = context.conversation
+    if conversation is None:
+        conversation = get_other(context, request).username
 
     try:
-        request.user.unread.remove(otheruser.username)
+        request.user.unread.remove(conversation)
     except ValueError:
         pass
 
     return {'conversations': request.user.conversations,
             'conversation_list': request.user.conversation_list,
             'unread': request.user.unread,
-            'msg_root': request.user.conversations[otheruser.username]}
+            'msg_root': request.user.conversations[conversation]}
 
 def get_other(message, request):
     other = message.sender
