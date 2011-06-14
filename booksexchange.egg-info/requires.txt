@@ -10,3 +10,4 @@ py-bcrypt
 deform
 Markdown
 WebHelpers
+repoze.evolution
