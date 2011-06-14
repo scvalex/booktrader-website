@@ -20,7 +20,7 @@ import urllib
 
 from booksexchange.models      import *
 from booksexchange.schemas     import *
-from booksexchange.utils       import send_email, CatalogueException
+from booksexchange.utils       import send_email, CatalogueException, json_request
 
 
 @view_config(context=App, renderer='home.mak')
@@ -32,6 +32,9 @@ def home(context, request):
 def forbidden(request):
     if authenticated_userid(request):
         raise HTTPForbidden("You don't have enough permissions to access this page.")
+
+    if json_request(request):
+        raise HTTPForbidden("Get more permissions!!!")
 
     raise HTTPFound(location = request.resource_url(request.root['users'], 'login',
                                                     query={'ref':request.path}))
