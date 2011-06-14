@@ -65,7 +65,7 @@ def login(context, request):
 
         request.session.flash('You are now logged in.')
 
-        raise HTTPFound(location = request.resource_url(request.root, referer),
+        raise HTTPFound(location = referer,
                         headers  = remember(request, data['username']))
 
     return {'form': form.render()}
