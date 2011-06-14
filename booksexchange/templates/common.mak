@@ -1,9 +1,9 @@
 <%def name="user_link(user)">
-  <a href="${request.resource_url(user)}">${user.username}</a>
+  <% return '<a href="' + request.resource_url(user) + '">' + user.username + '</a>' %>
 </%def>
 
 <%def name="user_link_inner(user, inner)">
-  <a href="${request.resource_url(user)}">${inner}</a>
+  <% return '<a href="' + request.resource_url(user) + '">' + inner + '</a>' %>
 </%def>
 
 <%def name="book_link(book, inner, user = None)">
@@ -67,9 +67,9 @@
   </span
 </%def>
 
-<%def name="gravatar(user)">
+<%def name="gravatar(user, size=32)">
   <a href="${request.resource_url(user)}">
-    <img src="${user.gravatar(32)}" alt="${user.username}"/>
+    <img src="${user.gravatar(size)}" alt="${user.username}"/>
     <span>${user.username}</span>
   </a>
 </%def>
@@ -106,3 +106,4 @@
     <div class="event_page_cover">${book_cover(event.oranges)}</div>
   % endif
 </%def>
+  

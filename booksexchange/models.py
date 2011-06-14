@@ -1,15 +1,16 @@
-from exceptions                   import RuntimeError
+from exceptions                     import RuntimeError
 
-from persistent                   import Persistent
-from persistent.list              import PersistentList
-from persistent.mapping           import PersistentMapping
+from persistent                     import Persistent
+from persistent.list                import PersistentList
+from persistent.mapping             import PersistentMapping
 
-from pyramid.httpexceptions       import HTTPInternalServerError
-from pyramid.security             import Allow, Everyone, Deny
-from pyramid.traversal            import resource_path
+from pyramid.httpexceptions         import HTTPInternalServerError
+from pyramid.security               import Allow, Everyone, Deny
+from pyramid.traversal              import resource_path
 
-from repoze.catalog.indexes.field import CatalogFieldIndex
-from repoze.catalog.indexes.text  import CatalogTextIndex
+from repoze.catalog.indexes.field   import CatalogFieldIndex
+from repoze.catalog.indexes.text    import CatalogTextIndex
+from repoze.catalog.indexes.keyword import CatalogKeywordIndex
 
 
 import bcrypt
@@ -45,9 +46,16 @@ class App(PersistentMapping):
         self.setchild('cache', VerySimpleCache())
 
 
+def groups_list(user, default):
+    if not hasattr(user, 'groups'):
+        return default
+
+    return user.groups.keys()
+    
 class Users(IndexFolder):
     def __init__(self):
-        super(Users, self).__init__(email = CatalogFieldIndex('email'))
+        super(Users, self).__init__(email  = CatalogFieldIndex('email'),
+                                    groups = CatalogFieldIndex(groups_list))
 
     def new_user(self, user):
         self[user.username] = user
