@@ -113,7 +113,13 @@ def add_book(book, request):
         request.root['books'].new_book(book)
 
     request.session.flash('Book added!')
-    raise HTTPFound(location = request.referer)
+
+    referer = request.referer
+    if 'ref' in request.params:
+        referer = request.params['ref']
+    if referer == request.path:
+        referer = '/'
+    raise HTTPFound(location = referer)
 
 @view_config(context=Book, name='remove', permission='loggedin')
 def remove_book(context, request):

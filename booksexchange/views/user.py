@@ -37,14 +37,14 @@ def login_schema(users, referer):
             raise exc
 
     return LoginSchema(validator = validate_login)
-    
+
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def login(context, request):
     if already_logged_in(request):
         raise HTTPFound(location = '/')
 
-    if 'came_from' in request.params:
-        referer = request.params['came_from']
+    if 'ref' in request.params:
+        referer = request.params['ref']
     elif request.referer:
         referer = request.referer
     else:
@@ -65,7 +65,7 @@ def login(context, request):
 
         request.session.flash('You are now logged in.')
 
-        raise HTTPFound(location = referer,
+        raise HTTPFound(location = request.resource_url(request.root, referer),
                         headers  = remember(request, data['username']))
 
     return {'form': form.render()}
