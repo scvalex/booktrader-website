@@ -52,11 +52,16 @@ def search(context, request):
     ###########################################################################
     # Internal results
     words = query['query'].lower().split()
-    catalog_query = lambda i: reduce(lambda q, w: q | Contains(i, w),
-                                     words[1:], Contains(i, words[0]))
-                                     
-    owned_books = context.query(catalog_query('title') | catalog_query('subtitle'))[1]
-    
+
+    owned_books = []
+
+    for word in words:
+        try:
+            res = context.query(Contains('title', word) |
+                                Contains('subtitle', word))[1]
+            owned_books.extend(res)
+        except ParseError:
+            pass
 
     # Compute -3 and +3 page indices around the current page
     page_indices = start_index / books_per_page - 3
