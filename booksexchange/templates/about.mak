@@ -8,8 +8,10 @@
     <h3>License</h3>
 
     <p>
+      <img alt="GNU AGPL v3 logo" src="${request.static_url('booksexchange:static/img/agplv3-155x51.png')}" />
+      <br>
       ${parent.title()} is licensed under the terms of the
-        <a href="${request.static_url('booksexchange:static/gpl-3.0.txt')}">GNU GPL version 3</a>
+        <a href="${request.static_url('booksexchange:static/agpl-3.0.txt')}">GNU AGPL version 3</a>
       .
     </p>
   </div>

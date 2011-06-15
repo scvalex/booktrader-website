@@ -1,3 +1,20 @@
+# Copyright 2011 the authors of BookTrader (see the AUTHORS file included).
+#
+# This file is part of BookTrader.
+#
+# BookTrader is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# BookTrader is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even any implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Affero General Public License version 3 for more details.
+#
+# You should have received a copy of the GNU Affero General Public
+# License version 3 along with BookTrader. If not, see:
+# http://www.gnu.org/licenses/
+
 import unittest
 
 from pyramid import testing
@@ -59,7 +76,7 @@ class UsersTests(unittest.TestCase):
     def test_new_user(self):
         from booksexchange.models import User
         from repoze.catalog.query import Eq, NotEq
-        
+
         users = dummy_users()
 
         self.assertEqual(users['francesco'].__name__, 'francesco')
@@ -67,7 +84,7 @@ class UsersTests(unittest.TestCase):
         self.assertEqual(users['francesco'].username, 'francesco')
 
         n, res = users.query(Eq('email', 'f@mazzo.li'))
-        
+
         self.assertEqual(n, 1)
         self.assertEqual(res[0], users['francesco'])
 
@@ -79,7 +96,7 @@ class UsersTests(unittest.TestCase):
 
         users['francesco'].email = 'e.imhotep@gmail.com'
         users.update(users['francesco'])
-        
+
         n1, res1 = users.query(Eq('email', 'f@mazzo.li'))
         n2, res2 = users.query(Eq('email', 'e.imhotep@gmail.com'))
 
@@ -93,9 +110,9 @@ class UsersTests(unittest.TestCase):
         from repoze.catalog.query import Eq, NotEq
 
         users = dummy_users()
-        
+
         del users['francesco']
-        
+
         self.assertFalse('francesco' in users)
         self.assertEqual(users.query(Eq('email', 'f@mazzo.li'))[0], 0)
 
@@ -117,7 +134,7 @@ class UserTests(unittest.TestCase):
         self.assertEqual(bcrypt.hashpw('francesco', user._password), user._password)
 
         self.assertFalse(user.confirmed)
-        
+
         self.assertTrue(user.check_password('francesco'))
         self.assertFalse(user.check_password('asfddsa'))
 
@@ -135,7 +152,7 @@ class UserTests(unittest.TestCase):
     def test_adding(self):
         from exceptions import RuntimeError
         from booksexchange.models import Book
-        
+
         user = self._makeOne()
 
         self.assertRaises(RuntimeError, user.add_owned, '')
@@ -148,7 +165,7 @@ class UserTests(unittest.TestCase):
         book1 = Book('book1', None, None, None, None, None, None, None, None)
 
         self.assertFalse(user.remove_book(book1))
-        
+
         user.add_owned(book1)
         self.assertTrue(book1.identifier in user.owned)
         self.assertFalse(book1.identifier in user.want)
@@ -171,7 +188,7 @@ email_settings = {'smtp_email'    : '',
                   'smtp_username' : '',
                   'smtp_password' : '',
                   }
-                  
+
 class LoginTests(unittest.TestCase):
     def _callFUT(self, context, request):
         from booksexchange.views import login
@@ -186,7 +203,7 @@ class LoginTests(unittest.TestCase):
     def test_login_simple(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
-        
+
         context = Users()
         context.new_user(User('francesco', '', 'francesco'))
 
@@ -201,14 +218,14 @@ class LoginTests(unittest.TestCase):
         # TODO: I have to check that remember() is called correctly
         self.assertEqual(cm.exception.status_int, 302)
         self.assertEqual(cm.exception.location, '/')
-    
+
     def test_login_came_from(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
-        
+
         context = Users()
         context.new_user(User('francesco', '', 'francesco'))
-        
+
         request = testing.DummyRequest(params={'username'  : 'francesco',
                                                'password'  : 'francesco',
                                                'came_from' : '/foo',
@@ -225,10 +242,10 @@ class LoginTests(unittest.TestCase):
     def test_login_came_from_same(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
-        
+
         context = Users()
         context.new_user(User('francesco', '', 'francesco'))
-        
+
         request = testing.DummyRequest(params={'username'  : 'francesco',
                                                'password'  : 'francesco',
                                                'came_from' : '/users/login',
@@ -247,10 +264,10 @@ class LoginTests(unittest.TestCase):
     def test_login_wrong1(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
-        
+
         context = Users()
         context.new_user(User('francesco', '', 'francesco'))
-        
+
         request = testing.DummyRequest(params={'username'  : 'imnotther',
                                                'password'  : 'wrong',
                                                'Login'     : None})
@@ -262,10 +279,10 @@ class LoginTests(unittest.TestCase):
     def test_login_wrong2(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
-        
+
         context = Users()
         context.new_user(User('francesco', '', 'francesco'))
-        
+
         request = testing.DummyRequest(params={'username'  : 'francesco',
                                                'password'  : 'wrong',
                                                'Login'     : None})
@@ -277,12 +294,12 @@ class LoginTests(unittest.TestCase):
     def test_login_already_logged(self):
         from booksexchange.models import Users, User
         from booksexchange.views.common import HTTPFound
-        
+
         self.config.testing_securitypolicy(userid='francesco')
 
         context = Users()
         request = testing.DummyRequest()
-        
+
         with self.assertRaises(HTTPFound) as cm:
             self._callFUT(context, request)
 
@@ -302,7 +319,7 @@ class LogoutTests(unittest.TestCase):
 
     def test_logout_not_logged(self):
         from booksexchange.views.common import HTTPForbidden
-        
+
         context = None
         request = testing.DummyRequest()
 
@@ -313,7 +330,7 @@ class LogoutTests(unittest.TestCase):
 
     def test_logout_simple(self):
         from booksexchange.views.common import HTTPFound
-        
+
         self.config.testing_securitypolicy(userid='francesco')
 
         context = None
@@ -331,7 +348,7 @@ class LogoutTests(unittest.TestCase):
         from booksexchange.views.common import HTTPFound
 
         self.config.testing_securitypolicy(userid='francesco')
-        
+
         context = None
         request = testing.DummyRequest()
         request.referer = '/foo'
@@ -356,7 +373,7 @@ class LogoutTests(unittest.TestCase):
 
 #     def test_register_simple(self):
 #         from booksexchange.views.common import HTTPFound
-        
+
 #         context = dummy_users()
 
 #         request = testing.DummyRequest(POST = {'_charset_'  : 'UTF-8',
@@ -379,7 +396,7 @@ class LogoutTests(unittest.TestCase):
 #         self.assertEqual(cm.exception.location, '/users/max/generate_token')
 
 
-        
+
 class RegistrationTokenTests(unittest.TestCase):
     def _callFUT(self, user, request):
         from booksexchange.views import registration_token
@@ -393,7 +410,7 @@ class RegistrationTokenTests(unittest.TestCase):
 
     def test_token_normal(self):
         from booksexchange.models import User
-        
+
         email = 'foo@gmail.com'
         user  = User('francesco', email, 'francesco')
 
@@ -415,7 +432,7 @@ class RegistrationTokenTests(unittest.TestCase):
 
         user           = User('francesco', '', 'francesco')
         user.confirmed = True
-        
+
         request = testing.DummyRequest()
 
         with self.assertRaises(HTTPBadRequest):
@@ -464,7 +481,7 @@ class ConfirmRegistrationTests(unittest.TestCase):
 
         with self.assertRaises(HTTPBadRequest):
             self._callFUT(user, request)
-        
+
 
 ###############################################################################
 
@@ -511,7 +528,7 @@ class SearchTests(unittest.TestCase):
             self._callFUT(context, request)
 
         self.assertEqual(cm.exception.detail, 'No search.')
-            
+
     def test_search_invalid(self):
         from booksexchange.models import App
         from booksexchange.views.common import HTTPFound
@@ -641,7 +658,7 @@ class AddBookTests(unittest.TestCase):
 
         user.add_owned(book)
         book.add_owner(user)
-        
+
         with self.assertRaises(HTTPBadRequest):
             self._callFUT(book, request)
 
@@ -661,10 +678,10 @@ class AddBookTests(unittest.TestCase):
 
         user.add_want(book)
         book.add_coveter(user)
-        
+
         with self.assertRaises(HTTPBadRequest):
             self._callFUT(book, request)
-        
+
     def test_add_invalid_kind(self):
         from booksexchange.views.common import HTTPBadRequest
 
@@ -731,6 +748,6 @@ class RemoveBookTests(unittest.TestCase):
         with self.assertRaises(HTTPBadRequest):
             self._callFUT(book, request)
 
-        
+
 ###############################################################################
 

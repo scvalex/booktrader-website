@@ -83,11 +83,7 @@
           ·
           <a href="${request.resource_url(request.root, 'about')}">About ${title()}</a>
           ·
-          <a href="${request.resource_url(request.root, 'about')}#license">License</a>
-          ·
-          <a href="${request.resource_url(request.root, 'about')}#technology">Technology and Open Source</a>
-          ·
-          <a href="${request.resource_url(request.root, 'about')}#authors">Authors</a>
+          <a href="${request.resource_url(request.root, 'about')}#authors">Contact</a>
           ·
           <a href="${request.resource_url(request.root, 'debug')}"><em>Debug info</em></a>
           ·
