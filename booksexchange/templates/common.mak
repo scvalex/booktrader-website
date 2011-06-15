@@ -16,13 +16,15 @@
   </a>
 </%def>
 
-<%def name="book_cover(book)">
+<%def name="book_cover(book)" buffered="True">
   % if book.image_links and book.image_links['thumbnail']:
       <img src="${book.image_links['thumbnail']}"
-           alt="${book.title}" />
+           alt="${book.title}"
+           class="book_cover" />
   % else:
       <img src="${request.static_url('booksexchange:static/img/book_thumb.png')}"
-           alt="${book.title}" />
+           alt="${book.title}"
+           class="book_cover default_cover" />
   % endif
 </%def>
 
@@ -68,30 +70,40 @@
 </%def>
 
 <%def name="gravatar(user, size=32)">
-  <a href="${request.resource_url(user)}">
+  <a href="${request.resource_url(user)}" class="gravatar">
     <img src="${user.gravatar(size)}" alt="${user.username}"/>
     <span>${user.username}</span>
   </a>
 </%def>
 
+<%def name="render_events(events, *args)">
+  % if args:
+      <ul class="${args[0] + ' events'}">
+  % else:
+      <ul class="events">
+  % endif
+    % for event in events:
+        <li class="event">${render_event(event)}</li>
+    % endfor
+  </ul>
+</%def>
+
 <%def name="render_event(event)">
   <% from booksexchange.models import HaveEvent, WantEvent, ExchangeEvent %>
   % if isinstance(event, HaveEvent):
-    <div>${format_date_simple(event.date)}</div>
-    <div class="event_page_cover">${book_cover(event.book)}</div>
-    <div>
-      ${user_link(event.owner)}
-      has
-      ${book_link(event.book, event.book.format_title(), event.owner)}
-    </div>
+    ${gravatar(event.owner, 100)}
+    ${book_link(event.book, book_cover(event.book))}
+    <span class="user">${user_link(event.owner)}</span>
+    <span class="action">
+      has ${book_link(event.book, event.book.title, event.owner)}
+    </span>
   % elif isinstance(event, WantEvent):
-    <div>${format_date_simple(event.date)}</div>
-    <div class="event_page_cover">${book_cover(event.book)}</div>
-    <div>
-      ${user_link(event.coveter)}
-      wants
-      ${book_link(event.book, event.book.format_title())}
-    </div>
+    ${gravatar(event.coveter, 100)}
+    ${book_link(event.book, book_cover(event.book))}
+    <span class="user">${user_link(event.coveter)}</span>
+    <span class="action">
+      wants ${book_link(event.book, event.book.title, event.coveter)}
+    </span>
   % elif isinstance(event, ExchangeEvent):
     <div>${format_date_simple(event.date)}</div>
     <div class="event_page_cover">${book_cover(event.apples)}</div>
@@ -99,11 +111,10 @@
       ${user_link(event.giver)}
       gave
       ${user_link(event.taker)}
-      ${book_link(event.apples, event.apples.format_title(), event.taker)}
+      ${book_link(event.apples, event.apples.title, event.taker)}
       for
-      ${book_link(event.oranges, event.oranges.format_title(), event.giver)}
+      ${book_link(event.oranges, event.oranges.title, event.giver)}
     </div>
     <div class="event_page_cover">${book_cover(event.oranges)}</div>
   % endif
 </%def>
-  

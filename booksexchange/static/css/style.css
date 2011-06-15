@@ -32,7 +32,6 @@ h3 {
   border-bottom: 1px solid #b2b6a2;
   border-style: dotted;
   text-shadow: 1px 1px 1px white;
-  clear: both;
 }
 
 a {
@@ -443,20 +442,20 @@ h1 a, h1 a:visited {
   margin: 1px;
 }
 
-.owners ul li a, .coveters ul li a {
+a.gravatar {
   position: relative;
   z-index: 1;
 }
 
-.owners ul li a:hover, .coveters ul li a:hover {
+a.gravatar:hover {
   z-index: 2;
 }
 
-.owners ul li a span, .coveters ul li a span {
+a.gravatar span {
   display: none;
 }
 
-.owners ul li a:hover span, .coveters ul li a:hover span {
+a.gravatar:hover span {
   display: block;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.7);
@@ -468,7 +467,7 @@ h1 a, h1 a:visited {
   font-size: 0.9em;
 }
 
-.owners a, .coveters a, .owners a:visited, .coveters a:visited {
+a.gravatar a, a.gravatar:visited {
   color: white;
 }
 
@@ -692,31 +691,31 @@ a.blue_button {
 
 /* Index styles */
 
-#have_list, #want_list, #exchange_list {
+.have_list, .want_list, .exchange_list {
     float: left;
     min-height: 20em;
     width: 31%;
 }
 
-#want_list, #exchange_list {
+.want_list, .exchange_list {
     margin-left: 2%;
 }
 
-#have_list li, #want_list li, #exchange_list li {
+.have_list li, .want_list li, .exchange_list li {
     margin-top: 1em;
     border-radius: 4px;
     padding: 1%;
 }
 
-#have_list li {
+.have_list li {
     background-color: #cec;
 }
 
-#want_list li {
+.want_list li {
     background-color: #eda;
 }
 
-#exchange_list li {
+.exchange_list li {
     background-color: #cce;
 }
 
@@ -736,10 +735,6 @@ a.blue_button {
     float: left;
     margin-left: 1%;
     width: 32%;
-}
-
-#stuff_in_flux li {
-    margin-top: 1em;
 }
 
 /* Search page */
@@ -849,4 +844,69 @@ ul.authors li {
 em {
 	font-style: italic;
 }
->>>>>>> master
+
+/* Events */
+.events {
+  background-color: #32656f;
+  border-radius: 0.2em;
+}
+
+.event:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.event {
+  padding: 0.5em 0.5em 0 0.5em;
+}
+
+.event img {
+  border: 2px solid #1a3439;
+  border-radius: 2px;
+}
+
+.event .book_cover {
+  max-height: 100px;
+  float: left;
+  margin: 0 0.3em 0.3em 0;
+}
+
+.event .gravatar {
+  float: left;
+}
+
+.event .gravatar {
+  margin: 0 2px 0.3em 0;
+}
+
+.event .user a {
+  color: #F6FAE0;
+  text-shadow: #1a3439 1px 1px 1px;
+}
+
+
+.event .user {
+  font-size: 1.2em;
+  display: block;
+  margin-bottom: 0.3em;
+}
+
+.book_cover {
+  border: 2px solid #32656f;
+  border-radius: 2px;
+}
+
+.action {
+  font-size: 0.8em;
+  color: #98dfec;
+}
+
+.action a, .action a:visited {
+  color: #98dfec;
+  font-size: 1.1em;
+}
+
+.default_cover {
+  border: 2px transparent solid;
+}
