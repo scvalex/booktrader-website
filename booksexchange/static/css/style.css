@@ -11,7 +11,7 @@ body {
   background-color: #E0E4CC;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   font-family: Cabin, sans-serif;
 }
 
@@ -32,6 +32,7 @@ h3 {
   border-bottom: 1px solid #b2b6a2;
   border-style: dotted;
   text-shadow: 1px 1px 1px white;
+  clear: both;
 }
 
 a {
@@ -111,7 +112,9 @@ h1 a, h1 a:visited {
 #footer {
   background-color: black;
   color:white;
+  /*
   min-height: 200px;
+  */
 }
 
 
@@ -757,4 +760,65 @@ img.gravatar {
 
 #real_stuff {
   clear:both;
+}
+
+
+
+#footer div {
+	padding: 0.5em;
+}
+
+#footer div a {
+	color: orange;
+	font-size: 0.9em;
+}
+
+div.aboutbox {
+	clear: both;
+	width: 100%;
+	padding: 0.5em;
+	padding-bottom: 1.0em;
+}
+
+div.aboutbox * a {
+	text-decoration: none;
+}
+
+h4 {
+	border-bottom: 1px solid #eee;
+	font-size: 1.0em;
+}
+
+ul.abouttech {
+	clear: both;
+	list-style-type: none;
+	padding: 0.5em;
+	max-width: 700px;
+}
+
+ul.abouttech li {
+	padding: 0.5em;
+	float: left;
+	width: 40%;
+	padding-right: 5%;
+	display: inline;
+	vertical-align: top;
+	height: 85px;
+}
+
+ul.abouttech li a {
+	padding: 0.5em;
+}
+
+ul.authors {
+	padding-left: 1em;
+	padding-bottom: 1em;
+}
+
+ul.authors li {
+	padding: 0.3em;
+}
+
+em {
+	font-style: italic;
 }
