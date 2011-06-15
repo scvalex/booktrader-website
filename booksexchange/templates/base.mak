@@ -80,9 +80,6 @@
         ${self.footer()}
 
         <div class="footlinks">
-          <a href="http://www.w3.org/html/logo/">
-            <img alt="Small HTML5 Logo" src="${request.static_url('booksexchange:static/img/HTML5_Badge.svg')}" height="16" />
-          </a>
           ·
           <a href="${request.resource_url(request.root, 'about')}">About ${title()}</a>
           ·
@@ -93,6 +90,7 @@
           <a href="${request.resource_url(request.root, 'about')}#authors">Authors</a>
           ·
           <a href="${request.resource_url(request.root, 'debug')}"><em>Debug info</em></a>
+          ·
         </div>
 
       </div>
