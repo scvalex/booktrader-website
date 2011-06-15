@@ -77,8 +77,22 @@
       </div>
 
       <div id="footer">
-        füt füt füt
         ${self.footer()}
+
+        <div class="footlinks">
+          ·
+          <a href="${request.resource_url(request.root, 'about')}">About ${title()}</a>
+          ·
+          <a href="${request.resource_url(request.root, 'about')}#license">License</a>
+          ·
+          <a href="${request.resource_url(request.root, 'about')}#technology">Technology and Open Source</a>
+          ·
+          <a href="${request.resource_url(request.root, 'about')}#authors">Authors</a>
+          ·
+          <a href="${request.resource_url(request.root, 'debug')}"><em>Debug info</em></a>
+          ·
+        </div>
+
       </div>
 
     </div>
@@ -91,7 +105,7 @@
 
 
 
-<%def name="title()">BooksExchange</%def>
+<%def name="title()">BookTrader</%def>
 
 <%def name="heading()"></%def>
 

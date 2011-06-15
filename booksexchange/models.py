@@ -317,6 +317,7 @@ class Book(Persistent):
              "publisher": self.publisher,
              "owners": self.owners.keys(),
              "coveters": self.coveters.keys(),
+             "description": self.description,
              "thumbnail": "",
              "smallThumbnail": ""}
         if self.image_links is not None:
@@ -588,6 +589,9 @@ def check_class(obj, klass, msg):
 
 
 def appmaker(zodb_root):
+    from repoze.evolution import ZODBEvolutionManager
+    from repoze.evolution import evolve_to_latest
+
     if not 'app_root' in zodb_root:
         app_root              = App()
         zodb_root['app_root'] = app_root
@@ -604,9 +608,42 @@ def appmaker(zodb_root):
         app_root['users'].new_user(User('marco', 'marco@marco.com', 'marco'))
         app_root['users']['marco'].confirmed = True
 
-        app_root['users'].new_user(User('max', 'max@enpas.org', 'max'))
+        app_root['users'].new_user(User('max', 'max@max.com', 'max'))
         app_root['users']['max'].confirmed = True
 
         import transaction
         transaction.commit()
+
+    # Evolve each sub-DB if necessary
+    evolmgr_users = ZODBEvolutionManager(zodb_root['app_root']['users'],
+                        evolve_packagename='booksexchange.dbevol.users',
+                        sw_version=1, initial_db_version=0)
+    evolve_to_latest(evolmgr_users)
+
+    evolmgr_books = ZODBEvolutionManager(zodb_root['app_root']['books'],
+                        evolve_packagename='booksexchange.dbevol.books',
+                        sw_version=1, initial_db_version=0)
+    evolve_to_latest(evolmgr_books)
+
+    evolmgr_events = ZODBEvolutionManager(zodb_root['app_root']['events'],
+                        evolve_packagename='booksexchange.dbevol.events',
+                        sw_version=1, initial_db_version=0)
+    evolve_to_latest(evolmgr_events)
+
+    evolmgr_groups = ZODBEvolutionManager(zodb_root['app_root']['groups'],
+                        evolve_packagename='booksexchange.dbevol.groups',
+                        sw_version=1, initial_db_version=0)
+    evolve_to_latest(evolmgr_groups)
+
+    evolmgr_messages = ZODBEvolutionManager(zodb_root['app_root']['messages'],
+                        evolve_packagename='booksexchange.dbevol.messages',
+                        sw_version=1, initial_db_version=0)
+    evolve_to_latest(evolmgr_messages)
+
+    evolmgr_cache = ZODBEvolutionManager(zodb_root['app_root']['cache'],
+                        evolve_packagename='booksexchange.dbevol.cache',
+                        sw_version=1, initial_db_version=0)
+    evolve_to_latest(evolmgr_cache)
+    # Done evolving
+
     return zodb_root['app_root']

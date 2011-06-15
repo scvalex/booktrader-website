@@ -19,6 +19,7 @@ requires = [
     'deform',
     'Markdown',
     'WebHelpers',
+    'repoze.evolution',
     ]
 
 setup(name='booksexchange',
