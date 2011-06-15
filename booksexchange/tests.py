@@ -69,7 +69,7 @@ class UsersTests(unittest.TestCase):
         n, res = users.query(Eq('email', 'f@mazzo.li'))
         
         self.assertEqual(n, 1)
-        self.assertEqual(res[0], users['francesco'])
+        self.assertEqual(res.next(), users['francesco'])
 
     def test_update_user(self):
         from booksexchange.models import User
@@ -86,7 +86,7 @@ class UsersTests(unittest.TestCase):
         self.assertEqual(n1, 0)
 
         self.assertEqual(n2, 1)
-        self.assertEqual(res2[0], users['francesco'])
+        self.assertEqual(res2.next(), users['francesco'])
 
     def test_remove_user(self):
         from booksexchange.models import User
@@ -209,10 +209,10 @@ class LoginTests(unittest.TestCase):
         context = Users()
         context.new_user(User('francesco', '', 'francesco'))
         
-        request = testing.DummyRequest(params={'username'  : 'francesco',
-                                               'password'  : 'francesco',
-                                               'came_from' : '/foo',
-                                               'Login'     : None})
+        request = testing.DummyRequest(params={'username' : 'francesco',
+                                               'password' : 'francesco',
+                                               'ref'      : '/foo',
+                                               'Login'    : None})
         request.referer = None
 
 
