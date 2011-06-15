@@ -433,12 +433,12 @@ h1 a, h1 a:visited {
   font-size: 0.8em;
 }
 
-.owners, .coveters {
-  float:right;
+.books_list .owners, .books_list .coveters {
   padding: 0.5em;
   background-color:#1C393F;
   color: #B3EBE8;
   font-size: 0.9em;
+  float: right;
 }
 
 .owners span, .coveters span {
@@ -453,10 +453,13 @@ h1 a, h1 a:visited {
   width: 136px;
 }
 
-.owners li, .coveters li {
+.books_list .owners li, .books_list .coveters li {
   width: 32px;
-  margin: 1px;
+}
+
+.owners li, .coveters li {
   float: left;
+  margin: 1px;
 }
 
 .owners ul li a, .coveters ul li a {
@@ -488,14 +491,14 @@ h1 a, h1 a:visited {
   color: white;
 }
 
-.coveters {
+.book_details .coveters {
   border-top-left-radius: 0.2em;
   border-bottom-left-radius: 0.2em;
   margin-right: 1px;
 
 }
 
-.owners {
+.book_details .owners {
   margin-left: 1px;
   border-top-right-radius: 0.2em;
   border-bottom-right-radius: 0.2em;
@@ -781,6 +784,30 @@ img.gravatar {
   clear:both;
 }
 
+/* Groups */
+#group_image {
+  float: left;
+  margin-right: 0.3em;
+}
+
+#group_members {
+  clear:both;
+  padding-top: 0.3em;
+}
+
+#group_members div {
+  float:left;
+  width:50%;
+}
+
+#group_actions {
+  margin: 0.5em;
+}
+
+#group_actions li {
+  display: inline;
+  font-weight: bold;
+}
 
 
 #footer div {
