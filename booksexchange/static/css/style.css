@@ -469,14 +469,14 @@ h1 a, h1 a:visited {
   color: white;
 }
 
-.books_list .coveters {
+.book_details .coveters {
   border-top-left-radius: 0.2em;
   border-bottom-left-radius: 0.2em;
   margin-right: 1px;
 
 }
 
-.books_list .owners {
+.book_details .owners {
   margin-left: 1px;
   border-top-right-radius: 0.2em;
   border-bottom-right-radius: 0.2em;

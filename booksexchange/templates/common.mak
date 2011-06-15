@@ -1,9 +1,9 @@
-<%def name="user_link(user)">
-  <% return '<a href="' + request.resource_url(user) + '">' + user.username + '</a>' %>
+<%def name="user_link(user)" buffered="True">
+  <a href="${request.resource_url(user)}">${user.username}</a>
 </%def>
 
-<%def name="user_link_inner(user, inner)">
-  <% return '<a href="' + request.resource_url(user) + '">' + inner + '</a>' %>
+<%def name="user_link_inner(user, inner)" buffered="True">
+  <a href="${request.resource_url(user)}">${inner}</a>
 </%def>
 
 <%def name="book_link(book, inner, user = None)">
@@ -26,7 +26,7 @@
   % endif
 </%def>
 
-<%def name="group_link(group, inner)">
+<%def name="group_link(group, inner)" buffered="True">
   <a href="${request.resource_url(request.root['groups'], group.identifier)}">
     ${inner}
   </a>
