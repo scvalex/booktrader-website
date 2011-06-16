@@ -251,3 +251,15 @@ def catch_exc(req, app):
             del headers['Content-Length']
 
         return Response(body=resp, status=status, headers=headers)
+
+def substrings(s):
+    res = [s]
+    length = len(s)
+
+    if length < 4:
+        return res
+    
+    res.extend([s[:i] for i in range(3, length)])
+    res.extend([s[i:] for i in range(1, length - 2)])
+    res.extend([s[i:length-i] for i in range(1, (length-1)//2)])
+    return res

@@ -257,3 +257,10 @@ def user_home(context, request):
             'want':  context.want.values(),
             'events': context.events,
             'gravatar': context.gravatar(64)}
+
+def search_users(context, request, query):
+    (count, res) = context.query(Contains('username', query['query'].lower()))
+
+    return render_to_response('string',
+                              {'users', ', '.join([u.username for u in res])},
+                              request=request)

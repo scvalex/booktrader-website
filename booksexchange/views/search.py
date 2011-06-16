@@ -17,6 +17,7 @@
 
 from booksexchange.views.common import *
 from booksexchange.views.book   import search_books
+from booksexchange.views.user   import search_users
 
 @view_config(context=App, name='search')
 def search(context, request):
@@ -39,6 +40,8 @@ def search(context, request):
 
     if query['type'] == 'books':
         return search_books(context['books'], request, query)
+    elif query['type'] == 'users':
+        return search_users(context['users'], request, query)
     else:
         raise Exception()
     

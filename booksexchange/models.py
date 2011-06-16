@@ -41,7 +41,7 @@ import uuid
 
 from booksexchange.schemas        import BookSchema
 from booksexchange.utils          import (IndexFolder, GoogleBooksCatalogue,
-                                          CatalogueException)
+                                          CatalogueException, substrings)
 
 class App(PersistentMapping):
     __name__   = None
@@ -69,16 +69,16 @@ def groups_list(user, default):
 
     return user.groups.keys()
 
-def lowercase_username(user, default):
+def lowercase_sub_username(user, default):
     if hasattr(user, 'username'):
-        return user.username.lower()
+        return ' '.join(substrings(user.username))
     return default
 
 class Users(IndexFolder):
     def __init__(self):
         super(Users, self).__init__(email    = CatalogFieldIndex('email'),
                                     groups   = CatalogFieldIndex(groups_list),
-                                    username = CatalogTextIndex(lowercase_username))
+                                    username = CatalogTextIndex(lowercase_sub_username))
 
     def new_user(self, user):
         self[user.username] = user
