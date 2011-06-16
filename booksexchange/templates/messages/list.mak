@@ -20,6 +20,8 @@
 <%namespace name="common" file="/common.mak" />
 <%namespace name="books_common" file="/books/common.mak" />
 
+<% from booksexchange.models import Offer %>
+
 <h2>Inbox</h2>
 
 <h3>
@@ -52,7 +54,10 @@
   </ol>
   <ul class="conversation_controls clear">
     <li><a href="${request.resource_url(msg_root[-1], 'reply')}">Reply</a></li>
-    <li><a href="${request.resource_url(msg_root[-1], 'offer')}">Make Offer</a></li>
+    % if isinstance(msg_root[0], Offer):
+      <li><a href="${request.resource_url(msg_root[0], 'edit_offer')}">Edit Offer</a></li>
+    % endif
+    <li><a href="${request.resource_url(msg_root[-1], 'offer')}">Make New Offer</a></li>
     <li><a href="${request.referer}">Back</a></li>
   </ul>
 % else:
@@ -99,7 +104,6 @@
 
 <%def name="show_message(message, top='li')">
   <${top} class="message clear">
-    <% from booksexchange.models import Offer %>
     % if isinstance(message, Offer):
       <div class="offer_info">
         % if message.sender is request.user:

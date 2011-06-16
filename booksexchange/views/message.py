@@ -288,6 +288,55 @@ def show_message(context, request):
             'unread': request.user.unread,
             'msg_root': request.user.conversations[conversation]}
 
+@view_config(context=Message, name='edit_offer', renderer='messages/new.mak',
+             permission='loggedin')
+def edit_offer(context, request):
+    if request.user is not context.sender and request.user is not context.recipient:
+        raise Forbidden()
+
+    recipient = get_other(context, request)
+
+    form = deform.Form(make_message_schema(request.root['users'],
+                                           request.user, recipient, 'offer'),
+                       buttons=('Send',))
+
+    set_recipient(form, recipient)
+    form.schema['subject'].default = context.subject
+    form.schema['body'].default = context.body
+    form.schema['apples'].default = [book.identifier for book in context.apples]
+    form.schema['oranges'].default = [book.identifier for book in context.oranges]
+
+    if request.method == 'POST':
+        controls = request.POST.items()
+
+        controls.append(('recipient', recipient.username))
+
+        try:
+            data = form.validate(controls)
+        except deform.ValidationFailure, e:
+            controls = dict(controls)
+            form.schema['recipient'].default = controls.get('recipient', '')
+            form.schema['subject'].default = controls.get('subject', '')
+            form.schema['body'].default = controls.get('body', '')
+            form.schema['apples'].default = controls.get('apples', [])
+            form.schema['oranges'].default = controls.get('oranges', [])
+
+            return {'form': e.render()}
+
+        def id_to_book(id):
+            return request.root['books'][id]
+
+        context.subject = data['subject']
+        context.subject = data['body']
+        context.apples = [id_to_book(id) for id in list(set(data['apples']))]
+        context.oranges = [id_to_book(id) for id in list(set(data['oranges']))]
+        request.user.message_unread(context)
+        request.session.flash('Offer edited')
+
+        raise HTTPFound(location = request.resource_url(context))
+
+    return {'form': form.render(), 'typ': "offer"}
+
 def get_other(message, request):
     other = message.sender
     if other is request.user:

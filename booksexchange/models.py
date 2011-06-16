@@ -198,6 +198,16 @@ class User(Persistent):
             pass
         self.conversation_list.insert(0, conversation)
 
+    def message_unread(self, message):
+        conversation = message.conversation
+        if conversation is None:
+            if message.recipient is self:
+                conversation = message.sender.username
+            else:
+                conversation = message.recipient.username
+        if conversation not in self.unread:
+            self.unread.insert(0, conversation)
+
     def message_read(self, message):
         self.unread.remove(message)
 
