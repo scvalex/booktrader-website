@@ -53,8 +53,8 @@ def search(context, request):
     except ParseError, e:
         return {'error': e.message}
 
-    return {'items': items,
-            'type':  t}
+    return {'items': [i for i in items],
+            'search_type':  t}
 
         
 

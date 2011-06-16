@@ -20,17 +20,16 @@
 <%namespace name="common" file="/common.mak" />
 
 <%
-items_list = [i for i in items]
 
-if type == 'users':
+if search_type == 'users':
     render_func = common.users_list
-elif type == 'groups':
+elif search_type == 'groups':
     render_func = common.groups_list
    
 %>
 
 <h2>
-  Found ${len(items_list)} ${type}
+  Found ${len(items)} ${search_type}
 </h2>
 
-${render_func(items_list)}
+${render_func(items)}
