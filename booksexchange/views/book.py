@@ -52,16 +52,13 @@ def search_books(context, request, query):
 
     ###########################################################################
     # Internal results
-    words = query['query'].lower().split()
+    words = query['query'].lower()
 
-    owned_books = []
-    for word in words:
-        try:
-            res = context.query(Contains('title', word) |
-                                Contains('subtitle', word))[1]
-            owned_books.extend(res)
-        except ParseError:
-            pass
+    try:
+        owned_books = [b for b in context.query(Contains('title', words) |
+                                                Contains('subtitle', words))[1]]
+    except ParseError:
+        owned_books = []
 
     # Compute -3 and +3 page indices around the current page
     page_indices = start_index / books_per_page - 3
