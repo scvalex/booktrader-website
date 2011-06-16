@@ -52,10 +52,12 @@ def make_message_schema(users, current_user, other_user = None,
             utf8_string(),
             validator = validate_user_exists,
             widget = deform.widget.TextInputWidget())
-        subject   = colander.SchemaNode(utf8_string())
+        subject   = colander.SchemaNode(utf8_string(),
+                                        missing = "")
         body      = colander.SchemaNode(
             utf8_string(),
-            widget = deform.widget.TextAreaWidget())
+            widget = deform.widget.TextAreaWidget(),
+            missing = "")
 
     def validate_book_exists(node, user, book):
         if user is None or book not in user.owned:
@@ -68,21 +70,29 @@ def make_message_schema(users, current_user, other_user = None,
     def validate_other_book(node, book):
         return validate_book_exists(node, other_user, book)
 
-    class OfferSchema(MessageSchema):
-        apples = colander.SchemaNode(
+    class ApplesSchema(colander.SequenceSchema):
+        apple = colander.SchemaNode(
             utf8_string(),
             validator = validate_my_book,
             widget = deform.widget.SelectWidget(values = my_books))
 
-        oranges = colander.SchemaNode(
+    class OrangesSchema(colander.SequenceSchema):
+        orange = colander.SchemaNode(
             utf8_string(),
             validator = validate_other_book,
             widget = deform.widget.SelectWidget(values = other_books))
 
+    class OfferSchema(MessageSchema):
+        apples = ApplesSchema()
+        oranges = OrangesSchema()
+
     if typ == "message":
         return MessageSchema()
     elif typ == "offer":
-        return OfferSchema()
+        sch = OfferSchema()
+        sch['oranges'].typ.accept_scalar = True
+        sch['apples'].typ.accept_scalar = True
+        return sch
     else:
         raise RuntimeError("unknown message schema: " + typ)
 
@@ -243,7 +253,8 @@ def common_send_message(context, request, form, extra_fun, other = None,
         m = Message(request.user, recipient, data['subject'], data['body'])
     elif typ == 'offer':
         m = Offer(request.user, recipient, data['subject'], data['body'],
-                  id_to_book(data['apples']), id_to_book(data['oranges']))
+                  [id_to_book(id) for id in list(set(data['apples']))],
+                  [id_to_book(id) for id in list(set(data['oranges']))])
     elif typ == 'feedback':
         m = Feedback(request.user, recipient, data['rating'], data['comment'])
     else:
