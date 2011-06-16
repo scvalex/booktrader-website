@@ -271,7 +271,7 @@ h1 a, h1 a:visited {
   margin: 0.2em 0;
 }
 .book_short {
-  margin:1em;
+  margin:0.7em;
 }
 
 .authors {
@@ -930,3 +930,8 @@ em {
   border: 2px transparent solid;
 }
 
+
+/* User display */
+.book_short .gravatar {
+  float: left;
+}

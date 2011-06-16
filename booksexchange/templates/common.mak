@@ -86,8 +86,8 @@
   </span
 </%def>
 
-<%def name="gravatar(user, size=32)">
-  <a href="${request.resource_url(user)}" class="gravatar">
+<%def name="gravatar(user, size=32, class_='')">
+  <a href="${request.resource_url(user)}" class="${class_ + ' gravatar'}">
     <img src="${user.gravatar(size)}" alt="${user.username}"/>
     <span>${user.username}</span>
   </a>
@@ -136,3 +136,76 @@
   % endif
 </%def>
 
+<%def name="render_user(user)">
+  <div class="book_short">
+    ${gravatar(user, size=100, class_='cover book_cover')}
+    <h3><a href="${request.resource_url(group)}">${user.username}</a></h3>
+    % if user.about:
+        ${request.markdown(user.about)}
+    % endif
+  </div>
+</%def>
+
+<%def name="users_list(users)">
+  <table class="books_list">
+    % while len(users) > 1:
+        <tr>
+          <td>
+            <% user = users.pop() %>
+            ${render_user(user)}
+          </td>
+          <td>
+            <% user = users.pop() %>
+            ${render_user(user)}
+          </td>
+        </tr>
+    % endwhile
+    % if len(users) > 0:
+        <tr>
+          <td>
+            <% user = users.pop() %>
+            ${render_user(user)}
+          </td>
+          <td class="blank"></td>
+        </tr>
+    % endif
+  </table>
+</%def>
+
+<%def name="render_group(group)">
+  <div class="book_short">
+    % if group.image:
+        <img src="${group.image}" alt="${group.name}" class="cover book_cover" />
+    % endif
+    <h3><a href="${request.resource_url(group)}">${group.name}</a></h3>
+    % if group.description:
+        ${request.markdown(group.description)}
+    % endif
+  </div>
+</%def>
+
+<%def name="groups_list(groups)">
+  <table class="books_list">
+    % while len(groups) > 1:
+        <tr>
+          <td>
+            <% group = groups.pop() %>
+            ${render_group(group)}
+          </td>
+          <td>
+            <% group = groups.pop() %>
+            ${render_group(group)}
+          </td>
+        </tr>
+    % endwhile
+    % if len(groups) > 0:
+        <tr>
+          <td>
+            <% group = groups.pop() %>
+            ${render_group(group)}
+          </td>
+          <td class="blank"></td>
+        </tr>
+    % endif
+  </table>
+</%def>

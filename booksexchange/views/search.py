@@ -17,10 +17,8 @@
 
 from booksexchange.views.common import *
 from booksexchange.views.book   import search_books
-from booksexchange.views.user   import search_users
-from booksexchange.views.group  import search_groups
 
-@view_config(context=App, name='search')
+@view_config(context=App, name='search', renderer='search.mak')
 def search(context, request):
     if 'Search' not in request.params:
         raise HTTPBadRequest('No search.')
@@ -41,9 +39,22 @@ def search(context, request):
 
     if query['type'] == 'books':
         return search_books(context['books'], request, query)
-    elif query['type'] == 'users':
-        return search_users(context['users'], request, query)
-    elif query['type'] == 'groups':
-        return search_groups(context['groups'], request, query)
-    
+
+    qs = query['query'].lower()
+
+    try:
+        if query['type'] == 'users':
+            (count, items) = context['users'].query(Contains('username', qs))
+            t = 'users'
+        elif query['type'] == 'groups':
+            (count, items) = context['groups'].query(Contains('name', qs) |
+                                                     Contains('description', qs))
+            t = 'groups'
+    except ParseError, e:
+        return {'error': e.message}
+
+    return {'items': items,
+            'type':  t}
+
+        
 
