@@ -291,13 +291,14 @@ def show_message(context, request):
 @view_config(context=Message, name='edit_offer', renderer='messages/new.mak',
              permission='loggedin')
 def edit_offer(context, request):
-    if request.user is not context.sender and request.user is not context.recipient:
+    if (request.user is not context.sender and request.user is not context.recipient) or not isinstance(context, Offer):
         raise Forbidden()
 
     recipient = get_other(context, request)
 
     form = deform.Form(make_message_schema(request.root['users'],
-                                           request.user, recipient, 'offer'),
+                                           context.recipient, context.sender,
+                                           'offer'),
                        buttons=('Send',))
 
     set_recipient(form, recipient)
