@@ -19,13 +19,15 @@
 
 <%namespace name="common" file="/common.mak" />
 
-<%
+% if error:
+    <h2>Error: ${error}</h2>
+% else:
 
+<%
 if search_type == 'users':
     render_func = common.users_list
 elif search_type == 'groups':
     render_func = common.groups_list
-   
 %>
 
 <h2>
@@ -33,3 +35,5 @@ elif search_type == 'groups':
 </h2>
 
 ${render_func(items)}
+
+% endif

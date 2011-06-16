@@ -54,7 +54,8 @@ def search(context, request):
         return {'error': e.message}
 
     return {'items': [i for i in items],
-            'search_type':  t}
+            'search_type':  t,
+            'error' : None}
 
         
 
