@@ -99,16 +99,9 @@
 
 <%def name="show_message(message, top='li')">
   <${top} class="message clear">
-    <div class="actual_message">
-      <div class="from">${common.user_link(message.sender)}</div>
-      <div class="date">${common.format_date_simple(message.date)}</div>
-      <div class="to">${common.user_link(message.recipient)}</div>
-      <div class="subject">${common.message_link(message)}</div>
-      <div class="body">${message.body}</div>
-    </div>
-    <div class="offer_info">
-      <% from booksexchange.models import Offer %>
-      % if isinstance(message, Offer):
+    <% from booksexchange.models import Offer %>
+    % if isinstance(message, Offer):
+      <div class="offer_info">
         % if message.sender is request.user:
           <div>${render_book_list(message.apples, request.user)}</div>
         % else:
@@ -120,7 +113,14 @@
         % else:
           <div>${render_book_list(message.apples, message.sender)}</div>
         % endif
-      % endif
+      </div>
+    % endif
+    <div class="actual_message">
+      <div class="from">${common.user_link(message.sender)}</div>
+      <div class="date">${common.format_date_simple(message.date)}</div>
+      <div class="to">${common.user_link(message.recipient)}</div>
+      <div class="subject">${common.message_link(message)}</div>
+      <div class="body">${message.body}</div>
     </div>
     <div class="clear"></div>
   </${top}>
@@ -128,6 +128,6 @@
 
 <%def name="render_book_list(books, owner)">
   % for book in books:
-    <div>${books_common.render_book_short(book, owner)}</div>
+    <div>${books_common.render_book_short(book, owner, false)}</div>
   % endfor
 </%def>
