@@ -1,3 +1,20 @@
+# Copyright 2011 the authors of BookTrader (see the AUTHORS file included).
+#
+# This file is part of BookTrader.
+#
+# BookTrader is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# BookTrader is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even any implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Affero General Public License version 3 for more details.
+#
+# You should have received a copy of the GNU Affero General Public
+# License version 3 along with BookTrader. If not, see:
+# http://www.gnu.org/licenses/
+
 from booksexchange.views.common import *
 
 @view_config(context=Users, renderer='users.mak', permission='loggedin')
@@ -78,7 +95,7 @@ def logout(context, request):
     headers = forget(request)
 
     request.session.flash('You are now logged out.')
-    
+
     if request.referer:
         referer = request.referer
     else:
@@ -198,7 +215,7 @@ def user_cp_schema(user):
         old_password  = colander.SchemaNode(colander.String(),
                                             widget    = deform.widget.PasswordWidget(),
                                             validator = validate_password)
-        
+
         password      = colander.SchemaNode(
             colander.String(),
             validator = colander.Length(min=5, max=100),
@@ -227,11 +244,11 @@ def user_cp(context, request):
         request.user.about        = data['about']
 
         form = deform.Form(user_cp_schema(request.user), buttons = ('Submit',))
-        
+
     if request.user.location:
         form.schema['location'].default = request.user.location
     form.schema['about'].default        = request.user.about
-    
+
     return {'form':form.render()}
 
 @view_config(context=User, renderer='users/home.mak')

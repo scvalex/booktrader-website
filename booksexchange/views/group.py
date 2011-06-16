@@ -1,3 +1,20 @@
+# Copyright 2011 the authors of BookTrader (see the AUTHORS file included).
+#
+# This file is part of BookTrader.
+#
+# BookTrader is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, version 3 of the License.
+#
+# BookTrader is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even any implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Affero General Public License version 3 for more details.
+#
+# You should have received a copy of the GNU Affero General Public
+# License version 3 along with BookTrader. If not, see:
+# http://www.gnu.org/licenses/
+
 from booksexchange.views.common import *
 
 
@@ -154,7 +171,7 @@ def admin_group(context, request):
         context.description = data['description']
         context.type        = data['type']
         context.image       = data['image']
-            
+
         if 'domains' in data:
             context.domains = data['domains']
 
