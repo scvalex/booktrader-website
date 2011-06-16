@@ -62,9 +62,9 @@ class AppRequest(Request):
 
     @reify
     def search_bar(self):
-        action = self.resource_url(self.root['books'], 'search')
+        action = self.resource_url(self.root, 'search')
         return deform.Form(SearchSchema(),
-                           buttons = (deform.form.Button('Search', type='submit'),),
+                           buttons = ('Search',),
                            action  = action,
                            formid  = 'search_bar',
                            method  = 'GET').render()

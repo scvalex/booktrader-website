@@ -69,10 +69,16 @@ def groups_list(user, default):
 
     return user.groups.keys()
 
+def lowercase_username(user, default):
+    if hasattr(user, 'username'):
+        return user.username.lower()
+    return default
+
 class Users(IndexFolder):
     def __init__(self):
-        super(Users, self).__init__(email  = CatalogFieldIndex('email'),
-                                    groups = CatalogFieldIndex(groups_list))
+        super(Users, self).__init__(email    = CatalogFieldIndex('email'),
+                                    groups   = CatalogFieldIndex(groups_list),
+                                    username = CatalogTextIndex(lowercase_username))
 
     def new_user(self, user):
         self[user.username] = user
@@ -436,9 +442,15 @@ class ExchangeEvent(Event):
         return r
 
 
+
+def lowercase_groupname(group, default):
+    if hasattr(group, 'name'):
+        return group.name.lower()
+    return default
+
 class Groups(IndexFolder):
     def __init__(self):
-        super(Groups, self).__init__(name = CatalogFieldIndex('name'))
+        super(Groups, self).__init__(name = CatalogTextIndex(lowercase_groupname))
 
 
 class Group(Persistent):

@@ -32,6 +32,13 @@ class SearchSchema(colander.Schema):
     limit = colander.SchemaNode(colander.Integer(),
                                 missing = 10,
                                 widget = deform.widget.HiddenWidget())
+    types = ['books', 'users', 'groups']
+    type = colander.SchemaNode(
+        utf8_string(),
+        validator = colander.OneOf(types),
+        title     = "Search type",
+        widget    = deform.widget.SelectWidget(values=[(t, t.capitalize())
+                                                       for t in types]))
 
 class AuthorsSchema(colander.SequenceSchema):
     author = colander.SchemaNode(utf8_string())

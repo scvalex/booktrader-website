@@ -24,6 +24,7 @@ from pyramid.response          import Response
 from pyramid.security          import remember, forget, authenticated_userid
 from pyramid.traversal         import resource_path
 from pyramid.view              import view_config
+from pyramid.renderers         import render_to_response
 
 from repoze.catalog.query      import Eq, Contains, And
 

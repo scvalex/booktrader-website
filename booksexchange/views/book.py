@@ -18,11 +18,7 @@
 from booksexchange.views.common import *
 
 
-@view_config(context=Books, name='search', renderer='books/search.mak')
-def search(context, request):
-    if 'Search' not in request.params:
-        raise HTTPBadRequest('No search.')
-
+def search_books(context, request, query):
     class BooksSchema(colander.SequenceSchema):
         book = BookSchema()
 
@@ -30,18 +26,6 @@ def search(context, request):
         items = BooksSchema(missing=[])
         totalItems = colander.SchemaNode(colander.Integer())
 
-    query = request.params.items()
-
-    search_form = deform.Form(SearchSchema(), buttons=('Search',))
-
-    try:
-        query = search_form.validate(query)
-    except deform.ValidationFailure, e:
-        # This basically means that there is no query
-        redir = request.referer and request.referer or '/'
-        raise HTTPFound(location = redir)
-
-    search_form.schema['query'].default = query['query']
     start_index = query['start_index']
 
     ###########################################################################
@@ -89,12 +73,13 @@ def search(context, request):
         num_items = total_items / books_per_page - page_indices
     page_indices = range(page_indices, page_indices + num_items + 1)
 
-    return {'total_items': total_items,
-            'google_books': google_books,
-            'page_indices': page_indices,
-            'page_index': start_index / books_per_page,
-            'books_per_page': books_per_page,
-            'owned_books': owned_books}
+    value = {'total_items': total_items,
+             'google_books': google_books,
+             'page_indices': page_indices,
+             'page_index': start_index / books_per_page,
+             'books_per_page': books_per_page,
+             'owned_books': owned_books}
+    return render_to_response('books/search.mak', value, request=request)
 
 @view_config(context=Book, renderer='books/details.mak')
 def view_book(context, request):
