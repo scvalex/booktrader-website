@@ -106,17 +106,19 @@
   <${top} class="message clear">
     % if isinstance(message, Offer):
       <div class="offer_info">
-        % if message.sender is request.user:
-          <div>${render_book_list(message.apples, request.user)}</div>
-        % else:
-          <div>${render_book_list(message.oranges, request.user)}</div>
-        % endif
+        <div>
+          <a href="${request.resource_url(message.sender)}">
+            ${common.gravatar(message.sender, 64)}
+          </a>
+          ${render_book_list(message.apples, message.sender)}
+        </div>
         <div class="vs_text">for</div>
-        % if message.sender is request.user:
-          <div>${render_book_list(message.oranges, message.sender)}</div>
-        % else:
-          <div>${render_book_list(message.apples, message.sender)}</div>
-        % endif
+        <div>
+          <a href="${request.resource_url(message.recipient)}">
+            ${common.gravatar(message.recipient, 64)}
+          </a>
+          ${render_book_list(message.oranges, message.recipient)}
+        </div>
       </div>
     % endif
     <div class="actual_message">
@@ -131,7 +133,9 @@
 </%def>
 
 <%def name="render_book_list(books, owner)">
-  % for book in books:
-    <div>${books_common.render_book_short(book, owner, false)}</div>
-  % endfor
+  <ul class="book_list">
+    % for book in books:
+      <li><a href="${request.resource_url(owner, book.identifier)}">${common.book_cover(book)}</a></li>
+    % endfor
+  </ul>
 </%def>
