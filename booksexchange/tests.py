@@ -503,10 +503,11 @@ class SearchTests(unittest.TestCase):
         from booksexchange.views import search
         return search(books, request)
 
-    def test_search_normal(self):
+    def test_search_book_normal(self):
         from booksexchange.models import App
 
         request = testing.DummyRequest(params = {'query'  : 'rings',
+                                                 'type'   : 'books',
                                                  'Search' : 'Search'})
         request.root = App()
         context = request.root['books']
