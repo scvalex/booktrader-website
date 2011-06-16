@@ -181,3 +181,13 @@ def admin_group(context, request):
 
 
     return {'form': form.render()}
+
+def search_groups(context, request, query):
+    q = query['query'].lower()
+    try:
+        (count, res) = context.query(Contains('name', q) | Contains('description', q))
+        value = {'groups': ', '.join([g.name for g in res])}
+    except ParseError, e:
+        value = {'error': e.message}
+
+    return render_to_response('string', value, request=request)

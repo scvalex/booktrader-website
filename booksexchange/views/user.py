@@ -259,8 +259,10 @@ def user_home(context, request):
             'gravatar': context.gravatar(64)}
 
 def search_users(context, request, query):
-    (count, res) = context.query(Contains('username', query['query'].lower()))
+    try:
+        (count, res) = context.query(Contains('username', query['query'].lower()))
+        value = {'users', ', '.join([u.username for u in res])}
+    except ParseError, e:
+        value = {'error': e.message}
 
-    return render_to_response('string',
-                              {'users', ', '.join([u.username for u in res])},
-                              request=request)
+    return render_to_response('string', value, request=request)

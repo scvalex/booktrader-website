@@ -443,14 +443,22 @@ class ExchangeEvent(Event):
 
 
 
-def lowercase_groupname(group, default):
+def lowercase_group_name(group, default):
     if hasattr(group, 'name'):
         return group.name.lower()
     return default
 
+def lowercase_group_description(group, default):
+    if hasattr(group, 'description'):
+        return group.description.lower()
+    return default
+
+
 class Groups(IndexFolder):
     def __init__(self):
-        super(Groups, self).__init__(name = CatalogTextIndex(lowercase_groupname))
+        super(Groups, self).__init__(
+            name        = CatalogTextIndex(lowercase_group_name),
+            description = CatalogTextIndex(lowercase_group_description))
 
 
 class Group(Persistent):
