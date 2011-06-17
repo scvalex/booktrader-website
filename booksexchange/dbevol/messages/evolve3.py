@@ -16,13 +16,16 @@
 # http://www.gnu.org/licenses/
 
 from persistent.list      import PersistentList
-from booksexchange.models import Offer
+from booksexchange.models import Offer, Feedback
 
 def evolve(context):
-    print "Evolving Messages DB to version 2...",
+    print "Evolving Messages DB to version 3...",
     for m in context.values():
         if isinstance(m, Offer):
             print ".",
-            m.accepted = PersistentList()
+            m.left_feedback = PersistentList()
+        elif isinstance(m, Feedback):
+            print ",",
+            m.offer = None
     print "Done"
-    context.evolved = 2
+    context.evolved = 3

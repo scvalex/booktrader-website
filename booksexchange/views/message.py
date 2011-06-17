@@ -185,8 +185,14 @@ def reply_to_message(context, request):
 @view_config(context=Message, name='complete', renderer='messages/new.mak',
              permission='loggedin')
 def complete_exchange(context, request):
-    if not isinstance(context, Offer) or request.user is not context.recipient:
+    if not isinstance(context, Offer) or (request.user is not context.recipient and request.user is not context.sender):
         raise Forbidden()
+
+    if request.user in context.left_feedback:
+        raise HTTPBadRequest("already left feedback")
+
+    if len(context.accepted) != 2:
+        raise HTTPBadRequest("both parties have not accepted yet")
 
     class FeedbackSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
@@ -209,14 +215,17 @@ def complete_exchange(context, request):
 
     form = deform.Form(FeedbackSchema(), buttons=('Submit',))
 
-    set_recipient(form, context.sender)
+    recipient = get_other(context, request)
+    set_recipient(form, recipient)
 
     if request.method == 'POST':
         def extra_fun(message):
             message.reply_to = context # reply to the *last* message in the conversation context
             request.root['events'].add_exchange(context.sender, context.recipient, context.apples, context.oranges, message.rating)
+            message.offer = context
+            context.left_feedback.append(request.user)
         common_send_message(context, request, form, extra_fun,
-                            context.sender, 'feedback')
+                            recipient, 'feedback')
 
     return {'form': form.render(), 'typ': 'feedback'}
 
@@ -325,7 +334,7 @@ def edit_offer(context, request):
             form.schema['apples'].default = controls.get('apples', [])
             form.schema['oranges'].default = controls.get('oranges', [])
 
-            return {'form': e.render()}
+            return {'form': e.render(), 'typ': 'offer'}
 
         def id_to_book(id):
             return request.root['books'][id]

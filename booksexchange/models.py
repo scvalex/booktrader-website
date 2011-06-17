@@ -378,8 +378,10 @@ class Events(Persistent):
     def add_exchange(self, giver, taker, apples, oranges, rating):
         check_class(giver, User, "not a User")
         check_class(taker, User, "not a User")
-        check_class(apples, Book, "not a Book")
-        check_class(oranges, Book, "not a Book")
+        for apple in apples:
+            check_class(apple, Book, "not a Book")
+        for orange in oranges:
+            check_class(orange, Book, "not a Book")
         e = ExchangeEvent(giver, taker, apples, oranges, rating)
         self.exchange.insert(0, e)
         self.all.insert(0, e)
@@ -579,6 +581,9 @@ class Offer(Message):
         # the parties who have accepted
         self.accepted = PersistentList()
 
+        # the parties who left feedback
+        self.left_feedback = PersistentList()
+
     def __dict__(self):
         r = super(Offer, self).__dict__()
         r['apples']  = self.apples
@@ -592,6 +597,7 @@ class Feedback(Message):
 
         self.rating  = rating
         self.comment = comment
+        self.offer   = None
 
 
 class VerySimpleCache(Persistent):
@@ -667,7 +673,7 @@ def appmaker(zodb_root):
 
     evolmgr_messages = ZODBEvolutionManager(zodb_root['app_root']['messages'],
                         evolve_packagename='booksexchange.dbevol.messages',
-                        sw_version=2, initial_db_version=0)
+                        sw_version=3, initial_db_version=0)
     evolve_to_latest(evolmgr_messages)
 
     evolmgr_cache = ZODBEvolutionManager(zodb_root['app_root']['cache'],
