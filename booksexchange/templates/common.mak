@@ -123,16 +123,13 @@
     </span>
   % elif isinstance(event, ExchangeEvent):
     <div>${format_date_simple(event.date)}</div>
-    <div class="event_page_cover">${book_cover(event.apples)}</div>
+    <div class="event_page_cover">${book_list(event.apples, event.giver)}</div>
     <div>
       ${user_link(event.giver)}
       gave
       ${user_link(event.taker)}
-      ${book_link(event.apples, event.apples.title, event.taker)}
-      for
-      ${book_link(event.oranges, event.oranges.title, event.giver)}
     </div>
-    <div class="event_page_cover">${book_cover(event.oranges)}</div>
+    <div class="event_page_cover">${book_list(event.oranges, event.taker)}</div>
   % endif
 </%def>
 
@@ -208,4 +205,12 @@
         </tr>
     % endif
   </table>
+</%def>
+
+<%def name="book_list(books, owner)">
+  <ul class="book_list">
+    % for book in books:
+      <li><a href="${request.resource_url(owner, book.identifier)}">${book_cover(book)}</a></li>
+    % endfor
+  </ul>
 </%def>
