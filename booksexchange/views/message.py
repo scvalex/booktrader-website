@@ -294,6 +294,9 @@ def edit_offer(context, request):
     if (request.user is not context.sender and request.user is not context.recipient) or not isinstance(context, Offer):
         raise Forbidden()
 
+    if context.accepted:
+        raise HTTPBadRequest("cannot edit a closing offer")
+
     recipient = get_other(context, request)
 
     form = deform.Form(make_message_schema(request.root['users'],
@@ -337,6 +340,21 @@ def edit_offer(context, request):
         raise HTTPFound(location = request.resource_url(context))
 
     return {'form': form.render(), 'typ': "offer"}
+
+@view_config(context=Message, name='accept_offer',
+             renderer='messages/list.mak',
+             permission='loggedin')
+def accept_offer(context, request):
+    if (request.user is not context.sender and request.user is not context.recipient) or not isinstance(context, Offer):
+        raise Forbidden()
+
+    if request.user in context.accepted:
+        raise HTTPBadRequest("already accepted")
+
+    context.accepted.append(request.user)
+    request.session.flash('Offer accpeted!')
+
+    raise HTTPFound(location = request.resource_url(context))
 
 def get_other(message, request):
     other = message.sender

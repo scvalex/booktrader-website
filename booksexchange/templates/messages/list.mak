@@ -55,7 +55,12 @@
   <ul class="conversation_controls clear">
     <li><a href="${request.resource_url(msg_root[-1], 'reply')}">Reply</a></li>
     % if isinstance(msg_root[0], Offer):
-      <li><a href="${request.resource_url(msg_root[0], 'edit_offer')}">Edit Offer</a></li>
+      % if not msg_root[0].accepted:
+        <li><a href="${request.resource_url(msg_root[0], 'edit_offer')}">Edit Offer</a></li>
+      % endif
+      % if request.user not in msg_root[0].accepted:
+        <li><a href="${request.resource_url(msg_root[0], 'accept_offer')}">Accept Offer</a></li>
+      % endif
     % endif
     <li><a href="${request.resource_url(msg_root[-1], 'offer')}">Make New Offer</a></li>
     <li><a href="${request.referer}">Back</a></li>

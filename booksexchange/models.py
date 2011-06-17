@@ -576,6 +576,9 @@ class Offer(Message):
             oranges = [oranges]
         self.oranges = PersistentList(oranges)
 
+        # the parties who have accepted
+        self.accepted = PersistentList()
+
     def __dict__(self):
         r = super(Offer, self).__dict__()
         r['apples']  = self.apples
@@ -664,7 +667,7 @@ def appmaker(zodb_root):
 
     evolmgr_messages = ZODBEvolutionManager(zodb_root['app_root']['messages'],
                         evolve_packagename='booksexchange.dbevol.messages',
-                        sw_version=1, initial_db_version=0)
+                        sw_version=2, initial_db_version=0)
     evolve_to_latest(evolmgr_messages)
 
     evolmgr_cache = ZODBEvolutionManager(zodb_root['app_root']['cache'],
