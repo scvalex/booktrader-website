@@ -44,7 +44,9 @@ def make_message_schema(users, current_user, other_user = None,
 
     class MessageSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
-            if username == current_user.username or username not in users:
+            if username == current_user.username:
+                raise colander.Invalid(node, 'Cannot send message to self')
+            elif username not in users:
                 raise colander.Invalid(node, 'User "' + username +
                                        '" does not exist.')
 
@@ -196,7 +198,9 @@ def complete_exchange(context, request):
 
     class FeedbackSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
-            if username == request.user.username or username not in request.root['users']:
+            if username == request.user.username:
+                raise colander.Invalid(node, 'Cannot send message to self')
+            elif username not in request.root['users']:
                 raise colander.Invalid(node, 'User "' + username +
                                        '" does not exist.')
 
