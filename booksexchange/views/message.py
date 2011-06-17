@@ -373,7 +373,7 @@ def accept_offer(context, request):
 
     context.accepted.append(request.user)
     get_other(context, request).message_unread(context)
-    request.session.flash('Offer accpeted!')
+    request.session.flash('Offer accepted!')
 
     raise HTTPFound(location = request.resource_url(context))
 
