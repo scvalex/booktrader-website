@@ -28,7 +28,7 @@ def list_messages(context, request):
 
 
 def make_message_schema(users, current_user, other_user = None,
-                        typ = "message"):
+                        typ = "message", swap_books = False):
     def pretty_title(book):
         if not book.authors:
             return book.title
@@ -42,9 +42,14 @@ def make_message_schema(users, current_user, other_user = None,
     else:
         other_books = []
 
+    if swap_books:
+        (my_books, other_books) = (other_books, my_books)
+
     class MessageSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
-            if username == current_user.username or username not in users:
+            if username == current_user.username:
+                raise colander.Invalid(node, 'Cannot send message to self')
+            elif username not in users:
                 raise colander.Invalid(node, 'User "' + username +
                                        '" does not exist.')
 
@@ -52,10 +57,12 @@ def make_message_schema(users, current_user, other_user = None,
             utf8_string(),
             validator = validate_user_exists,
             widget = deform.widget.TextInputWidget())
-        subject   = colander.SchemaNode(utf8_string())
+        subject   = colander.SchemaNode(utf8_string(),
+                                        missing = "")
         body      = colander.SchemaNode(
             utf8_string(),
-            widget = deform.widget.TextAreaWidget())
+            widget = deform.widget.TextAreaWidget(),
+            missing = "")
 
     def validate_book_exists(node, user, book):
         if user is None or book not in user.owned:
@@ -68,21 +75,32 @@ def make_message_schema(users, current_user, other_user = None,
     def validate_other_book(node, book):
         return validate_book_exists(node, other_user, book)
 
-    class OfferSchema(MessageSchema):
-        apples = colander.SchemaNode(
+    if swap_books:
+        (validate_my_book, validate_other_book) = (validate_other_book, validate_my_book)
+
+    class ApplesSchema(colander.SequenceSchema):
+        apple = colander.SchemaNode(
             utf8_string(),
             validator = validate_my_book,
             widget = deform.widget.SelectWidget(values = my_books))
 
-        oranges = colander.SchemaNode(
+    class OrangesSchema(colander.SequenceSchema):
+        orange = colander.SchemaNode(
             utf8_string(),
             validator = validate_other_book,
             widget = deform.widget.SelectWidget(values = other_books))
 
+    class OfferSchema(MessageSchema):
+        apples = ApplesSchema()
+        oranges = OrangesSchema()
+
     if typ == "message":
         return MessageSchema()
     elif typ == "offer":
-        return OfferSchema()
+        sch = OfferSchema()
+        sch['oranges'].typ.accept_scalar = True
+        sch['apples'].typ.accept_scalar = True
+        return sch
     else:
         raise RuntimeError("unknown message schema: " + typ)
 
@@ -175,12 +193,20 @@ def reply_to_message(context, request):
 @view_config(context=Message, name='complete', renderer='messages/new.mak',
              permission='loggedin')
 def complete_exchange(context, request):
-    if not isinstance(context, Offer) or request.user is not context.recipient:
+    if not isinstance(context, Offer) or (request.user is not context.recipient and request.user is not context.sender):
         raise Forbidden()
+
+    if request.user in context.left_feedback:
+        raise HTTPBadRequest("already left feedback")
+
+    if len(context.accepted) != 2:
+        raise HTTPBadRequest("both parties have not accepted yet")
 
     class FeedbackSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
-            if username == request.user.username or username not in request.root['users']:
+            if username == request.user.username:
+                raise colander.Invalid(node, 'Cannot send message to self')
+            elif username not in request.root['users']:
                 raise colander.Invalid(node, 'User "' + username +
                                        '" does not exist.')
 
@@ -199,14 +225,17 @@ def complete_exchange(context, request):
 
     form = deform.Form(FeedbackSchema(), buttons=('Submit',))
 
-    set_recipient(form, context.sender)
+    recipient = get_other(context, request)
+    set_recipient(form, recipient)
 
     if request.method == 'POST':
         def extra_fun(message):
             message.reply_to = context # reply to the *last* message in the conversation context
             request.root['events'].add_exchange(context.sender, context.recipient, context.apples, context.oranges, message.rating)
+            message.offer = context
+            context.left_feedback.append(request.user)
         common_send_message(context, request, form, extra_fun,
-                            context.sender, 'feedback')
+                            recipient, 'feedback')
 
     return {'form': form.render(), 'typ': 'feedback'}
 
@@ -243,7 +272,8 @@ def common_send_message(context, request, form, extra_fun, other = None,
         m = Message(request.user, recipient, data['subject'], data['body'])
     elif typ == 'offer':
         m = Offer(request.user, recipient, data['subject'], data['body'],
-                  id_to_book(data['apples']), id_to_book(data['oranges']))
+                  [id_to_book(id) for id in list(set(data['apples']))],
+                  [id_to_book(id) for id in list(set(data['oranges']))])
     elif typ == 'feedback':
         m = Feedback(request.user, recipient, data['rating'], data['comment'])
     else:
@@ -276,6 +306,76 @@ def show_message(context, request):
             'conversation_list': request.user.conversation_list,
             'unread': request.user.unread,
             'msg_root': request.user.conversations[conversation]}
+
+@view_config(context=Message, name='edit_offer', renderer='messages/new.mak',
+             permission='loggedin')
+def edit_offer(context, request):
+    if (request.user is not context.sender and request.user is not context.recipient) or not isinstance(context, Offer):
+        raise Forbidden()
+
+    if context.accepted:
+        raise HTTPBadRequest("cannot edit a closing offer")
+
+    recipient = get_other(context, request)
+
+    form = deform.Form(make_message_schema(request.root['users'],
+                                           request.user, recipient,
+                                           'offer',
+                                           (request.user != context.sender)),
+                       buttons=('Send',))
+
+    set_recipient(form, recipient)
+    form.schema['subject'].default = context.subject
+    form.schema['body'].default = context.body
+    form.schema['apples'].default = [book.identifier for book in context.apples]
+    form.schema['oranges'].default = [book.identifier for book in context.oranges]
+
+    if request.method == 'POST':
+        controls = request.POST.items()
+
+        controls.append(('recipient', recipient.username))
+
+        try:
+            data = form.validate(controls)
+        except deform.ValidationFailure, e:
+            controls = dict(controls)
+            form.schema['recipient'].default = controls.get('recipient', '')
+            form.schema['subject'].default = controls.get('subject', '')
+            form.schema['body'].default = controls.get('body', '')
+            form.schema['apples'].default = controls.get('apples', [])
+            form.schema['oranges'].default = controls.get('oranges', [])
+
+            return {'form': e.render(), 'typ': 'offer'}
+
+        def id_to_book(id):
+            return request.root['books'][id]
+
+        context.subject = data['subject']
+        context.subject = data['body']
+        context.apples = [id_to_book(id) for id in list(set(data['apples']))]
+        context.oranges = [id_to_book(id) for id in list(set(data['oranges']))]
+        recipient.message_unread(context)
+        request.session.flash('Offer edited')
+
+        raise HTTPFound(location = request.resource_url(context))
+
+    return {'form': form.render(), 'typ': "offer"}
+
+@view_config(context=Message, name='accept_offer',
+             renderer='messages/list.mak',
+             permission='loggedin')
+def accept_offer(context, request):
+    if (request.user is not context.sender and request.user is not context.recipient) or not isinstance(context, Offer):
+        raise Forbidden()
+
+    if request.user in context.accepted:
+        raise HTTPBadRequest("already accepted")
+
+    context.accepted.append(request.user)
+    get_other(context, request).message_unread(context)
+    request.session.flash('Offer accepted!')
+
+    raise HTTPFound(location = request.resource_url(context))
 
 def get_other(message, request):
     other = message.sender

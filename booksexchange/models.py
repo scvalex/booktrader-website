@@ -204,6 +204,16 @@ class User(Persistent):
             pass
         self.conversation_list.insert(0, conversation)
 
+    def message_unread(self, message):
+        conversation = message.conversation
+        if conversation is None:
+            if message.recipient is self:
+                conversation = message.sender.username
+            else:
+                conversation = message.recipient.username
+        if conversation not in self.unread:
+            self.unread.insert(0, conversation)
+
     def message_read(self, message):
         self.unread.remove(message)
 
@@ -374,8 +384,10 @@ class Events(Persistent):
     def add_exchange(self, giver, taker, apples, oranges, rating):
         check_class(giver, User, "not a User")
         check_class(taker, User, "not a User")
-        check_class(apples, Book, "not a Book")
-        check_class(oranges, Book, "not a Book")
+        for apple in apples:
+            check_class(apple, Book, "not a Book")
+        for orange in oranges:
+            check_class(orange, Book, "not a Book")
         e = ExchangeEvent(giver, taker, apples, oranges, rating)
         self.exchange.insert(0, e)
         self.all.insert(0, e)
@@ -586,6 +598,12 @@ class Offer(Message):
             oranges = [oranges]
         self.oranges = PersistentList(oranges)
 
+        # the parties who have accepted
+        self.accepted = PersistentList()
+
+        # the parties who left feedback
+        self.left_feedback = PersistentList()
+
     def __dict__(self):
         r = super(Offer, self).__dict__()
         r['apples']  = self.apples
@@ -599,6 +617,7 @@ class Feedback(Message):
 
         self.rating  = rating
         self.comment = comment
+        self.offer   = None
 
 
 class VerySimpleCache(Persistent):
@@ -674,7 +693,7 @@ def appmaker(zodb_root):
 
     evolmgr_messages = ZODBEvolutionManager(zodb_root['app_root']['messages'],
                         evolve_packagename='booksexchange.dbevol.messages',
-                        sw_version=1, initial_db_version=0)
+                        sw_version=3, initial_db_version=0)
     evolve_to_latest(evolmgr_messages)
 
     evolmgr_cache = ZODBEvolutionManager(zodb_root['app_root']['cache'],
