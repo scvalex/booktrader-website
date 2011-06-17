@@ -139,7 +139,7 @@
 <%def name="render_user(user)">
   <div class="book_short">
     ${gravatar(user, size=100, class_='cover book_cover')}
-    <h3><a href="${request.resource_url(group)}">${user.username}</a></h3>
+    <h3><a href="${request.resource_url(user)}">${user.username}</a></h3>
     % if user.about:
         ${request.markdown(user.about)}
     % endif
@@ -148,7 +148,7 @@
 
 <%def name="users_list(users)">
   <table class="books_list">
-    % while len(users) > 1:
+    % while len(users) > 2:
         <tr>
           <td>
             <% user = users.pop() %>
@@ -186,7 +186,7 @@
 
 <%def name="groups_list(groups)">
   <table class="books_list">
-    % while len(groups) > 1:
+    % while len(groups) > 2:
         <tr>
           <td>
             <% group = groups.pop() %>
