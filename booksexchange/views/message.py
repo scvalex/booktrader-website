@@ -28,7 +28,7 @@ def list_messages(context, request):
 
 
 def make_message_schema(users, current_user, other_user = None,
-                        typ = "message"):
+                        typ = "message", swap_books = False):
     def pretty_title(book):
         if not book.authors:
             return book.title
@@ -41,6 +41,9 @@ def make_message_schema(users, current_user, other_user = None,
                        for book in other_user.owned.values()]
     else:
         other_books = []
+
+    if swap_books:
+        (my_books, other_books) = (other_books, my_books)
 
     class MessageSchema(colander.MappingSchema):
         def validate_user_exists(node, username):
@@ -71,6 +74,9 @@ def make_message_schema(users, current_user, other_user = None,
 
     def validate_other_book(node, book):
         return validate_book_exists(node, other_user, book)
+
+    if swap_books:
+        (validate_my_book, validate_other_book) = (validate_other_book, validate_my_book)
 
     class ApplesSchema(colander.SequenceSchema):
         apple = colander.SchemaNode(
@@ -313,8 +319,9 @@ def edit_offer(context, request):
     recipient = get_other(context, request)
 
     form = deform.Form(make_message_schema(request.root['users'],
-                                           context.recipient, context.sender,
-                                           'offer'),
+                                           request.user, recipient,
+                                           'offer',
+                                           (request.user != context.sender)),
                        buttons=('Send',))
 
     set_recipient(form, recipient)
@@ -347,7 +354,7 @@ def edit_offer(context, request):
         context.subject = data['body']
         context.apples = [id_to_book(id) for id in list(set(data['apples']))]
         context.oranges = [id_to_book(id) for id in list(set(data['oranges']))]
-        request.user.message_unread(context)
+        recipient.message_unread(context)
         request.session.flash('Offer edited')
 
         raise HTTPFound(location = request.resource_url(context))
@@ -365,6 +372,7 @@ def accept_offer(context, request):
         raise HTTPBadRequest("already accepted")
 
     context.accepted.append(request.user)
+    get_other(context, request).message_unread(context)
     request.session.flash('Offer accpeted!')
 
     raise HTTPFound(location = request.resource_url(context))
