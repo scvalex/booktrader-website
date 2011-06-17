@@ -66,7 +66,11 @@
       % endif
     % endif
     <li><a href="${request.resource_url(msg_root[-1], 'offer')}">Make New Offer</a></li>
-    <li><a href="${request.referer}">Back</a></li>
+    % if request.referer is None:
+      <a href="${request.resource_url(request.root['messages'], 'list')}">Back</a>
+    % else:
+      <a href="${request.referer}">Back</a>
+    % endif
   </ul>
 % else:
   <h3>Offers</h3>
