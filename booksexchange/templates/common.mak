@@ -123,23 +123,20 @@
     </span>
   % elif isinstance(event, ExchangeEvent):
     <div>${format_date_simple(event.date)}</div>
-    <div class="event_page_cover">${book_cover(event.apples)}</div>
+    <div class="event_page_cover">${book_list(event.apples, event.giver)}</div>
     <div>
       ${user_link(event.giver)}
       gave
       ${user_link(event.taker)}
-      ${book_link(event.apples, event.apples.title, event.taker)}
-      for
-      ${book_link(event.oranges, event.oranges.title, event.giver)}
     </div>
-    <div class="event_page_cover">${book_cover(event.oranges)}</div>
+    <div class="event_page_cover">${book_list(event.oranges, event.taker)}</div>
   % endif
 </%def>
 
 <%def name="render_user(user)">
   <div class="book_short">
     ${gravatar(user, size=100, class_='cover book_cover')}
-    <h3><a href="${request.resource_url(group)}">${user.username}</a></h3>
+    <h3><a href="${request.resource_url(user)}">${user.username}</a></h3>
     % if user.about:
         ${request.markdown(user.about)}
     % endif
@@ -148,7 +145,7 @@
 
 <%def name="users_list(users)">
   <table class="books_list">
-    % while len(users) > 1:
+    % while len(users) > 2:
         <tr>
           <td>
             <% user = users.pop() %>
@@ -186,7 +183,7 @@
 
 <%def name="groups_list(groups)">
   <table class="books_list">
-    % while len(groups) > 1:
+    % while len(groups) > 2:
         <tr>
           <td>
             <% group = groups.pop() %>
@@ -208,4 +205,12 @@
         </tr>
     % endif
   </table>
+</%def>
+
+<%def name="book_list(books, owner)">
+  <ul class="book_list">
+    % for book in books:
+      <li><a href="${request.resource_url(owner, book.identifier)}">${book_cover(book)}</a></li>
+    % endfor
+  </ul>
 </%def>

@@ -21,7 +21,7 @@ from email.mime.text         import MIMEText
 from mako.template           import Template
 
 from pyramid.decorator       import reify
-from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound
+from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound, HTTPBadRequest
 from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 from pyramid.request         import Request
 from pyramid.response        import Response
@@ -245,6 +245,15 @@ def catch_exc(req, app):
             else:
                 resp = json.dumps({'status': 'error', 'reason': str(e)})
         else:
+            if isinstance(e, HTTPBadRequest):
+                #req.session.flash('Offer accepted!')
+                headers = e.headers
+                if req.referer is not None:
+                    headers['Location'] = req.referer
+                else:
+                    headers['Location'] = '/'
+                return Response(body='bad request', status=302, headers=headers)
+
             resp = Template(filename = "booksexchange/templates/exception.mak")
             resp = resp.render(**{'status': e.status, 'detail': e.detail})
 

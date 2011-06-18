@@ -20,6 +20,8 @@
 <%namespace name="common" file="/common.mak" />
 <%namespace name="books_common" file="/books/common.mak" />
 
+<% from booksexchange.models import Offer %>
+
 <h2>Inbox</h2>
 
 <h3>
@@ -52,8 +54,23 @@
   </ol>
   <ul class="conversation_controls clear">
     <li><a href="${request.resource_url(msg_root[-1], 'reply')}">Reply</a></li>
-    <li><a href="${request.resource_url(msg_root[-1], 'offer')}">Make Offer</a></li>
-    <li><a href="${request.referer}">Back</a></li>
+    % if isinstance(msg_root[0], Offer):
+      % if not msg_root[0].accepted:
+        <li><a href="${request.resource_url(msg_root[0], 'edit_offer')}">Edit Offer</a></li>
+      % endif
+      % if request.user not in msg_root[0].accepted:
+        <li><a href="${request.resource_url(msg_root[0], 'accept_offer')}">Accept Offer</a></li>
+      % endif
+      % if len(msg_root[0].accepted) == 2 and request.user not in msg_root[0].left_feedback:
+        <li><a href="${request.resource_url(msg_root[0], 'complete')}">Leave feedback</a></li>
+      % endif
+    % endif
+    <li><a href="${request.resource_url(msg_root[-1], 'offer')}">Make New Offer</a></li>
+    % if request.referer is None:
+      <a href="${request.resource_url(request.root['messages'], 'list')}">Back</a>
+    % else:
+      <a href="${request.referer}">Back</a>
+    % endif
   </ul>
 % else:
   <h3>Offers</h3>
@@ -99,6 +116,23 @@
 
 <%def name="show_message(message, top='li')">
   <${top} class="message clear">
+    % if isinstance(message, Offer):
+      <div class="offer_info">
+        <div>
+          <a href="${request.resource_url(message.sender)}">
+            ${common.gravatar(message.sender, 64)}
+          </a>
+          ${common.book_list(message.apples, message.sender)}
+        </div>
+        <div class="vs_text">for</div>
+        <div>
+          <a href="${request.resource_url(message.recipient)}">
+            ${common.gravatar(message.recipient, 64)}
+          </a>
+          ${common.book_list(message.oranges, message.recipient)}
+        </div>
+      </div>
+    % endif
     <div class="actual_message">
       <div class="from">${common.user_link(message.sender)}</div>
       <div class="date">${common.format_date_simple(message.date)}</div>
@@ -106,28 +140,6 @@
       <div class="subject">${common.message_link(message)}</div>
       <div class="body">${request.markdown(message.body)}</div>
     </div>
-    <div class="offer_info">
-      <% from booksexchange.models import Offer %>
-      % if isinstance(message, Offer):
-        % if message.sender is request.user:
-          <div>${render_book_list(message.apples, request.user)}</div>
-        % else:
-          <div>${render_book_list(message.oranges, request.user)}</div>
-        % endif
-        <div class="vs_text">for</div>
-        % if message.sender is request.user:
-          <div>${render_book_list(message.oranges, message.sender)}</div>
-        % else:
-          <div>${render_book_list(message.apples, message.sender)}</div>
-        % endif
-      % endif
-    </div>
     <div class="clear"></div>
   </${top}>
-</%def>
-
-<%def name="render_book_list(books, owner)">
-  % for book in books:
-    <div>${books_common.render_book_short(book, owner)}</div>
-  % endfor
 </%def>

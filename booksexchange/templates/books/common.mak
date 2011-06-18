@@ -17,7 +17,7 @@
 
 <%namespace name="common" file="/common.mak" />
 
-<%def name="render_book_short(book, user = None)">
+<%def name="render_book_short(book, user = None, show_have_want = True)">
   <div class="book_short">
     <div class="cover">
       ${common.book_link(book, common.book_cover(book), user)}
@@ -37,7 +37,9 @@
         ${request.markdown(common.truncate(book.description, 200))}</p>
     % endif
 
-    ${have_want(book)}
+    % if show_have_want:
+      ${have_want(book)}
+    % endif
   </div>
 </%def>
 

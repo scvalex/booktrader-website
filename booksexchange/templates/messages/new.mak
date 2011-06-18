@@ -22,7 +22,11 @@
 ${form}
 
 <div class="conversation_controls">
+  % if request.referer is None:
+    <a href="${request.resource_url(request.root['messages'], 'list')}">Cancel</a>
+  % else:
     <a href="${request.referer}">Cancel</a>
+  % endif
 </div>
 
 <%def name="title()">${parent.title()} - New Message</%def>
