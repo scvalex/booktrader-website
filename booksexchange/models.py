@@ -103,7 +103,7 @@ class User(Persistent):
 
         self.events    = PersistentList()
 
-        self.location  = None
+        self.location  = ''
         self.about     = ''
 
     def __getitem__(self, key):
@@ -229,8 +229,11 @@ class User(Persistent):
         self.events.insert(0, event)
 
     def __dict__(self):
-        return {"owned": self.owned,
-                "want": self.want,
+        return {"username": self.username,
+                "location": self.location,
+                "about": self.about,
+                "owned": self.owned.values(),
+                "want": self.want.values(),
                 "events": self.events,
                 "gravatar": self.gravatar(64)}
 
@@ -672,7 +675,7 @@ def appmaker(zodb_root):
     # Evolve each sub-DB if necessary
     evolmgr_users = ZODBEvolutionManager(zodb_root['app_root']['users'],
                         evolve_packagename='booksexchange.dbevol.users',
-                        sw_version=1, initial_db_version=0)
+                        sw_version=2, initial_db_version=0)
     evolve_to_latest(evolmgr_users)
 
     evolmgr_books = ZODBEvolutionManager(zodb_root['app_root']['books'],
