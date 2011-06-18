@@ -1,21 +1,21 @@
 /*
-* Copyright 2011 the authors of BookTrader (see the AUTHORS file included).
-*
-* This file is part of BookTrader.
-*
-* BookTrader is free software: you can redistribute it and/or modify it
-* under the terms of the GNU Affero General Public License as published
-* by the Free Software Foundation, version 3 of the License.
-*
-* BookTrader is distributed in the hope that it will be useful, but
-* WITHOUT ANY WARRANTY; without even any implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Affero General Public License version 3 for more details.
-*
-* You should have received a copy of the GNU Affero General Public
-* License version 3 along with BookTrader. If not, see:
-* http://www.gnu.org/licenses/
-*/
+ * Copyright 2011 the authors of BookTrader (see the AUTHORS file included).
+ *
+ * This file is part of BookTrader.
+ *
+ * BookTrader is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, version 3 of the License.
+ *
+ * BookTrader is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even any implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License version 3 for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License version 3 along with BookTrader. If not, see:
+ * http://www.gnu.org/licenses/
+ */
 
 /* General */
 
@@ -130,7 +130,7 @@ h1 a, h1 a:visited {
 #footer {
   background-color: black;
   color:white;
-  /*
+/*
   min-height: 200px;
   */
 }
@@ -326,78 +326,115 @@ h1 a, h1 a:visited {
 /* Messages */
 
 .inbox tr {
-    border-bottom: 1px solid #333;
-    margin-top: 1em;
+  border-bottom: 1px solid #333;
+  margin-top: 1em;
 }
 
 .inbox td {
-    padding: .2em 1em;
+  padding: .2em 1em;
 }
 
 .inbox .unread {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .conversation {
-    background-color: #fff;
-    padding-top: 2em;
-    width: 65em;
+  background-color: #fff;
+  padding-top: 2em;
+  border-radius: 0.2em;
+  clear: both;
+  width:60%
 }
 
 .clear {
-    clear: both;
+  clear: both;
 }
 
 .message {
-    margin: 0 1em 1em;
-    width: 60em;
-    padding: 0 2em;
+  margin: 0 1em 1em;
+  padding: 0 2em;
 }
 
 .message .from:before {
-    content: "From:";
-    font-weight: bold;
+  content: "From:";
+  font-weight: bold;
 }
 
 .message .date:before {
-    content: "Date:";
-    font-weight: bold;
+  content: "Date:";
+  font-weight: bold;
 }
 
 .message .to:before {
-    content: "To:";
-    font-weight: bold;
+  content: "To:";
+  font-weight: bold;
 }
 
 .message .subject:before {
-    content: "Subject:";
-    font-weight: bold;
+  content: "Subject:";
+  font-weight: bold;
 }
 
 .message .body {
-    margin-top: 1em;
-    padding-bottom: 1.4em;
+  margin-top: 1em;
 }
 
 .actual_message {
-    border-bottom: 1px dotted #333;
-    width: 30em;
+  border-bottom: 1px dotted #333;
+}
+
+.last_message {
+  border:none;
+  padding-bottom: 0.5em;
+  clear:both;
 }
 
 .vs_text {
-    clear: both;
-    color: #f00;
-    font-size: 2em;
-    text-align: center;
+  clear: both;
+  color: #f00;
+  font-size: 2em;
+  text-align: center;
 }
 
 .offer_info {
-    border-bottom: 1px dotted #333;
-    margin-bottom: 1em;
+  width: 40%;
+  position:fixed;
+  margin-left: 60%;
+  background-color: #32656F;
+  padding: 0.3em 0;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.offer_info span {
+  font-size: 1.1em;
+}
+
+.offer_info:after {
+  content: "";
+  display:block;
+  clear:block;
+}
+
+.offer_info div {
+  float:left;
+  width: 50%;
+}
+
+.offer_info .gravatar img {
+  vertical-align: middle;
+}
+
+.offer_info .left {
+  text-align: right;
+}
+
+.offer_info .right {
+  text-align: left;
 }
 
 .offer_info .book_list li {
-    display: inline;
+  display: inline;
 }
 
 .conversation_controls {
@@ -405,19 +442,55 @@ h1 a, h1 a:visited {
 }
 
 .conversation_controls a {
-    color: #000;
-    font-family: Cabin;
+  color: #000;
+  font-family: Cabin;
 }
 
 .conversation_controls li {
-    display: inline;
-    margin-right: .6em;
+  display: inline;
+  margin-right: .6em;
 }
 
 .summary_message_body {
-    color: #666;
-    overflow: hidden;
-    width: 20em;
+  color: #666;
+  overflow: hidden;
+  width: 20em;
+}
+
+.book_list a {
+  text-decoration: none;
+}
+
+.book_list {
+  margin: 0.3em;
+}
+
+
+.offer_info img {
+  border: 2px solid #1A3439;
+  border-radius: 2px;
+}
+
+.offer_info .right li {
+  float: left;
+  margin-right: 0.3em;
+}
+
+.offer_info .left li {
+  float: right;
+  margin-left: 0.3em;
+}
+
+.offer_info li img {
+  max-height: 130px;
+}
+
+.offer_info .left .gravatar {
+  margin-right: 0.3em;
+}
+
+.offer_info .right .gravatar {
+  margin-left: 0.3em;
 }
 
 /* Book Details */
@@ -466,6 +539,8 @@ h1 a, h1 a:visited {
 a.gravatar {
   position: relative;
   z-index: 1;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 a.gravatar:hover {
@@ -600,15 +675,15 @@ a.gravatar a, a.gravatar:visited {
 }
 
 .deformClosebuttonActive {
-    border: 0 none;
-    cursor: pointer;
-    float: left;
+  border: 0 none;
+  cursor: pointer;
+  float: left;
 }
 
 .deformClosebuttonActive:before {
-    content:"✖";
-    color:red;
-    margin-right: 2px;
+  content:"✖";
+  color:red;
+  margin-right: 2px;
 }
 
 .deformSeqAdd {
@@ -669,98 +744,98 @@ a.gravatar a, a.gravatar:visited {
 /* Owners and coveters list on details page */
 
 #owners_list a, #coveters_list a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 #owners_list, #coveters_list {
-    background-color: #f6fae0;
-    border-radius: 4px;
-    float: left;
-    margin-top: 1em;
-    min-height: 20em;
-    padding: 1%;
-    width: 46%;
+  background-color: #f6fae0;
+  border-radius: 4px;
+  float: left;
+  margin-top: 1em;
+  min-height: 20em;
+  padding: 1%;
+  width: 46%;
 }
 
 #coveters_list {
-    margin-left: 4%;
+  margin-left: 4%;
 }
 
 .bad_news {
-    color: #999;
-    margin-top: .6em;
-    font-weight: bold;
-    text-align: center;
+  color: #999;
+  margin-top: .6em;
+  font-weight: bold;
+  text-align: center;
 }
 
 #owners_list ul, #owners_list ul {
-    margin-top: .4em;
+  margin-top: .4em;
 }
 
 #owners_list li, #coveters_list li {
-    margin-left: .4em;
+  margin-left: .4em;
 }
 
 a.blue_button {
-    color: #fff;
+  color: #fff;
 }
 
 #owners_list .blue_button {
-    clear: right;
-    float: right;
+  clear: right;
+  float: right;
 }
 
 /* Index styles */
 
 .have_list, .want_list, .exchange_list {
-    float: left;
-    min-height: 20em;
-    width: 31%;
+  float: left;
+  min-height: 20em;
+  width: 31%;
 }
 
 .want_list, .exchange_list {
-    margin-left: 2%;
+  margin-left: 2%;
 }
 
 .have_list li, .want_list li, .exchange_list li {
-    margin-top: 1em;
-    border-radius: 4px;
-    padding: 1%;
+  margin-top: 1em;
+  border-radius: 4px;
+  padding: 1%;
 }
 
 .have_list li {
-    background-color: #cec;
+  background-color: #cec;
 }
 
 .want_list li {
-    background-color: #eda;
+  background-color: #eda;
 }
 
 .exchange_list li {
-    background-color: #cce;
+  background-color: #cce;
 }
 
 .event_page_cover {
-    float: left;
-    margin-right: 1em;
+  float: left;
+  margin-right: 1em;
 }
 
 /* User homepage */
 
 #real_stuff {
-    float: left;
-    width: 65%;
+  float: left;
+  width: 65%;
 }
 
 #stuff_in_flux {
-    float: left;
-    margin-left: 1%;
-    width: 32%;
+  float: left;
+  margin-left: 1%;
+  width: 32%;
 }
 
 /* Search page */
 #pagination {
-    text-align: center;
+  text-align: center;
 }
 
 /* profile */
@@ -901,7 +976,7 @@ em {
   margin: 0 2px 0.3em 0;
 }
 
-.event .user a {
+.event .user a, .offer_info span {
   color: #F6FAE0;
   text-shadow: #1a3439 1px 1px 1px;
 }

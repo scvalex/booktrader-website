@@ -45,13 +45,31 @@
   </li>
 </ul>
 
+
 % if msg_root:
+    % if isinstance(msg_root[0], Offer):
+      <div class="offer_info">
+        <div class="left">
+          <span>${msg_root[0].sender.username}</span>
+          ${common.gravatar(msg_root[0].sender, 64)}
+          ${common.book_list(msg_root[0].apples, msg_root[0].sender)}
+        </div>
+        <div class="right">
+          ${common.gravatar(msg_root[0].recipient, 64)}
+          <span>${msg_root[0].recipient.username}</span>
+          ${common.book_list(msg_root[0].oranges, msg_root[0].recipient)}
+        </div>
+      </div>
+    % endif
+
   <ol class="conversation">
-    % for m in msg_root:
+
+    % for m in msg_root[:-1]:
       ${show_message(m)}
     % endfor
-    <li class="clear"></li>
+    ${show_message(msg_root[-1], last=True)}
   </ol>
+
   <ul class="conversation_controls clear">
     <li><a href="${request.resource_url(msg_root[-1], 'reply')}">Reply</a></li>
     % if isinstance(msg_root[0], Offer):
@@ -114,32 +132,19 @@
   % endfor
 </%def>
 
-<%def name="show_message(message, top='li')">
+<%def name="show_message(message, top='li', last=False)">
   <${top} class="message clear">
-    % if isinstance(message, Offer):
-      <div class="offer_info">
-        <div>
-          <a href="${request.resource_url(message.sender)}">
-            ${common.gravatar(message.sender, 64)}
-          </a>
-          ${common.book_list(message.apples, message.sender)}
-        </div>
-        <div class="vs_text">for</div>
-        <div>
-          <a href="${request.resource_url(message.recipient)}">
-            ${common.gravatar(message.recipient, 64)}
-          </a>
-          ${common.book_list(message.oranges, message.recipient)}
-        </div>
-      </div>
-    % endif
-    <div class="actual_message">
+    <%
+    bclass = ''
+    if last:
+       bclass = ' last_message'
+    %>
+    <div class="actual_message${bclass}">
       <div class="from">${common.user_link(message.sender)}</div>
       <div class="date">${common.format_date_simple(message.date)}</div>
       <div class="to">${common.user_link(message.recipient)}</div>
       <div class="subject">${common.message_link(message)}</div>
-      <div class="body">${request.markdown(message.body)}</div>
+      <div class="body${bclass}">${request.markdown(message.body)}</div>
     </div>
-    <div class="clear"></div>
   </${top}>
 </%def>
