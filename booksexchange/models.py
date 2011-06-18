@@ -230,7 +230,10 @@ class User(Persistent):
         self.events.insert(0, event)
 
     def __dict__(self):
-        return {"owned": self.owned,
+        return {"username": self.username,
+                "location": self.location,
+                "about": self.about,
+                "owned": self.owned,
                 "want": self.want,
                 "events": self.events,
                 "gravatar": self.gravatar(64)}
