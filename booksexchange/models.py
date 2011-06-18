@@ -233,8 +233,8 @@ class User(Persistent):
         return {"username": self.username,
                 "location": self.location,
                 "about": self.about,
-                "owned": self.owned,
-                "want": self.want,
+                "owned": self.owned.values(),
+                "want": self.want.values(),
                 "events": self.events,
                 "gravatar": self.gravatar(64)}
 
