@@ -144,6 +144,11 @@ h1 a, h1 a:visited {
   margin-bottom: 0.5em;
 }
 
+#search_bar #deformField4 {
+  margin-left: 0.3em;
+}
+
+
 #search_bar form, #search_bar fieldset {
   width: 100%;
 }
@@ -161,12 +166,6 @@ h1 a, h1 a:visited {
 }
 
 #search_bar label {
-  width:10%;
-  font-family: Cabin;
-  font-size:1.1em;
-}
-
-#search_bar label {
   display: none;
 }
 
@@ -177,7 +176,7 @@ h1 a, h1 a:visited {
   font-size: 1.1em;
   color: #1c393f;
   padding: 0.3em 0.3em;
-  width: 85%;
+  width: 70%;
   margin:0.5em 0;
   box-shadow: #6c898f 0 0 6px;
 }

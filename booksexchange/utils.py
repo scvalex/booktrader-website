@@ -70,7 +70,9 @@ class AppRequest(Request):
                            method  = 'GET').render()
 
     def markdown(self, text):
-        return literal(markdown.markdown(text))
+        return literal('<div class="md">' +
+                       markdown.markdown(text) +
+                       '</div>')
 
 
 def json_request(request):

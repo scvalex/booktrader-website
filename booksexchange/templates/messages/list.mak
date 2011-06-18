@@ -104,7 +104,7 @@
       <div class="date">${common.format_date_simple(message.date)}</div>
       <div class="to">${common.user_link(message.recipient)}</div>
       <div class="subject">${common.message_link(message)}</div>
-      <div class="body">${message.body}</div>
+      <div class="body">${request.markdown(message.body)}</div>
     </div>
     <div class="offer_info">
       <% from booksexchange.models import Offer %>

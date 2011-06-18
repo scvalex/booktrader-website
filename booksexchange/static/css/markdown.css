@@ -1,0 +1,126 @@
+
+.md {
+  margin:0;
+  pardding: 0;
+}
+
+.md * {
+  border: none;
+}
+
+.md h1 {
+  font-size: 2em; margin: .67em 0
+  text-decoration: none;
+}
+
+.md h2 {
+  font-size: 1.5em;
+  margin: .75em 0;
+  text-decoration: none;
+}
+
+.md h3 {
+  font-size: 1.17em;
+  margin: .83em 0;
+  text-decoration: none;
+}
+
+.md h4, .md p,
+.md blockquote, .md ul,
+.md ol, .md dl, .md dir,
+.md menu {
+  margin: 1.12em 0;
+}
+
+.md h5 {
+  font-size: .83em;
+  margin: 1.5em 0;
+}
+
+.md h6 {
+  font-size: .75em; margin: 1.67em 0;
+}
+
+.md h1, .md h2, .md h3, .md h4,
+.md h5, .md h6, .md b, .md strong {
+  font-weight: bolder;
+}
+
+.md blockquote {
+  margin-left: 40px; margin-right: 40px;
+}
+
+.md i, .md cite, .md em,
+.md var, .md address {
+  font-style: italic;
+}
+
+.md pre, .md tt, .md code,
+.md kbd, .md samp {
+  font-family: monospace;
+}
+
+.md pre {
+  white-space: pre;
+}
+
+.md big {
+  font-size: 1.17em;
+}
+.md small, .md sub, .md sup {
+  font-size: .83em;
+}
+
+.md sub {
+  vertical-align: sub;
+}
+
+.md sup {
+  vertical-align: super;
+}
+
+.md table {
+  border-spacing: 2px;
+}
+
+.md thead, .md tbody,
+.md tfoot {
+  vertical-align: middle;
+}
+
+.md td, .md th, .md tr {
+  vertical-align: inherit;
+}
+
+.md s, .md strike, .md del {
+  text-decoration: line-through;
+}
+
+.md hr {
+  border: 1px inset;
+}
+
+.md ol, .md ul, .md dir,
+.md menu, .md dd {
+  margin-left: 40px;
+}
+
+.md ol {
+  list-style-type: decimal;
+}
+
+.md u, .md ins {
+  text-decoration: underline;
+}
+
+.md center { 
+  text-align: center;
+}
+
+.md :link, .md :visited {
+  text-decoration: underline;
+}
+
+.md :focus {
+  outline: thin dotted invert;
+}

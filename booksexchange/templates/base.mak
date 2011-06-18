@@ -36,6 +36,10 @@
           href="${request.static_url('booksexchange:static/css/style.css')}"
           type="text/css" />
 
+    <link rel="stylesheet"
+          href="${request.static_url('booksexchange:static/css/markdown.css')}"
+          type="text/css" />
+
     <script type="text/javascript"
             src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}">
     </script>
