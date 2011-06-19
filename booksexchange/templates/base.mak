@@ -80,8 +80,10 @@
 
 
         <h1>
-          <img src="${request.resource_url(request.root, 'static', 'img', 'mrT.png')}" alt="Mr. T" id="logo" />
-          <a href="${request.resource_url(request.root)}">BookTrader</a>
+          <a href="${request.resource_url(request.root)}">
+            <img src="${request.resource_url(request.root, 'static', 'img', 'mrT.png')}" alt="Mr. T" id="logo" />
+            BookTrader
+          </a>
         </h1>
 
       </div>
