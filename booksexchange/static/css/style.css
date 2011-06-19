@@ -536,6 +536,10 @@ h1 a, h1 a:visited {
   margin: 1px;
 }
 
+a.gravatar img {
+  background-color: white;
+}
+
 a.gravatar {
   position: relative;
   z-index: 1;
