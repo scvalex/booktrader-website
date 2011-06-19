@@ -18,6 +18,17 @@
 <%inherit file="/base.mak"/>
 
 <h2>Edit your profile</h2>
+
+<div>
+  <a href="http://en.gravatar.com/site/login/">
+    <img src="${request.user.gravatar(64)}"
+         alt="${request.user.username}"/>
+  </a>
+</div>
+<div>
+  <a href="http://en.gravatar.com/site/login/">Change</a>
+</div>
+
 ${form}
 
 <p>
