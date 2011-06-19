@@ -35,8 +35,6 @@ def search(context, request):
         raise HTTPFound(location = redir)
 
     
-    search_form.schema['query'].default = query['query']
-
     if query['type'] == 'books':
         return search_books(context['books'], request, query)
 

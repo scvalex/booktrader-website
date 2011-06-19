@@ -21,7 +21,8 @@ from email.mime.text         import MIMEText
 from mako.template           import Template
 
 from pyramid.decorator       import reify
-from pyramid.httpexceptions  import HTTPException, HTTPInternalServerError, HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions  import (HTTPException, HTTPInternalServerError,
+                                     HTTPFound, HTTPBadRequest)
 from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 from pyramid.request         import Request
 from pyramid.response        import Response

@@ -50,16 +50,6 @@ def search_books(context, request, query):
     total_items = google_books['totalItems']
     google_books = [context.json_to_book(vi) for vi in google_books['items']]
 
-    ###########################################################################
-    # Internal results
-    words = query['query'].lower()
-
-    try:
-        owned_books = [b for b in context.query(Contains('title', words) |
-                                                Contains('subtitle', words))[1]]
-    except ParseError:
-        owned_books = []
-
     # Compute -3 and +3 page indices around the current page
     page_indices = start_index / books_per_page - 3
     if page_indices < 0:
