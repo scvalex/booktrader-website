@@ -19,7 +19,22 @@
 
 <%namespace name="common" file="/common.mak" />
 
-${common.render_events(events.all[:10])}
+<div id="welcome">
+  <h2>Welcome to BookTrader</h2>
+  <p>Here you can trade your books for fun and profit.</p>
+  <div class="count">1.</div>
+  <div class="step">Find books you own and want</div>
+  <div class="count">2.</div>
+  <div class="step">We match you with traders</div>
+  <div class="count">3.</div>
+  <div class="step">...</div>
+  <div class="count">4.</div>
+  <div class="step">Profit!</div>
+</div>
+
+<div id="stuff_in_flux">
+  ${common.render_events(events.all[:10])}
+</div>
 
 <%def name="title()">${parent.title()} - Home</%def>
 
