@@ -66,7 +66,8 @@ class AppRequest(Request):
         action = self.resource_url(self.root, 'search')
 
         schema = SearchSchema()
-        schema['type'].widget.values.remove(('group_books', 'Group_books'))
+        if ('group_books', 'Group_books') in schema['type'].widget.values:
+            schema['type'].widget.values.remove(('group_books', 'Group_books'))
         return deform.Form(schema,
                            buttons = ('Search',),
                            action  = action,
