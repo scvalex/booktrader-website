@@ -17,8 +17,23 @@
 
 from booksexchange.views.common import *
 
+def search_books_groups(books, request, query):
+    qs = query['query'].lower()
+    
+    items = [b for b in books.query(Contains('title', qs))[1]
+             if b.in_user_groups(request.user)]
+    subtitle_items = [b for b in books.query(Contains('subtitle', qs))[1]
+                      if b.in_user_groups(request.user)]
 
-def search_books(context, request, query):
+    items_set = set(items)
+
+    for r in subtitle_items:
+        if r not in items_set:
+            items.append(r)
+            
+    return items
+    
+def search_books(context, request, query, params):
     class BooksSchema(colander.SequenceSchema):
         book = BookSchema()
 
@@ -64,7 +79,7 @@ def search_books(context, request, query):
              'page_indices': page_indices,
              'page_index': start_index / books_per_page,
              'books_per_page': books_per_page,
-             'owned_books': owned_books}
+             'params': params}
     return render_to_response('books/search.mak', value, request=request)
 
 @view_config(context=Book, renderer='books/details.mak')

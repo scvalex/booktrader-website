@@ -32,7 +32,7 @@ class SearchSchema(colander.Schema):
     limit = colander.SchemaNode(colander.Integer(),
                                 missing = 10,
                                 widget = deform.widget.HiddenWidget())
-    types = ['books', 'users', 'groups']
+    types = ['books', 'users', 'groups', 'group_books']
     type = colander.SchemaNode(
         utf8_string(),
         validator = colander.OneOf(types),
