@@ -246,9 +246,7 @@ def lowercase_subtitle(book, default):
 
 class Books(IndexFolder):
     def __init__(self):
-        super(Books, self).__init__(
-            title    = CatalogTextIndex(lowercase_title),
-            subtitle = CatalogTextIndex(lowercase_subtitle))
+        super(Books, self).__init__()
 
         self.catalogue = GoogleBooksCatalogue()
 
