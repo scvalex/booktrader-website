@@ -79,7 +79,10 @@
         </div>
 
 
-        <h1><a href="${request.resource_url(request.root)}">BookTrader</a></h1>
+        <h1>
+          <img src="${request.resource_url(request.root, 'static', 'img', 'mrT.png')}" alt="Mr. T" id="logo" />
+          <a href="${request.resource_url(request.root)}">BookTrader</a>
+        </h1>
 
       </div>
 
