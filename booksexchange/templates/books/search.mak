@@ -21,7 +21,16 @@
 <%namespace name="books_common" file="/books/common.mak" />
 
 % if google_books is not None:
-  <h3>Found ${total_items} books!</h3>
+  <h2>Found ${total_items} books!</h2>
+
+  % if request.user:
+       <% params['type'] = 'group_books' %>
+       <p>
+         <a href="${request.resource_url(request.root, 'search', query=params)}">
+           Show only books owned by people in my groups
+         </a>
+       </p>
+  % endif
 
   ${books_common.books_list(google_books)}
 

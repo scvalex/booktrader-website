@@ -246,7 +246,9 @@ def lowercase_subtitle(book, default):
 
 class Books(IndexFolder):
     def __init__(self):
-        super(Books, self).__init__()
+        super(Books, self).__init__(
+            title    = CatalogTextIndex(lowercase_title),
+            subtitle = CatalogTextIndex(lowercase_subtitle))
 
         self.catalogue = GoogleBooksCatalogue()
 
@@ -342,6 +344,15 @@ class Book(Persistent):
                 r += author + ", "
         return r
 
+    def in_user_groups(self, user):
+        for owneru in self.owners:
+            owner = self.owners[owneru]
+            for group in owner.groups:
+                if group in user.groups:
+                    return True
+        
+        return False
+    
     def __dict__(self):
         r = {"identifier": self.identifier,
              "title": self.title,
