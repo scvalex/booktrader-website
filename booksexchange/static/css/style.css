@@ -343,12 +343,14 @@ h1 a, h1 a:visited {
   background-color: #fff;
 }
 
+.offer_conversation {
+  width: 60%;
+}
 .conversation {
   background-color: #fff;
   padding-top: 2em;
   border-radius: 0.2em;
   clear: both;
-  width:60%
 }
 
 .clear {

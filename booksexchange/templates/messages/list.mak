@@ -60,9 +60,10 @@
           ${common.book_list(msg_root[0].oranges, msg_root[0].recipient)}
         </div>
       </div>
-    % endif
-
+  <ol class="conversation offer_conversation">
+    % else:
   <ol class="conversation">
+    % endif
 
     % for m in msg_root[:-1]:
       ${show_message(m)}
