@@ -96,12 +96,7 @@ def logout(context, request):
 
     request.session.flash('You are now logged out.')
 
-    if request.referer:
-        referer = request.referer
-    else:
-        referer = '/'
-
-    raise HTTPFound(location = referer,
+    raise HTTPFound(location = '/',
                     headers = headers)
 
 def register_schema(users):
