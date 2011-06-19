@@ -826,7 +826,7 @@ a.blue_button {
     border-radius: 0.2em;
     float: left;
     padding: 1em;
-    width: 62%;
+    width: 96%;
 }
 
 #welcome h2 {
@@ -856,6 +856,29 @@ a.blue_button {
     font-size: 30pt;
     padding-top: 60pt;
     margin-right: .2em;
+}
+
+#website {
+    background-color: #edac03;
+    border-radius: 0.2em;
+    clear: both;
+    float: left;
+    height: 200pt;
+    margin-top: 1em;
+    width: 100%;
+}
+
+#android {
+    margin-right: 2%;
+}
+
+#android, #iphone {
+    background-color: #edac03;
+    border-radius: 0.2em;
+    float: left;
+    height: 200pt;
+    margin-top: 1em;
+    width: 49%;
 }
 
 /* Search page */

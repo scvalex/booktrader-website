@@ -19,17 +19,31 @@
 
 <%namespace name="common" file="/common.mak" />
 
-<div id="welcome">
-  <h2>Welcome to BookTrader</h2>
-  <p>Here you can trade your books for fun and profit.</p>
-  <div class="count">1.</div>
-  <div class="step">Find books you own and want</div>
-  <div class="count">2.</div>
-  <div class="step">We match you with traders</div>
-  <div class="count">3.</div>
-  <div class="step">...</div>
-  <div class="count">4.</div>
-  <div class="step">Profit!</div>
+<div id="real_stuff">
+  <div id="welcome">
+    <h2>Welcome to BookTrader</h2>
+    <p>Here you can trade your books for fun and profit.</p>
+    <div class="count">1.</div>
+    <div class="step">Find books you own and want</div>
+    <div class="count">2.</div>
+    <div class="step">We match you with traders</div>
+    <div class="count">3.</div>
+    <div class="step">...</div>
+    <div class="count">4.</div>
+    <div class="step">Profit!</div>
+  </div>
+
+  <div id="website">
+    This is the website
+  </div>
+
+  <div id="android">
+    We also have a cute droid
+  </div>
+
+  <div id="iphone">
+    And a cute iphone
+  </div>
 </div>
 
 <div id="stuff_in_flux">
