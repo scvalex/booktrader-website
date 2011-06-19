@@ -19,7 +19,7 @@
 
 <%namespace name="common" file="/common.mak" />
 
-${common.render_events(events.all[:15])}
+${common.render_events(events.all[:10])}
 
 <%def name="title()">${parent.title()} - Home</%def>
 
