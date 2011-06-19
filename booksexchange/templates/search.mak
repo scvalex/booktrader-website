@@ -18,6 +18,7 @@
 <%inherit file="/base.mak" />
 
 <%namespace name="common" file="/common.mak" />
+<%namespace name="books_common" file="/books/common.mak" />
 
 % if error:
     <h2>Error: ${error}</h2>
@@ -28,10 +29,16 @@ if search_type == 'users':
     render_func = common.users_list
 elif search_type == 'groups':
     render_func = common.groups_list
+elif search_type == 'group_books':
+    render_func = books_common.books_list
+
+item_name = search_type
+if search_type == 'group_books':
+    item_name = 'books in your groups'
 %>
 
 <h2>
-  Found ${len(items)} ${search_type}
+  Found ${len(items)} ${item_name}
 </h2>
 
 ${render_func(items)}

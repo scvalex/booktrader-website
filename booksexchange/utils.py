@@ -64,7 +64,10 @@ class AppRequest(Request):
     @reify
     def search_bar(self):
         action = self.resource_url(self.root, 'search')
-        return deform.Form(SearchSchema(),
+
+        schema = SearchSchema()
+        schema['type'].widget.values.remove(('group_books', 'Group_books'))
+        return deform.Form(schema,
                            buttons = ('Search',),
                            action  = action,
                            formid  = 'search_bar',

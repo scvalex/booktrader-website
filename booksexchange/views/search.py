@@ -16,7 +16,7 @@
 # http://www.gnu.org/licenses/
 
 from booksexchange.views.common import *
-from booksexchange.views.book   import search_books
+from booksexchange.views.book   import search_books, search_books_groups
 
 @view_config(context=App, name='search', renderer='search.mak')
 def search(context, request):
@@ -34,9 +34,9 @@ def search(context, request):
         redir = request.referer and request.referer or '/'
         raise HTTPFound(location = redir)
 
-    
+
     if query['type'] == 'books':
-        return search_books(context['books'], request, query)
+        return search_books(context['books'], request, query, request.GET)
 
     qs = query['query'].lower()
 
@@ -48,12 +48,14 @@ def search(context, request):
             (count, items) = context['groups'].query(Contains('name', qs) |
                                                      Contains('description', qs))
             t = 'groups'
+        elif query['type'] == 'group_books':
+            if request.user:
+                items = search_books_groups(context['books'], request, query)
+            else:
+                return {'error': "You can't search for books in the same groups if you're not logged in."}
     except ParseError, e:
         return {'error': e.message}
 
     return {'items': [i for i in items],
-            'search_type':  t,
+            'search_type':  query['type'],
             'error' : None}
-
-        
-
