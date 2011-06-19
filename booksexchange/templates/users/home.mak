@@ -78,7 +78,7 @@ username     = request.context.username
 </div>
 <div id="stuff_in_flux">
   <h3>History</h3>
-  ${common.render_events(events)}
+  ${common.render_events(events[:15])}
 </div>
 
 <%def name="title()">${parent.title()} - Home</%def>
