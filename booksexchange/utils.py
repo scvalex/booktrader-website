@@ -68,11 +68,18 @@ class AppRequest(Request):
         schema = SearchSchema()
         if ('group_books', 'Group_books') in schema['type'].widget.values:
             schema['type'].widget.values.remove(('group_books', 'Group_books'))
-        return deform.Form(schema,
+
+
+        form = deform.Form(schema,
                            buttons = ('Search',),
                            action  = action,
                            formid  = 'search_bar',
-                           method  = 'GET').render()
+                           method  = 'GET')
+
+        if 'last_search' in self.session:
+            form.schema['query'].default = self.session['last_search']
+
+        return form.render()
 
     def markdown(self, text):
         return literal('<div class="md">' +

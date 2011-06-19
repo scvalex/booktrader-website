@@ -34,6 +34,7 @@ def search(context, request):
         redir = request.referer and request.referer or '/'
         raise HTTPFound(location = redir)
 
+    request.session['last_search'] = query['query']
 
     if query['type'] == 'books':
         return search_books(context['books'], request, query, request.GET)
