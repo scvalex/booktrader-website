@@ -55,6 +55,6 @@
 <%def name="title()">${parent.title()} - Home</%def>
 
 <%def name="add_copyright()">
-  <p>Portions of this page are reproduced from work created and <a href="http://code.google.com/policies.html">shared by Google</a> and used according to terms described in the <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons 3.0 Attribution License</a>.</p>
+  <p>The Android Robot is reproduced from work created and <a href="http://code.google.com/policies.html">shared by Google</a> and used according to terms described in the <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons 3.0 Attribution License</a>.</p>
 </%def>
 
