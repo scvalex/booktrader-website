@@ -119,7 +119,6 @@ h1 a, h1 a:visited {
   background-color: #E0E4CC;
   border-top: 0.2em solid #1c393f;
   min-height: 600px;
-  border-bottom: 0.4em solid #c9cdb7;
   padding:0 1em 1em 1em;
 }
 
@@ -134,12 +133,31 @@ h1 a, h1 a:visited {
 
 #footer {
   background-color: black;
+  border-top: 0.4em solid #c9cdb7;
   color:white;
-/*
-  min-height: 200px;
-  */
+  margin-top: 50px;
+  min-height: 150px;
 }
 
+.footlinks {
+    color: #ccc;
+    font-size: .8em;
+    margin-left: 5%;
+}
+
+.footlinks .column {
+    float: left;
+    width: 20%;
+    margin-right: 10%;
+}
+
+.footlinks h4 {
+    padding-bottom: .2em;
+}
+
+.footlinks .column li {
+    margin-top: .4em;
+}
 
 /* Search bar */
 

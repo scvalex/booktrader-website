@@ -106,13 +106,34 @@
         ${self.footer()}
 
         <div class="footlinks">
-          ·
-          <a href="${request.resource_url(request.root, 'about')}">About ${title()}</a>
-          ·
-          <a href="${request.resource_url(request.root, 'about')}#authors">Contact</a>
-          ·
-          <a href="${request.resource_url(request.root, 'debug')}"><em>Debug info</em></a>
-          ·
+          <div class="column">
+            <h4>Authors</h4>
+            <ul>
+              <li><a href="http://mazzo.li/">Francesco Mazzoli</a></li>
+              <li><a href="http://www.abstractbinary.org/">Alexandru Scvortov</a></li>
+              <li>Ingrid Funie</li>
+              <li>Max Staudt</li>
+            </ul>
+          </div>
+
+          <div class="column">
+            <h4>See more</h4>
+            <ul>
+              <li><a href="http://code.google.com/apis/books/">Google Books</a></li>
+              <li><a href="http://pylonsproject.org/">Pyramid</a></li>
+              <li><a href="http://dev.w3.org/html5/spec/Overview.html">HTML 5</a></li>
+              <li><a href="http://www.gnu.org/licenses/agpl.html">AGPL v3</a></li>
+            </ul>
+          </div>
+
+          <div class="column">
+            <h4>About us</h4>
+            <ul>
+              <li><a href="${request.resource_url(request.root, 'about')}">About</a></li>
+              <li><a href="${request.resource_url(request.root, 'about')}#authors">Contact</a></li>
+              <li><a href="${request.resource_url(request.root, 'debug')}"><em>Debug info</em></a></li>
+            </ul>
+          </div>
         </div>
 
       </div>
