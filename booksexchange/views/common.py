@@ -40,7 +40,8 @@ import urllib
 
 from booksexchange.models      import *
 from booksexchange.schemas     import *
-from booksexchange.utils       import send_email, CatalogueException, json_request
+from booksexchange.utils       import (send_email, CatalogueException,
+                                       json_request, base_url)
 
 
 @view_config(context=App, renderer='home.mak')
@@ -61,3 +62,4 @@ def forbidden(request):
 
 def render_form(form):
     return literal(form.render())
+

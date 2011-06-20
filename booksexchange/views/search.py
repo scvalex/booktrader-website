@@ -31,7 +31,7 @@ def search(context, request):
         query = search_form.validate(query)
     except deform.ValidationFailure, e:
         # This basically means that there is no query
-        redir = request.referer and request.referer or '/'
+        redir = request.referer and request.referer or base_url(request)
         raise HTTPFound(location = redir)
 
     request.session['last_search'] = query['query']
