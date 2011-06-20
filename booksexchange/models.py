@@ -590,6 +590,7 @@ class Message(Persistent):
     def __dict__(self):
         return {"date": self.date,
                 "sender": self.sender.username,
+                "identifier": self.identifier,
                 "subject": self.subject,
                 "recipient": self.recipient.username,
                 "conversation": self.conversation,
