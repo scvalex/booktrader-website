@@ -34,7 +34,7 @@
     % endif
 
     % if book.description:
-        ${request.markdown(common.truncate(book.description, 200))}</p>
+        ${request.markdown(common.truncate(book.description, 200), safe_mode=False)}</p>
     % endif
 
     % if show_have_want:
@@ -90,6 +90,7 @@
           by ${common.commify(book.authors,
                               lambda a: request.literal('<span class="author">' + a + '</span>'))}
         </p>
+
     % endif
 
     <ul class="book_info">
@@ -102,7 +103,7 @@
     </ul>
 
     % if book.description:
-        ${request.markdown(book.description)}</p>
+        ${request.markdown(book.description, safe_mode=False)}</p>
     % endif
 
     ${have_want(book)}

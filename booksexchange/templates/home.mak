@@ -34,17 +34,17 @@
   </div>
 
   <div id="website">
-    <h4>Self-Ref FTW!</h4>
+    <h3>Self-Ref FTW!</h3>
   </div>
 
   <div id="android">
-    <h4>Android Inside</h4>
+    <h3>Android Inside</h3>
     <img src="${request.resource_url(request.root, 'static/img/Android_robot.png')}"
          alt="Android Logo" />
   </div>
 
   <div id="iphone">
-    <h4>iPhone Friendly</h4>
+    <h3>iPhone Friendly</h3>
   </div>
 </div>
 

@@ -81,9 +81,9 @@ class AppRequest(Request):
 
         return literal(form.render())
 
-    def markdown(self, text):
+    def markdown(self, text, safe_mode=True):
         return literal('<div class="md">' +
-                       markdown.markdown(text, safe_mode=True) +
+                       markdown.markdown(text, safe_mode=safe_mode) +
                        '</div>')
 
     literal = literal
