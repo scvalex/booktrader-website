@@ -48,6 +48,7 @@ import deform
 import json
 import markdown
 import smtplib
+import os
 
 from booksexchange.schemas   import SearchSchema
 
@@ -288,3 +289,16 @@ def substrings(s):
     res.extend([s[i:] for i in range(1, length - 2)])
     res.extend([s[i:length-i] for i in range(1, (length-1)//2)])
     return res
+
+class StrangeDeploy(object):
+    def __init__(self, app, host, port, path):
+        self.app = app
+        self.host = host
+        self.port = port
+        self.path = path
+
+    def __call__(self, environ, start_response):
+        environ['HTTP_HOST'] = self.host
+        environ['HTTP_PORT'] = self.port
+        environ['SCRIPT_NAME'] = self.path
+        return self.app(environ, start_response)
