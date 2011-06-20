@@ -92,44 +92,49 @@
     % endif
   </ul>
 % else:
-  <h3>Offers</h3>
-  <% from booksexchange.models import Offer %>
-  <table class="inbox">
-    <tbody>
+  <div class="inbox_offers inbox">
+    <h3>Offers</h3>
+    <% from booksexchange.models import Offer %>
+    <ul>
       ${show_message_list(conversation_list, conversations, lambda msg: isinstance(msg, Offer))}
-    </tbody>
-  </table>
-  <h3>Messages</h3>
-  <table class="inbox">
-    <tbody>
+    </ul>
+  </div>
+  <div class="inbox_messages inbox">
+    <h3>Messages</h3>
+    <ul>
       ${show_message_list(conversation_list, conversations, lambda msg: not isinstance(msg, Offer))}
-    </tbody>
-  </table>
+    </ul>
+  </div>
 % endif
 
 <%def name="title()">${parent.title()} - Inbox</%def>
 
 <%def name="show_message_list(conversation_list, conversations, filter)">
   % for conversation in conversation_list:
-    <% if not filter(conversations[conversation][0]): continue %>
-    <% other = conversations[conversation][-1].sender %>
-    <% if other is request.user:
-       other = conversations[conversation][-1].recipient %>
+    <%
+    if not filter(conversations[conversation][0]):
+        continue
+    message = conversations[conversation][-1]
+    other = message.sender
+    if other is request.user:
+        other = message.recipient
+    %>
     % if conversation in unread:
-      <tr class="unread">
+      <li class="unread">
     % else:
-      <tr>
+      <li>
     % endif
-    <td>${common.user_link(other)}</td>
-    <td class="summary_message_body">
-      ${common.message_link(conversations[conversation][-1])}
-      -
-      ${conversations[conversation][-1].body[:32]}...
-    </td>
-    <td>
+    ${common.gravatar(other, size=40)}
+    <a href="${request.resource_url(message)}" class="message_link">
       ${common.pretty_date_simple(conversations[conversation][-1].date)}
-    </td>
-  </tr>
+      ${other.username}<br/>
+      % if message.subject:
+          ${message.subject}
+      % else:
+          ${message.body}
+      % endif
+    </a>
+  </li>
   % endfor
 </%def>
 

@@ -15,11 +15,11 @@
 ## License version 3 along with BookTrader. If not, see:
 ## http://www.gnu.org/licenses/
 
-<%def name="user_link(user)" buffered="True">
+<%def name="user_link(user)">
   <a href="${request.resource_url(user)}">${user.username}</a>
 </%def>
 
-<%def name="user_link_inner(user, inner)" buffered="True">
+<%def name="user_link_inner(user, inner)">
   <a href="${request.resource_url(user)}">${inner}</a>
 </%def>
 
@@ -33,7 +33,7 @@
   </a>
 </%def>
 
-<%def name="book_cover(book)" buffered="True">
+<%def name="book_cover(book)" >
   % if book.image_links and book.image_links['thumbnail']:
       <img src="${book.image_links['thumbnail']}"
            alt="${book.title}"
@@ -45,7 +45,7 @@
   % endif
 </%def>
 
-<%def name="group_link(group, inner)" buffered="True">
+<%def name="group_link(group, inner)" >
   <a href="${request.resource_url(request.root['groups'], group.identifier)}">
     ${inner}
   </a>
@@ -59,7 +59,7 @@
 
 <%def name="truncate(text, length)">
   % if len(text) > length:
-      ${text[0:length]}&hellip;
+      ${text[:length]}&hellip;
   % else:
       ${text}
   % endif
@@ -70,7 +70,7 @@
   ${(date + timedelta(hours=1)).strftime("%A %d %B %Y %I:%M%p")}
 </%def>
 
-<%def name="pretty_date_simple(date)">
+<%def name="pretty_date_simple(date)" filter="n">
   <span>
     <% from datetime import datetime %>
     <% td = (datetime.utcnow() - date).seconds %>
@@ -83,7 +83,7 @@
     % else:
       ${format_date_simple(date)}
     % endif
-  </span
+  </span>
 </%def>
 
 <%def name="gravatar(user, size=32, class_='')">
@@ -214,3 +214,13 @@
     % endfor
   </ul>
 </%def>
+
+<%def name="commify(list, fun=(lambda x: x))">
+  % for i in range(len(list)-1):
+      ${fun(list[i])}, 
+  % endfor
+  % if list:
+      ${fun(list[-1])}
+  % endif
+</%def>
+  

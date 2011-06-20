@@ -330,6 +330,49 @@ h1 a, h1 a:visited {
 
 /* Messages */
 
+.inbox ul li {
+  clear: both;
+  padding: 0.3em;
+}
+
+.inbox ul li {
+  color: #666;
+}
+
+.message_link span {
+  float:right;
+  font-size: 0.8em;
+}
+
+.inbox ul li:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.inbox ul li:after {
+  clear:both;
+  content: "";
+  display: block;
+}
+
+.inbox .gravatar {
+  float: left;
+  margin: 0 0.3em 0 0;
+}
+
+.inbox .date {
+  float: right;
+}
+
+.inbox_offers {
+  width: 50%;
+  float: left;
+}
+
+.inbox_messages {
+  width: 50%;
+  float: right;
+}
+
 .inbox tr {
   border-bottom: 1px solid #333;
   margin-top: 1em;
@@ -458,10 +501,15 @@ h1 a, h1 a:visited {
   margin-right: .6em;
 }
 
-.summary_message_body {
-  color: #666;
+.message_link {
+  display: block;
+  line-height: 17px;
+  height: 34px;
+  text-decoration: none;
   overflow: hidden;
-  width: 20em;
+}
+
+.summary_message_body {
 }
 
 .book_list a {

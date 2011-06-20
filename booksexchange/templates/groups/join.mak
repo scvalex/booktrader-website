@@ -17,11 +17,13 @@
 
 <%inherit file="/base.mak"/>
 
+<%namespace name="common" file="/common.mak" />
+
 <h2>Join group ${request.context.name}</h2>
 
 % if form:
     The group requires an email of the following domains:
-    ${', '.join(['@' + d for d in request.context.domains])}
+    ${common.commify(request.context.domains, lambda d: '@' + d)}
 
     ${form}
 % else:

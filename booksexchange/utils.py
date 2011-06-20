@@ -79,12 +79,14 @@ class AppRequest(Request):
         if 'last_search' in self.session:
             form.schema['query'].default = self.session['last_search']
 
-        return form.render()
+        return literal(form.render())
 
     def markdown(self, text):
         return literal('<div class="md">' +
-                       markdown.markdown(text) +
+                       markdown.markdown(text, safe_mode=True) +
                        '</div>')
+
+    literal = literal
 
 
 def json_request(request):

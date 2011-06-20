@@ -40,8 +40,8 @@ username     = request.context.username
     % endif
     % if request.context.groups:
         <li><strong>Groups:</strong>
-          ${', '.join([common.group_link(g, g.name)
-                       for g in request.context.groups.values()])}
+          ${common.commify(request.context.groups.values(),
+                           lambda g: common.group_link(g, g.name))}
         </li>
     % endif
   </ul>

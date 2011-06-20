@@ -158,7 +158,8 @@ def reply_to_message_offer(context, request):
 
     if request.method == 'POST':
         def extra_fun(message):
-            message.reply_to = request.user.conversations[recipient.username][-1] # reply to the *last* message in the conversation context
+            # reply to the *last* message in the conversation context
+            message.reply_to = request.user.conversations[recipient.username][-1]
         common_send_message(context, request, form, extra_fun,
                             recipient, 'offer')
 

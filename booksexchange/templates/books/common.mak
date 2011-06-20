@@ -28,8 +28,8 @@
 
     % if book.authors:
         <p class="authors">
-          by ${', '.join(['<span class="author">' + author + '</span>'
-                          for author in book.authors])}
+          by ${common.commify(book.authors,
+                              lambda a: request.literal('<span class="author">' + a + '</span>'))}
         </p>
     % endif
 
@@ -87,8 +87,8 @@
 
     % if book.authors:
         <p class="authors">
-          by ${', '.join(['<span class="author">' + author + '</span>'
-                          for author in book.authors])}
+          by ${common.commify(book.authors,
+                              lambda a: request.literal('<span class="author">' + a + '</span>'))}
         </p>
     % endif
 
