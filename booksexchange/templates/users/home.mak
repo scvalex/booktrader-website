@@ -55,6 +55,7 @@ username     = request.context.username
   % endif
 </div>
 
+<hr style="visibility: hidden; clear:both" />
 % if request.context.about:
     ${request.markdown(request.context.about)}
 % endif
