@@ -25,7 +25,7 @@ from repoze.zodbconn.finder import PersistentApplicationFinder
 
 from booksexchange.models   import appmaker
 from booksexchange.security import groupfinder
-from booksexchange.utils    import AppRequest, catch_exc
+from booksexchange.utils    import AppRequest, catch_exc, StrangeDeploy
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -61,6 +61,11 @@ def main(global_config, **settings):
     config.scan('booksexchange.views')
 
     pyr_app      = config.make_wsgi_app()
-    app          = catch_exc(pyr_app)
+    app1         = catch_exc(pyr_app)
+    if settings['proxy_pass']:
+        app      = StrangeDeploy(app1, settings['orig_host'],
+                                 settings['orig_port'], settings['orig_path'])
+    else:
+        app      = app1
     app.registry = pyr_app.registry
     return app
