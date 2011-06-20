@@ -139,6 +139,11 @@ h1 a, h1 a:visited {
   min-height: 150px;
 }
 
+#footer div a {
+    color: orange;
+    font-size: 0.9em;
+}
+
 .footlinks {
     color: #ccc;
     font-size: .8em;
@@ -148,7 +153,7 @@ h1 a, h1 a:visited {
 .footlinks .column {
     float: left;
     width: 20%;
-    margin-right: 10%;
+    margin: 1em 10% 0 0;
 }
 
 .footlinks h4 {
@@ -157,6 +162,14 @@ h1 a, h1 a:visited {
 
 .footlinks .column li {
     margin-top: .4em;
+}
+
+#copyright {
+    clear: both;
+    color: #ccc;
+    font-size: .8em;
+    padding-top: 50px;
+    text-align: center;
 }
 
 /* Search bar */
@@ -964,15 +977,6 @@ img.gravatar {
   font-weight: bold;
 }
 
-
-#footer div {
-	padding: 0.5em;
-}
-
-#footer div a {
-	color: orange;
-	font-size: 0.9em;
-}
 
 div.aboutbox {
 	clear: both;

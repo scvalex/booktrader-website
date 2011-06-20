@@ -136,6 +136,10 @@
           </div>
         </div>
 
+        <div id="copyright">
+          <p>&copy; 2011 The BookTrader Team.  All rights reserved.</p>
+          ${self.add_copyright()}
+        </div>
       </div>
 
     </div>
@@ -158,3 +162,5 @@
 </%def>
 
 <%def name="footer()"></%def>
+
+<%def name="add_copyright()"></%def>
