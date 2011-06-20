@@ -619,6 +619,7 @@ class Offer(Message):
         r = super(Offer, self).__dict__()
         r['apples']  = self.apples
         r['oranges'] = self.oranges
+        return r
 
 class Feedback(Message):
     def __init__(self, sender, recipient, rating, comment):
