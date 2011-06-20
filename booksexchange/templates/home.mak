@@ -34,15 +34,17 @@
   </div>
 
   <div id="website">
-    This is the website
+    <h4>Self-Ref FTW!</h4>
   </div>
 
   <div id="android">
-    We also have a cute droid
+    <h4>Android Inside</h4>
+    <img src="${request.resource_url(request.root, 'static/img/Android_robot.png')}"
+         alt="Android Logo" />
   </div>
 
   <div id="iphone">
-    And a cute iphone
+    <h4>iPhone Friendly</h4>
   </div>
 </div>
 
@@ -51,4 +53,8 @@
 </div>
 
 <%def name="title()">${parent.title()} - Home</%def>
+
+<%def name="add_copyright()">
+  <p>The Android Robot is reproduced from work created and <a href="http://code.google.com/policies.html">shared by Google</a> and used according to terms described in the <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons 3.0 Attribution License</a>.</p>
+</%def>
 
