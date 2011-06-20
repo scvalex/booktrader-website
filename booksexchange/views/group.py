@@ -30,7 +30,7 @@ def create_group(context, request):
         try:
             group_data = form.validate(controls)
         except deform.ValidationFailure, e:
-            return {'form': e.render()}
+            return {'form': render_form(e)}
 
         new_group = Group(group_data['name'],
                           group_data['description'],
@@ -47,7 +47,7 @@ def create_group(context, request):
 
         raise HTTPFound(location = request.resource_url(new_group))
 
-    return {'form': form.render()}
+    return {'form': render_form(form)}
 
 @view_config(context=Group, renderer='groups/view.mak', permission='view_group')
 def view_group(context, request):
@@ -106,7 +106,7 @@ def join_group(context, request):
             try:
                 data = form.validate(controls)
             except deform.ValidationFailure, e:
-                return {'form': e.render()}
+                return {'form': render_form(e)}
 
             token = context.generate_token(request.user)
 
@@ -124,7 +124,7 @@ def join_group(context, request):
 
             return {'form':None}
 
-        return {'form': form.render()}
+        return {'form': render_form(form)}
 
 
 @view_config(context=Group, name='admin', permission='admin_group',
@@ -165,7 +165,7 @@ def admin_group(context, request):
         try:
             data = form.validate(controls)
         except deform.ValidationFailure, e:
-            return {'form': e.render()}
+            return {'form': render_form(e)}
 
         context.name        = data['name']
         context.description = data['description']
@@ -180,4 +180,4 @@ def admin_group(context, request):
         raise HTTPFound(location = request.url)
 
 
-    return {'form': form.render()}
+    return {'form': render_form(form)}

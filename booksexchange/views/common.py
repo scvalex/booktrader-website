@@ -30,6 +30,8 @@ from repoze.catalog.query      import Eq, Contains, And
 
 from zope.index.text.parsetree import ParseError
 
+from webhelpers.html.builder   import literal
+
 import colander
 import deform
 import json
@@ -56,3 +58,6 @@ def forbidden(request):
 
     raise HTTPFound(location = request.resource_url(request.root['users'], 'login',
                                                     query={'ref':request.path}))
+
+def render_form(form):
+    return literal(form.render())

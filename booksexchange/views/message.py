@@ -114,7 +114,7 @@ def send_message(context, request):
     if request.method == 'POST':
         common_send_message(context, request, form, lambda msg: msg)
 
-    return {'form': form.render(), 'typ': "message"}
+    return {'form': render_form(form), 'typ': "message"}
 
 def set_recipient(form, user):
     form.schema['recipient'].default = user.username
@@ -139,7 +139,7 @@ def send_offer(context, request):
         common_send_message(context, request, form, lambda msg: msg,
                             other, 'offer')
 
-    return {'form': form.render(), 'typ': "offer"}
+    return {'form': render_form(form), 'typ': "offer"}
 
 @view_config(context=Message, name='offer', renderer='messages/new.mak',
              permission='loggedin')
@@ -163,7 +163,7 @@ def reply_to_message_offer(context, request):
         common_send_message(context, request, form, extra_fun,
                             recipient, 'offer')
 
-    return {'form': form.render(), 'typ': "offer"}
+    return {'form': render_form(form), 'typ': "offer"}
 
 @view_config(context=Message, name='reply', renderer='messages/new.mak',
              permission='loggedin')
@@ -189,7 +189,7 @@ def reply_to_message(context, request):
                 message.reply_to = request.user.conversations[recipient.username][-1] # reply to the *last* message in the conversation context
         common_send_message(context, request, form, extra_fun, recipient)
 
-    return {'form': form.render(), 'typ': 'message'}
+    return {'form': render_form(form), 'typ': 'message'}
 
 @view_config(context=Message, name='complete', renderer='messages/new.mak',
              permission='loggedin')
@@ -238,7 +238,7 @@ def complete_exchange(context, request):
         common_send_message(context, request, form, extra_fun,
                             recipient, 'feedback')
 
-    return {'form': form.render(), 'typ': 'feedback'}
+    return {'form': render_form(form), 'typ': 'feedback'}
 
 def common_send_message(context, request, form, extra_fun, other = None,
                         typ = 'message'):
@@ -262,7 +262,7 @@ def common_send_message(context, request, form, extra_fun, other = None,
             form.schema['rating'].default = controls.get('rating', 1)
             form.schema['comment'].default = controls.get('comment', '')
 
-        return {'form': e.render()}
+        return {'form': render_form(e)}
 
     recipient = request.root['users'][data['recipient']]
 
@@ -346,7 +346,7 @@ def edit_offer(context, request):
             form.schema['apples'].default = controls.get('apples', [])
             form.schema['oranges'].default = controls.get('oranges', [])
 
-            return {'form': e.render(), 'typ': 'offer'}
+            return {'form': render_form(e), 'typ': 'offer'}
 
         def id_to_book(id):
             return request.root['books'][id]
@@ -360,7 +360,7 @@ def edit_offer(context, request):
 
         raise HTTPFound(location = request.resource_url(context))
 
-    return {'form': form.render(), 'typ': "offer"}
+    return {'form': render_form(form), 'typ': "offer"}
 
 @view_config(context=Message, name='accept_offer',
              renderer='messages/list.mak',

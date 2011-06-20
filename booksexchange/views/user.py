@@ -78,14 +78,14 @@ def login(context, request):
         try:
             data = form.validate(controls)
         except deform.ValidationFailure, e:
-            return {'form': e.render()}
+            return {'form': render_form(e)}
 
         request.session.flash('You are now logged in.')
 
         raise HTTPFound(location = referer,
                         headers  = remember(request, data['username']))
 
-    return {'form': form.render()}
+    return {'form': render_form(form)}
 
 @view_config(context=Users, name='logout')
 def logout(context, request):
@@ -138,7 +138,7 @@ def register(context, request):
         try:
             register_data = form.validate(controls)
         except deform.ValidationFailure, e:
-            return {'form': e.render()}
+            return {'form': render_form(e)}
 
         new_user = User(register_data['username'],
                         register_data['email'],
@@ -148,7 +148,7 @@ def register(context, request):
 
         raise HTTPFound(location = request.resource_url(new_user, 'generate_token'))
 
-    return {'form': form.render()}
+    return {'form': render_form(form)}
 
 
 @view_config(context=User, name='generate_token',
@@ -230,7 +230,7 @@ def user_cp(context, request):
         try:
             data = form.validate(controls)
         except deform.ValidationFailure, e:
-            return {'form': e.render()}
+            return {'form': render_form(e)}
 
         if data['password']:
             request.user.password = data['password']
@@ -244,7 +244,7 @@ def user_cp(context, request):
         form.schema['location'].default = request.user.location
     form.schema['about'].default        = request.user.about
 
-    return {'form':form.render()}
+    return {'form':render_form(form)}
 
 @view_config(context=User, renderer='users/home.mak')
 def user_home(context, request):
