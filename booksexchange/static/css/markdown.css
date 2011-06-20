@@ -2,6 +2,7 @@
 .md {
   margin:0;
   pardding: 0;
+  clear: both;
 }
 
 .md * {

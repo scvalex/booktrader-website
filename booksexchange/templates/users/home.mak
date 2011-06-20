@@ -46,10 +46,6 @@ username     = request.context.username
     % endif
   </ul>
 
-  % if request.context.about:
-      ${request.markdown(request.context.about)}
-  % endif
-
   % if request.user and  request.user == request.context:
       <p>
         <a href="${request.resource_url(request.root['users'], 'cp')}">
@@ -58,6 +54,11 @@ username     = request.context.username
       </p>
   % endif
 </div>
+
+% if request.context.about:
+    ${request.markdown(request.context.about)}
+% endif
+
 
 <div id="real_stuff">
   % if current_user:
