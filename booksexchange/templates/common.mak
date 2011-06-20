@@ -130,7 +130,7 @@
     % if event.rating:
         <span class="action">a</span> <span class="positive">positive</span> <span class="action">feedback</span>
     % else:
-        <span class="action">a</span> <span class="negative">positive</span> <span class="action">feedback</span>
+        <span class="action">a</span> <span class="negative">negative</span> <span class="action">feedback</span>
     % endif
 
   % endif

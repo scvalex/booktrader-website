@@ -232,7 +232,7 @@ def complete_exchange(context, request):
     if request.method == 'POST':
         def extra_fun(message):
             message.reply_to = context # reply to the *last* message in the conversation context
-            request.root['events'].add_exchange(context.sender, context.recipient, context.apples, context.oranges, message.rating)
+            request.root['events'].add_exchange(request.user, recipient, context.apples, context.oranges, message.rating)
             message.offer = context
             context.left_feedback.append(request.user)
         common_send_message(context, request, form, extra_fun,

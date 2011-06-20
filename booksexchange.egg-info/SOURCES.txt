@@ -3,7 +3,6 @@ DoC.ini
 MANIFEST.in
 README.txt
 development.ini
-prod.ini
 production.ini
 setup.cfg
 setup.py
