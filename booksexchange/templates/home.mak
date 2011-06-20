@@ -30,21 +30,25 @@
     <div class="count">3.</div>
     <div class="step">...</div>
     <div class="count">4.</div>
-    <div class="step">Profit!</div>
+    <div class="step last_step">Profit!</div>
   </div>
 
   <div id="website">
     <h3>Self-Ref FTW!</h3>
+    <img src="${request.static_url('booksexchange:static/img/website_sshot.png')}"
+         alt="Website screnshot" />
   </div>
 
   <div id="android">
     <h3>Android Inside</h3>
-    <img src="${request.resource_url(request.root, 'static/img/Android_robot.png')}"
-         alt="Android Logo" />
+    <img src="${request.static_url('booksexchange:static/img/android_sshot.png')}"
+         alt="Android screenshot" />
   </div>
 
   <div id="iphone">
     <h3>iPhone Friendly</h3>
+    <img src="${request.static_url('booksexchange:static/img/iphone_sshot.png')}"
+         alt="iPhone screenshot" />
   </div>
 </div>
 

@@ -959,6 +959,7 @@ a.blue_button {
   margin-right: 1.2em;
   padding: .5em;
   width: 78pt;
+  
 }
 
 #welcome .count {
@@ -974,9 +975,14 @@ a.blue_button {
   -moz-border-radius: 0.2em;
   clear: both;
   float: left;
-  height: 200pt;
   margin-top: 1em;
   width: 100%;
+}
+
+#website img, #android img, #iphone img {
+  margin: 0.2em 0.5em 10px 0.5em;
+  -moz-box-shadow: 5px 5px 3px #1A3439;
+  box-shadow: 5px 5px 3px #1A3439;
 }
 
 #android {
@@ -988,10 +994,18 @@ a.blue_button {
   border-radius: 0.2em;
   -moz-border-radius: 0.2em;
   float: left;
-  height: 200pt;
   margin-top: 1em;
   width: 49%;
 }
+
+#website h3, #android h3, #iphone h3 {
+  padding: 0.3em;
+}
+
+.last_step {
+  margin-right: 0 !important;
+}
+
 
 /* Search page */
 #pagination {
