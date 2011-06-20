@@ -98,7 +98,7 @@ strong {
   background-color: #aa0000;
   padding: 0.1em 0.3em 0.2em;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
 }
 
 
@@ -214,7 +214,7 @@ h1 #logo {
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   font-size: 1.1em;
   color: #1c393f;
   padding: 0.3em 0.3em;
@@ -256,7 +256,7 @@ h1 #logo {
 .books_list td, .book_details {
   background-color: #f6fae0;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
 }
 
 .books_list td {
@@ -357,7 +357,7 @@ h1 #logo {
   padding: 0.2em;
   font-size: 1.1em;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   text-decoration: none;
   text-shadow: -1px 1px black;
 }
@@ -433,7 +433,7 @@ h1 #logo {
   background-color: #fff;
   padding-top: 2em;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   clear: both;
 }
 
@@ -565,7 +565,7 @@ h1 #logo {
 .offer_info img {
   border: 2px solid #1A3439;
   border-radius: 2px;
-  -mox-border-radius: 2px;
+  -moz-border-radius: 2px;
 }
 
 .offer_info .right li {
@@ -657,7 +657,7 @@ a.gravatar:hover span {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   color: white;
   text-align: center;
   margin-top: 0.1em;
@@ -755,7 +755,7 @@ a.gravatar a, a.gravatar:visited {
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   color: #1c393f;
   padding: 0.2em;
   width: 90%;
@@ -813,7 +813,7 @@ a.gravatar a, a.gravatar:visited {
   );
   padding: 0.1em 0.4em 0.2em 0.4em;
   border-radius: 4px;
-  -mox-border-radius: 4px;
+  -moz-border-radius: 4px;
   text-decoration: none;
   border: 1px solid #aaa;
   color: #1c393f;
@@ -855,7 +855,7 @@ a.gravatar a, a.gravatar:visited {
 #owners_list, #coveters_list {
   background-color: #f6fae0;
   border-radius: 4px;
-  -mox-border-radius: 4px;
+  -moz-border-radius: 4px;
   float: left;
   margin-top: 1em;
   min-height: 20em;
@@ -906,7 +906,7 @@ a.blue_button {
 .have_list li, .want_list li, .exchange_list li {
   margin-top: 1em;
   border-radius: 4px;
-  -mox-border-radius: 4px;
+  -moz-border-radius: 4px;
   padding: 1%;
 }
 
@@ -931,7 +931,7 @@ a.blue_button {
 #welcome {
   background-color: #50BB47;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   float: left;
   padding: 1em;
   width: 96%;
@@ -951,7 +951,7 @@ a.blue_button {
 #welcome .step {
   background-color: #9CEEBC;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   float: left;
   font-size: 1.2em;
   line-height: 100%;
@@ -971,7 +971,7 @@ a.blue_button {
 #website {
   background-color: #427C58;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   clear: both;
   float: left;
   height: 200pt;
@@ -986,7 +986,7 @@ a.blue_button {
 #android, #iphone {
   background-color: #427C58;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
   float: left;
   height: 200pt;
   margin-top: 1em;
@@ -1104,7 +1104,7 @@ em {
 .events {
   background-color: #32656f;
   border-radius: 0.2em;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
 }
 
 .event:after {
@@ -1125,7 +1125,7 @@ em {
 .event img {
   border: 2px solid #1a3439;
   border-radius: 2px;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
 }
 
 .event .book_cover {
@@ -1157,7 +1157,7 @@ em {
 .book_cover {
   border: 2px solid #32656f;
   border-radius: 2px;
-  -mox-border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
 }
 
 .action {
