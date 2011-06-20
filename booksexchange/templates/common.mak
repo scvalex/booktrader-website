@@ -110,26 +110,27 @@
   % if isinstance(event, HaveEvent):
     ${gravatar(event.owner, 100)}
     ${book_link(event.book, book_cover(event.book))}
-    <span class="user">${user_link(event.owner)}</span>
+    <span class="user">${user_link(event.owner)}</span><br/>
     <span class="action">
       has ${book_link(event.book, event.book.title)}
     </span>
   % elif isinstance(event, WantEvent):
     ${gravatar(event.coveter, 100)}
     ${book_link(event.book, book_cover(event.book))}
-    <span class="user">${user_link(event.coveter)}</span>
+    <span class="user">${user_link(event.coveter)}</span><br/>
     <span class="action">
       wants ${book_link(event.book, event.book.title)}
     </span>
   % elif isinstance(event, ExchangeEvent):
-    <div>${format_date_simple(event.date)}</div>
-    <div class="event_page_cover">${book_list(event.apples, event.giver)}</div>
-    <div>
-      ${user_link(event.giver)}
-      gave
-      ${user_link(event.taker)}
-    </div>
-    <div class="event_page_cover">${book_list(event.oranges, event.taker)}</div>
+    ${gravatar(event.giver, 100)} 
+    ${gravatar(event.taker, 100)}
+    <span class="user">${user_link(event.giver)}</span>
+    <span class="action">gave</span>
+    <span class="user">${user_link(event.taker)}</span><br/>
+    % if event.rating:
+        <span class="action">a</span> <span class="positive">positive</span> <span class="action">feedback</span>
+    % endif
+
   % endif
   <br/>${pretty_date_simple(event.date)}
 </%def>

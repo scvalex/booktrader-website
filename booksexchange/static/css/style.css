@@ -336,7 +336,7 @@ h1 #logo {
 }
 
 .have_want {
-  margin: 1em auto;
+  margin: 1em 0.3em;
   position: relative;
 }
 
@@ -1150,8 +1150,18 @@ em {
 
 .event .user {
   font-size: 1.2em;
-  display: block;
   margin-bottom: 0.3em;
+}
+
+.event .positive, .event .negative {
+  font-weight: bold;
+  color: green;
+  line-height: 30px;
+  text-shadow: 1px 1px 1px #0f1d20;
+}
+
+.event .negative {
+  color: red;
 }
 
 .book_cover {
