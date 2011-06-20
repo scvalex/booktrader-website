@@ -54,8 +54,8 @@ h3 {
 }
 
 #logo {
-    height: 48px;
-    width: 48px;
+  height: 48px;
+  width: 48px;
 }
 
 a {
@@ -140,36 +140,36 @@ h1 a, h1 a:visited {
 }
 
 #footer div a {
-    color: orange;
-    font-size: 0.9em;
+  color: orange;
+  font-size: 0.9em;
 }
 
 .footlinks {
-    color: #ccc;
-    font-size: .8em;
-    margin-left: 5%;
+  color: #ccc;
+  font-size: .8em;
+  margin-left: 5%;
 }
 
 .footlinks .column {
-    float: left;
-    width: 20%;
-    margin: 1em 10% 0 0;
+  float: left;
+  width: 20%;
+  margin: 1em 10% 0 0;
 }
 
 .footlinks h4 {
-    padding-bottom: .2em;
+  padding-bottom: .2em;
 }
 
 .footlinks .column li {
-    margin-top: .4em;
+  margin-top: .4em;
 }
 
 #copyright {
-    clear: both;
-    color: #ccc;
-    font-size: .8em;
-    padding-top: 50px;
-    text-align: center;
+  clear: both;
+  color: #ccc;
+  font-size: .8em;
+  padding-top: 50px;
+  text-align: center;
 }
 
 /* Search bar */
@@ -912,63 +912,63 @@ a.blue_button {
 
 /* Main page */
 #welcome {
-    background-color: #7faf1b;
-    border-radius: 0.2em;
-    float: left;
-    padding: 1em;
-    width: 96%;
+  background-color: #7faf1b;
+  border-radius: 0.2em;
+  float: left;
+  padding: 1em;
+  width: 96%;
 }
 
 #welcome h2 {
-    color: #df3f0f;
-    border: none;
+  color: #df3f0f;
+  border: none;
 }
 
 #welcome p {
-    font-size: 1.2em;
-    font-weight: bold;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 #welcome .step {
-    background-color: #edac03;
-    border-radius: 0.2em;
-    float: left;
-    font-size: 1.2em;
-    line-height: 100%;
-    height: 78pt;
-    margin-right: 1.2em;
-    padding: .5em;
-    width: 78pt;
+  background-color: #edac03;
+  border-radius: 0.2em;
+  float: left;
+  font-size: 1.2em;
+  line-height: 100%;
+  height: 78pt;
+  margin-right: 1.2em;
+  padding: .5em;
+  width: 78pt;
 }
 
 #welcome .count {
-    float: left;
-    font-size: 30pt;
-    padding-top: 60pt;
-    margin-right: .2em;
+  float: left;
+  font-size: 30pt;
+  padding-top: 60pt;
+  margin-right: .2em;
 }
 
 #website {
-    background-color: #edac03;
-    border-radius: 0.2em;
-    clear: both;
-    float: left;
-    height: 200pt;
-    margin-top: 1em;
-    width: 100%;
+  background-color: #edac03;
+  border-radius: 0.2em;
+  clear: both;
+  float: left;
+  height: 200pt;
+  margin-top: 1em;
+  width: 100%;
 }
 
 #android {
-    margin-right: 2%;
+  margin-right: 2%;
 }
 
 #android, #iphone {
-    background-color: #edac03;
-    border-radius: 0.2em;
-    float: left;
-    height: 200pt;
-    margin-top: 1em;
-    width: 49%;
+  background-color: #edac03;
+  border-radius: 0.2em;
+  float: left;
+  height: 200pt;
+  margin-top: 1em;
+  width: 49%;
 }
 
 /* Search page */
@@ -1092,6 +1092,11 @@ em {
 
 .event {
   padding: 0.5em 0.5em 0 0.5em;
+}
+
+.event .pretty_date {
+  font-size: 0.8em;
+  color: white;
 }
 
 .event img {

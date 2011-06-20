@@ -70,8 +70,8 @@
   ${(date + timedelta(hours=1)).strftime("%A %d %B %Y %I:%M%p")}
 </%def>
 
-<%def name="pretty_date_simple(date)" filter="n">
-  <span>
+<%def name="pretty_date_simple(date)">
+  <span class="pretty_date">
     <% from datetime import datetime %>
     <% td = (datetime.utcnow() - date).seconds %>
     % if td < 60:
@@ -131,6 +131,7 @@
     </div>
     <div class="event_page_cover">${book_list(event.oranges, event.taker)}</div>
   % endif
+  <br/>${pretty_date_simple(event.date)}
 </%def>
 
 <%def name="render_user(user)">
