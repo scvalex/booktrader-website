@@ -62,7 +62,7 @@ def main(global_config, **settings):
 
     pyr_app      = config.make_wsgi_app()
     app1         = catch_exc(pyr_app)
-    if settings['proxy_pass']:
+    if 'proxy_pass' in settings and settings['proxy_pass']:
         app      = StrangeDeploy(app1, settings['orig_host'],
                                  settings['orig_port'], settings['orig_path'])
     else:
