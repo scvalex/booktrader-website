@@ -121,7 +121,7 @@ def add_book(book, request):
     if 'ref' in request.params:
         referer = request.params['ref']
     if referer == request.path:
-        referer = '/'
+        referer = base_url(request)
     raise HTTPFound(location = referer)
 
 @view_config(context=Book, name='remove', permission='loggedin')
@@ -134,4 +134,4 @@ def remove_book(context, request):
     if request.referer:
         raise HTTPFound(location = request.referer)
     else:
-        raise HTTPFound(location = '/')
+        raise HTTPFound(location = base_url(request))

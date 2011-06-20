@@ -41,7 +41,7 @@ def login_schema(users, referer):
                                         widget  = deform.widget.PasswordWidget())
         came_from = colander.SchemaNode(colander.String(),
                                         widget  = deform.widget.HiddenWidget(),
-                                        missing = '/',
+                                        missing = referer,
                                         default = referer)
 
     def validate_login(form, value):
@@ -58,17 +58,17 @@ def login_schema(users, referer):
 @view_config(context=Users, name='login', renderer='users/login.mak')
 def login(context, request):
     if already_logged_in(request):
-        raise HTTPFound(location = '/')
+        raise HTTPFound(location = base_url(request))
 
     if 'ref' in request.params:
         referer = request.params['ref']
     elif request.referer:
         referer = request.referer
     else:
-        referer = '/'
+        referer = base_url(request)
 
     if referer == request.path:
-        referer = '/'
+        referer = base_url(request)
 
     form = deform.Form(login_schema(context, referer), buttons = ('Login',))
 
@@ -96,7 +96,7 @@ def logout(context, request):
 
     request.session.flash('You are now logged out.')
 
-    raise HTTPFound(location = '/',
+    raise HTTPFound(location = base_url(request),
                     headers = headers)
 
 def register_schema(users):
@@ -127,7 +127,7 @@ def register_schema(users):
 @view_config(context=Users, name='register', renderer='users/register.mak')
 def register(context, request):
     if already_logged_in(request):
-        raise HTTPFound(location = '/')
+        raise HTTPFound(location = base_url(request))
 
 
     form = deform.Form(register_schema(context), buttons=('Register',))
@@ -186,7 +186,7 @@ def confirm_registration(context, request):
     if context.confirm(token):
         request.session.flash('Your account was verified, enjoy BooksExchange!')
 
-        raise HTTPFound(location = '/',
+        raise HTTPFound(location = base_url(request),
                         headers  = remember(request, context.username))
 
     raise HTTPFound(location = request.resource_url(context,
