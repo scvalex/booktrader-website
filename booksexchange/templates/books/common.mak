@@ -34,7 +34,7 @@
     % endif
 
     % if book.description:
-        ${common.truncate(request.markdown(book.description, safe_mode=False), 200)}</p>
+        ${common.truncate(request.markdown(book.description, safe_mode=False), 200)}</div>
     % endif
 
     % if show_have_want:
