@@ -37,6 +37,12 @@
     <h3>Self-Ref FTW!</h3>
     <img src="${request.static_url('booksexchange:static/img/website_sshot.png')}"
          alt="Website screnshot" />
+    <ul>
+      <li>Most complete interface!</li>
+      <li>Standards compliant HTML5!</li>
+      <li>Cutting-edge CSS3!</li>
+      <li>All browsers supported!</li>
+    </ul>
   </div>
 
   <div id="android">
