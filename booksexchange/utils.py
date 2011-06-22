@@ -264,13 +264,14 @@ def catch_exc(req, app):
             else:
                 resp = json.dumps({'status': 'error', 'reason': str(e)})
         else:
-            if isinstance(e, HTTPBadRequest):
-                headers = e.headers
-                if req.referer is not None:
-                    headers['Location'] = req.referer
-                else:
-                    headers['Location'] = base_url(req)
-                return Response(body='bad request', status=302, headers=headers)
+            # TODO: add this in production
+            # if isinstance(e, HTTPBadRequest):
+            #     headers = e.headers
+            #     if req.referer is not None:
+            #         headers['Location'] = req.referer
+            #     else:
+            #         headers['Location'] = base_url(req)
+            #     return Response(body='bad request', status=302, headers=headers)
 
             resp = Template(filename = "booksexchange/templates/exception.mak")
             resp = resp.render(**{'status': e.status, 'detail': e.detail})

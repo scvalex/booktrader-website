@@ -1,4 +1,7 @@
+
+
 * Things that need to be done (TTNTBD)
+** [website] Add the HTTPBadRequest redirection in production.
 ** [website] Who has completed an exchange?
 ** [website] Short feedback next to user name.
 ** [website] Long feedback when clicking the short one.
