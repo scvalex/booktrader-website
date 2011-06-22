@@ -7,3 +7,4 @@
 ** [android] About page
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
+** [android] Mark books with owners in search.
