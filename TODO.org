@@ -4,6 +4,8 @@
 ** [website] Long feedback when clicking the short one.
 ** [website] Completing a trade should remove (but not add) books.
 ** [website] WordPress and Blogger widgets (just an iframe really).
+** [website] Save searches for each user.  Show last search in search bar.
+** [website] Remove messages (hide them actually)
 ** [android] About page
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
