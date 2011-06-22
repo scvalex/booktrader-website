@@ -211,6 +211,10 @@ def send_email(body, subject, recipients, settings, sender=None):
     server.login(settings['smtp_username'], settings['smtp_password'])
     server.sendmail(sender, recipients, msg.as_string())
 
+    # server = smtplib.SMTP(settings['smtp_server'], settings['smtp_port'])
+    # server.connect()
+    # server.sendmail(sender, recipients, msg.as_string())
+
     server.quit()
 
 

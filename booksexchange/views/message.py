@@ -124,7 +124,7 @@ def set_recipient(form, user):
              renderer='messages/new.mak')
 def send_offer(context, request):
     try:
-        other = request.root['users'][request.path.split('/')[2]]
+        other = request.root['users'][request.path.split('/')[-3]]
     except Exception:
         raise HTTPBadRequest('request not specific enough: owner missing')
 

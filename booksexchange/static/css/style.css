@@ -620,7 +620,12 @@ h1 #logo {
   margin: 0.3em 0 0 0.2em;
 }
 
-.owners ul, .coveters ul {
+#group_image {
+  border: 2px solid #32656F;
+  border-radius: 0.2em 0.2em 0.2em 0.2em;
+}
+
+.books_list .owners ul, .books_list .coveters ul {
   width: 136px;
 }
 
