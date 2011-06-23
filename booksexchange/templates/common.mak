@@ -211,12 +211,11 @@
   </table>
 </%def>
 
-<%def name="book_list(books, owner)">
+<%def name="book_list(books)">
   <ul class="book_list">
     % for book in books:
       <li>
-        <a href="${request.resource_url(owner, book.identifier)}"
-           class="bavatar">
+        <a href="${request.resource_url(book)}" class="bavatar">
           ${book_cover(book)}
           <span>${book.title}</span>
         </a>

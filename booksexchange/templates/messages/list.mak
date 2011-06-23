@@ -55,7 +55,7 @@
           % endif
           <span>${msg_root[0].sender.username}</span>
           ${common.gravatar(msg_root[0].sender, 64)}
-          ${common.book_list(msg_root[0].apples, msg_root[0].sender)}
+          ${common.book_list(msg_root[0].apples)}
         </div>
         <div class="right">
           ${common.gravatar(msg_root[0].recipient, 64)}
@@ -63,7 +63,7 @@
           % if msg_root[0].recipient in msg_root[0].accepted:
             <span class="accepted">✔</span>
           % endif
-          ${common.book_list(msg_root[0].oranges, msg_root[0].recipient)}
+          ${common.book_list(msg_root[0].oranges)}
         </div>
       </div>
   <ol class="conversation offer_conversation">
