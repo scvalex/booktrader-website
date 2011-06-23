@@ -21,7 +21,7 @@ from persistent.list      import PersistentList
 def evolve(context):
     print "Evolving Users DB to version 3..."
     for u in context.values():
-        if isinstance(u, User) and not u.feedbacks:
+        if isinstance(u, User) and not hasattr(u, 'feedbacks'):
             print ".",
             u.feedbacks = PersistentList()
     print "Done"
