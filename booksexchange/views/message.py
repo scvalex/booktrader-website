@@ -372,7 +372,8 @@ def edit_offer(context, request):
              renderer='messages/list.mak',
              permission='loggedin')
 def accept_offer(context, request):
-    if (request.user is not context.sender and request.user is not context.recipient) or not isinstance(context, Offer):
+    if (request.user is not context.sender and
+        request.user is not context.recipient) or not isinstance(context, Offer):
         raise Forbidden()
 
     if request.user in context.accepted:
@@ -381,6 +382,25 @@ def accept_offer(context, request):
     context.accepted.append(request.user)
     get_other(context, request).message_unread(context)
     request.session.flash('Offer accepted!')
+
+    # Remove the books from the "have" and "want" lists, if they're
+    # there.
+    if len(context.accepted) > 1:
+        for b in context.apples:
+            if b.identifier in context.sender.owned:
+                del context.sender.owned[b.identifier]
+            if b.identifier in context.recipient.want:
+                del context.sender.want[b.identifier]
+
+        for b in context.oranges:
+            if b.identifier in context.recipient.owned:
+                del context.recipient.owned[b.identifier]
+            if b.identifier in context.sender.want:
+                del context.sender.want[b.identifier]
+
+        request.root['users'].update(context.sender)
+        request.root['users'].update(context.recipient)
+                
 
     raise HTTPFound(location = request.resource_url(context))
 
