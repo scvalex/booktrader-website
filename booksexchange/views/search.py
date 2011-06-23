@@ -87,10 +87,12 @@ def autocomplete(context, request):
         
         return data
     elif search_type == 'users':
-        count, res = context['users'].query(Contains('ac_username', term), limit=10)
+        count, res = context['users'].query(Contains('ac_username', term.lower()),
+                                            limit=10)
         return [u.username for u in res]
     elif search_type == 'groups':
-        count, res = context['groups'].query(Contains('ac_name', term), limit=10)
+        count, res = context['groups'].query(Contains('ac_name', term.lower()),
+                                             limit=10)
         return [g.name for g in res]
     else:
         raise HTTPBadRequest('Bad search type.')

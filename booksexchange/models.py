@@ -75,7 +75,8 @@ def lowercase_sub_username(user, default):
 
 def ac_username(user, default):
     if hasattr(user, 'username'):
-        return ' '.join([user.username[:i] for i in range(1, len(user.username) + 1)])
+        un = user.username.lower()
+        return ' '.join([un[:i] for i in range(1, len(un) + 1)])
     return default
 
 class Users(IndexFolder):
@@ -502,7 +503,8 @@ def lowercase_group_description(group, default):
 
 def ac_group_name(group, default):
     if hasattr(group, 'name'):
-        return ' '.join([group.name[:i] for i in range(1, len(group.name) + 1)])
+        gn = group.name.lower()
+        return ' '.join([gn[:i] for i in range(1, len(gn) + 1)])
     return default
 
 
