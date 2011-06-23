@@ -194,7 +194,8 @@ def reply_to_message(context, request):
 @view_config(context=Message, name='complete', renderer='messages/new.mak',
              permission='loggedin')
 def complete_exchange(context, request):
-    if not isinstance(context, Offer) or (request.user is not context.recipient and request.user is not context.sender):
+    if not isinstance(context, Offer) or (request.user is not context.recipient and
+                                          request.user is not context.sender):
         raise Forbidden()
 
     if request.user in context.left_feedback:
@@ -231,10 +232,14 @@ def complete_exchange(context, request):
 
     if request.method == 'POST':
         def extra_fun(message):
-            message.reply_to = context # reply to the *last* message in the conversation context
-            request.root['events'].add_exchange(request.user, recipient, context.apples, context.oranges, message.rating)
+            # reply to the *last* message in the conversation context
+            message.reply_to = context 
+            request.root['events'].add_exchange(request.user, recipient,
+                                                context.apples, context.oranges,
+                                                message.rating)
             message.offer = context
             context.left_feedback.append(request.user)
+
         common_send_message(context, request, form, extra_fun,
                             recipient, 'feedback')
 
@@ -311,7 +316,8 @@ def show_message(context, request):
 @view_config(context=Message, name='edit_offer', renderer='messages/new.mak',
              permission='loggedin')
 def edit_offer(context, request):
-    if (request.user is not context.sender and request.user is not context.recipient) or not isinstance(context, Offer):
+    if (request.user is not context.sender and
+        request.user is not context.recipient) or not isinstance(context, Offer):
         raise Forbidden()
 
     if context.accepted:

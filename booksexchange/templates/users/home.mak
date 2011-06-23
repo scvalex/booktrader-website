@@ -27,6 +27,21 @@ username     = request.context.username
 
 <h2>
   ${request.context.username}
+  <span class="feedbacks_score">
+    <%
+    score = request.context.feedbacks_score
+    if score > 95:
+        color = "green"
+    elif score > 80:
+        color = "yellow"
+    else:
+        color = "red"
+    %>
+    
+    <span class=${color}>
+      ${request.context.feedbacks_score}%
+    </span> (${len(request.context.feedbacks)})
+  </span>
 </h2>
 
 <img src="${request.context.gravatar(64)}"
@@ -82,5 +97,6 @@ username     = request.context.username
   <h3>History</h3>
   ${common.render_events(events[:15])}
 </div>
+
 
 <%def name="title()">${parent.title()} - Home</%def>

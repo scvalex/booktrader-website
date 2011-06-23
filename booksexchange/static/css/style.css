@@ -1220,3 +1220,20 @@ em {
 .book_short .gravatar {
   float: left;
 }
+
+.feedbacks_score {
+  font-size: 0.6em;
+  color: black;
+}
+
+.green {
+  color: green;
+}
+
+.yellow {
+  color: yellow;
+}
+
+.red {
+  color: red;
+}

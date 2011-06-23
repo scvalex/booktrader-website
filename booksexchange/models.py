@@ -106,6 +106,8 @@ class User(Persistent):
         self.location  = ''
         self.about     = ''
 
+        self.feedbacks = PersistentList()
+
     def __getitem__(self, key):
         if key in ['generate_token', 'confirm']:
             raise KeyError
@@ -228,6 +230,18 @@ class User(Persistent):
         check_class(event, Event, "that is not eventual enough")
         self.events.insert(0, event)
 
+
+    def add_feedback(self, feedback):
+        check_class(feedback, Feedback, 'not a feedback')
+        self.feedbacks.insert(0, feedback)
+
+
+    @property
+    def feedbacks_score(self):
+        return int((float(len(filter(lambda f: f.rating, self.feedbacks))) /
+                    float(len(self.feedbacks))) * 100)
+            
+        
     def __dict__(self):
         return {"username": self.username,
                 "location": self.location,
@@ -404,6 +418,7 @@ class Events(Persistent):
         self.all.insert(0, e)
         giver.add_event(e)
         taker.add_event(e)
+        
 
 class Event(Persistent):
     def __init__(self):
@@ -632,6 +647,9 @@ class Feedback(Message):
         self.comment = comment
         self.offer   = None
 
+        # Adds the feedback to the user
+        self.recipient.add_feedback(self)
+
 
 class VerySimpleCache(Persistent):
     def __init__(self, max_keys = 10):
@@ -686,7 +704,7 @@ def appmaker(zodb_root):
     # Evolve each sub-DB if necessary
     evolmgr_users = ZODBEvolutionManager(zodb_root['app_root']['users'],
                         evolve_packagename='booksexchange.dbevol.users',
-                        sw_version=2, initial_db_version=0)
+                        sw_version=3, initial_db_version=0)
     evolve_to_latest(evolmgr_users)
 
     evolmgr_books = ZODBEvolutionManager(zodb_root['app_root']['books'],
