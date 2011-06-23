@@ -1,5 +1,3 @@
-
-
 * Things that need to be done (TTNTBD)
 ** [website] Add the HTTPBadRequest redirection in production.
 ** [website] Who has completed an exchange?
@@ -7,6 +5,13 @@
 ** [website] WordPress and Blogger widgets (just an iframe really).
 ** [website] Save searches for each user.  Show last search in search bar.
 ** [website] Remove messages (hide them actually)
+** [website] Typo: Find books you own OR want
+** [website] Add a "New Group" link somewhere
+** [website] Don't hyperlink message subjects
+** [website] Add an alt text for books without covers in offers
+** [website] Add a books list page (first books in your groups, then all other books)
+** [website] Add a books list box to the front page
+** [website] Add a books list box to the groups page
 ** [android] About page
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
