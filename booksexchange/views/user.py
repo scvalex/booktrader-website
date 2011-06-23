@@ -107,8 +107,6 @@ def register_schema(users):
             raise colander.Invalid(
                 node,
                 'The username must contain only letters, numbers and no space.')
-
-        raise Exception()
     
         if value in users:
             raise colander.Invalid(node, '"' + value + '" is already taken.')
@@ -157,6 +155,7 @@ def register(context, request):
             raise HTTPFound(location = request.resource_url(new_user, 'generate_token'))
         else:
             new_user.confirmed = True
+            request.root['users'].update(new_user)
             request.session.flash('You are now registered, enjoy BookTrader!')
             raise HTTPFound(location = base_url(request),
                             headers  = remember(request, new_user.username))

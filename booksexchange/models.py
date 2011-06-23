@@ -69,11 +69,17 @@ def groups_list(user, default):
     return user.groups.keys()
 
 def lowercase_sub_username(user, default):
+    if not user.confirmed:
+        return ''
+    
     if hasattr(user, 'username'):
         return ' '.join(substrings(user.username))
     return default
 
 def ac_username(user, default):
+    if not user.confirmed:
+        return ''
+    
     if hasattr(user, 'username'):
         un = user.username.lower()
         return ' '.join([un[:i] for i in range(1, len(un) + 1)])
@@ -147,6 +153,7 @@ class User(Persistent):
 
         if self._token == token:
             self.confirmed = True
+            self.__parent__.update(self)
             return True
 
         return False
