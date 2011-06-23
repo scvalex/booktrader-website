@@ -17,6 +17,7 @@
 
 from booksexchange.models        import ac_group_name
 from repoze.catalog.indexes.text import CatalogTextIndex
+from pyramid.traversal           import resource_path
 
 def evolve(context):
     print "Evolving Groups DB to version 2..."
