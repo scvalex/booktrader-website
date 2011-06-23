@@ -136,6 +136,14 @@ $('#deformField4').change(setAC);
           </div>
 
           <div class="column">
+            <h4>Tools</h4>
+            <ul>
+              <li><a href="${request.resource_url(request.root['users'], 'register')}">New User</a></li>
+              <li><a href="${request.resource_url(request.root['groups'], 'create')}">Create Group</a></li>
+            </ul>
+          </div>
+
+          <div class="column">
             <h4>See more</h4>
             <ul>
               <li><a href="http://code.google.com/apis/books/">Google Books</a></li>

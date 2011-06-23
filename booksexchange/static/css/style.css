@@ -152,13 +152,13 @@ h1 #logo {
 .footlinks {
   color: #ccc;
   font-size: .8em;
-  margin-left: 5%;
+  margin-left: 2%;
 }
 
 .footlinks .column {
   float: left;
   width: 20%;
-  margin: 1em 5% 0 5%;
+  margin: 1em 2%;
 }
 
 .footlinks h4 {

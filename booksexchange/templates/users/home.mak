@@ -37,7 +37,7 @@ username     = request.context.username
     else:
         color = "red"
     %>
-    
+
     <span class=${color}>
       ${score}%
     </span> (${len(request.context.feedbacks)})
@@ -59,6 +59,9 @@ username     = request.context.username
                            lambda g: common.group_link(g, g.name))}
         </li>
     % endif
+    <li>
+      <strong><a href="${request.resource_url(request.root['groups'], 'create')}">Create Group</a></strong>
+    </li>
   </ul>
 
   % if request.user and  request.user == request.context:
