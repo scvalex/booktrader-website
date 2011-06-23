@@ -146,7 +146,13 @@ def register(context, request):
 
         context.new_user(new_user)
 
-        raise HTTPFound(location = request.resource_url(new_user, 'generate_token'))
+        if request.registry.settings['confirm_email'] == 'true':
+            raise HTTPFound(location = request.resource_url(new_user, 'generate_token'))
+        else:
+            new_user.confirmed = True
+            request.session.flash('You are now registered, enjoy BookTrader!')
+            raise HTTPFound(location = base_url(request),
+                            headers  = remember(request, new_user.username))
 
     return {'form': render_form(form)}
 

@@ -81,7 +81,7 @@ def autocomplete(context, request):
         data = conn.getresponse().read()
 
         # Removing the function
-        data = json.loads(data[data.find('['):-1])
+        data = json.loads(data[data.find('['):-1].decode('iso-8859-1').encode('utf-8'))
         
         data = map(lambda x: x[0], data[1])
         

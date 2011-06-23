@@ -1,7 +1,6 @@
 * Things that need to be done (TTNTBD)
 ** [website] Add the HTTPBadRequest redirection in production.
 ** [website] Who has completed an exchange?
-** [website] Completing a trade should remove (but not add) books.
 ** [website] WordPress and Blogger widgets (just an iframe really).
 ** [website] Save searches for each user.  Show last search in search bar.
 ** [website] Remove messages (hide them actually)
@@ -12,6 +11,8 @@
 ** [website] Add a books list page (first books in your groups, then all other books)
 ** [website] Add a books list box to the front page
 ** [website] Add a books list box to the groups page
+** [website] Make sure that the website looks decent at 1024*768.
+** [website] Fix searches with unicode symbols.
 ** [android] About page
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
@@ -19,3 +20,8 @@
 * Things that have been done
 ** [website] Short feedback next to user name.
 ** [website] Long feedback when clicking the short one.
+** [website] Completing a trade should remove (but not add) books.
+** [website] Save searches for each user.  Show last search in search bar.
+* Things that won't be done
+** [website] Remove messages (hide them actually)
+

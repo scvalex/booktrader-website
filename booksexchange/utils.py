@@ -207,13 +207,11 @@ def send_email(body, subject, recipients, settings, sender=None):
     msg['From'] = sender
     msg['To'] = ', '.join(recipients)
 
-    server = smtplib.SMTP_SSL(settings['smtp_server'], settings['smtp_port'])
+    server = smtplib.SMTP(settings['smtp_server'], settings['smtp_port'])
+    server.ehlo()
+    server.starttls()
     server.login(settings['smtp_username'], settings['smtp_password'])
     server.sendmail(sender, recipients, msg.as_string())
-
-    # server = smtplib.SMTP(settings['smtp_server'], settings['smtp_port'])
-    # server.connect()
-    # server.sendmail(sender, recipients, msg.as_string())
 
     server.quit()
 
