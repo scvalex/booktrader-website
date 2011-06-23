@@ -658,11 +658,11 @@ a.gravatar:hover {
   z-index: 2;
 }
 
-a.gravatar span {
+a.gravatar span, a.bavatar span {
   display: none;
 }
 
-a.gravatar:hover span {
+a.gravatar:hover span, a.bavatar:hover span {
   display: block;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.7);

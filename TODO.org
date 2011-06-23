@@ -3,7 +3,6 @@
 ** [website] WordPress and Blogger widgets (just an iframe really).
 ** [website] Save searches for each user.  Show last search in search bar.
 ** [website] Remove messages (hide them actually)
-** [website] Add an alt text for books without covers in offers
 ** [website] Add a books list page (first books in your groups, then all other books)
 ** [website] Add a books list box to the front page
 ** [website] Add a books list box to the groups page
@@ -21,6 +20,7 @@
 ** [website] Typo: Find books you own OR want
 ** [website] Don't hyperlink message subjects
 ** [website] Add a "New Group" link somewhere
+** [website] Add an alt text for books without covers in offers
 ** [android] About page
 ** [android] Mark books with owners in search.
 * Things that won't be done

@@ -214,7 +214,13 @@
 <%def name="book_list(books, owner)">
   <ul class="book_list">
     % for book in books:
-      <li><a href="${request.resource_url(owner, book.identifier)}">${book_cover(book)}</a></li>
+      <li>
+        <a href="${request.resource_url(owner, book.identifier)}"
+           class="bavatar">
+          ${book_cover(book)}
+          <span>${book.title}</span>
+        </a>
+      </li>
     % endfor
   </ul>
 </%def>
