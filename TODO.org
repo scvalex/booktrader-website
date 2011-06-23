@@ -6,7 +6,6 @@
 ** [website] Add a books list box to the groups page
 ** [website] Make sure that the website looks decent at 1024*768.
 ** [website] Fix searches with unicode symbols.
-** [website] pretty printing dates doesn't take into account the day
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
 * Things that have been done
@@ -20,6 +19,7 @@
 ** [website] Add a "New Group" link somewhere
 ** [website] Add an alt text for books without covers in offers
 ** [website] Save searches for each user.  Show last search in search bar.
+** [website] pretty printing dates doesn't take into account the day
 ** [android] About page
 ** [android] Mark books with owners in search.
 * Things that won't be done
