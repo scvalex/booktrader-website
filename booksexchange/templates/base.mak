@@ -106,7 +106,7 @@
         <script type="text/javascript">
 function setAC() {
     $("#deformField1").autocomplete({
-        source: ("/autocomplete/" + $('#deformField4 option:selected').val())
+        source: '${request.resource_url(request.root, 'autocomplete')}' + '/' + $('#deformField4 option:selected').val()
     });
 }
 
