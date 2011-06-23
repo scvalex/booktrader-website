@@ -13,6 +13,7 @@
 ** [website] Add a books list box to the groups page
 ** [website] Make sure that the website looks decent at 1024*768.
 ** [website] Fix searches with unicode symbols.
+** [website] pretty printing dates doesn't take into account the day
 ** [android] About page
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
