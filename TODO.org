@@ -1,6 +1,5 @@
 * Things that need to be done (TTNTBD)
 ** [website] Add the HTTPBadRequest redirection in production.
-** [website] Who has completed an exchange?
 ** [website] WordPress and Blogger widgets (just an iframe really).
 ** [website] Save searches for each user.  Show last search in search bar.
 ** [website] Remove messages (hide them actually)
@@ -21,6 +20,7 @@
 ** [website] Long feedback when clicking the short one.
 ** [website] Completing a trade should remove (but not add) books.
 ** [website] Save searches for each user.  Show last search in search bar.
+** [website] Who has completed an exchange?
 ** [android] About page
 ** [android] Mark books with owners in search.
 * Things that won't be done

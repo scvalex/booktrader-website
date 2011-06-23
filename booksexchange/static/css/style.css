@@ -501,6 +501,11 @@ h1 #logo {
   font-size: 1.1em;
 }
 
+.offer_info .accepted {
+  color: #0f0;
+  font-size: 2em;
+}
+
 .offer_info:after {
   content: "";
   display:block;

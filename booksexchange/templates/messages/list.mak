@@ -50,6 +50,9 @@
     % if isinstance(msg_root[0], Offer):
       <div class="offer_info">
         <div class="left">
+          % if msg_root[0].sender in msg_root[0].accepted:
+            <span class="accepted">✔</span>
+          % endif
           <span>${msg_root[0].sender.username}</span>
           ${common.gravatar(msg_root[0].sender, 64)}
           ${common.book_list(msg_root[0].apples, msg_root[0].sender)}
@@ -57,6 +60,9 @@
         <div class="right">
           ${common.gravatar(msg_root[0].recipient, 64)}
           <span>${msg_root[0].recipient.username}</span>
+          % if msg_root[0].recipient in msg_root[0].accepted:
+            <span class="accepted">✔</span>
+          % endif
           ${common.book_list(msg_root[0].oranges, msg_root[0].recipient)}
         </div>
       </div>
