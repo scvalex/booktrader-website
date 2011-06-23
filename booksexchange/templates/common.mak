@@ -73,7 +73,8 @@
 <%def name="pretty_date_simple(date)">
   <span class="pretty_date">
     <% from datetime import datetime %>
-    <% td = (datetime.utcnow() - date).seconds %>
+    <% td = (datetime.utcnow() - date) %>
+    <% td = td.seconds + td.days * 24 * 60 * 60 %>
     % if td < 60:
       ${td} seconds ago
     % elif td < 60*60:
