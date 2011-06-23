@@ -1,8 +1,6 @@
 * Things that need to be done (TTNTBD)
 ** [website] Add the HTTPBadRequest redirection in production.
 ** [website] WordPress and Blogger widgets (just an iframe really).
-** [website] Save searches for each user.  Show last search in search bar.
-** [website] Remove messages (hide them actually)
 ** [website] Add a books list page (first books in your groups, then all other books)
 ** [website] Add a books list box to the front page
 ** [website] Add a books list box to the groups page
@@ -21,6 +19,7 @@
 ** [website] Don't hyperlink message subjects
 ** [website] Add a "New Group" link somewhere
 ** [website] Add an alt text for books without covers in offers
+** [website] Save searches for each user.  Show last search in search bar.
 ** [android] About page
 ** [android] Mark books with owners in search.
 * Things that won't be done

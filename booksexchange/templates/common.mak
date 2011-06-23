@@ -226,13 +226,13 @@
 
 <%def name="commify(list, fun=(lambda x: x))">
   % for i in range(len(list)-1):
-      ${fun(list[i])}, 
+      ${fun(list[i])},
   % endfor
   % if list:
       ${fun(list[-1])}
   % endif
 </%def>
-  
+
 <%def name="render_feedback(feedback)">
   ${gravatar(feedback.sender, size=40)}
   % if feedback.rating:

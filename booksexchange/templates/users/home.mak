@@ -86,7 +86,18 @@ username     = request.context.username
     <h3>${username}'s books</h3>
   % endif
 
-  ${books_common.books_list(owned, request.context)}
+  % if len(owned) > 0:
+    ${books_common.books_list(owned, request.context)}
+  % else:
+    <div class="bad_news">
+      % if current_user:
+      You have
+      % else:
+      ${username} has
+      % endif
+      no books :(
+    </div>
+  % endif
 
   % if current_user:
     <h3>Books you want</h3>
@@ -94,18 +105,40 @@ username     = request.context.username
     <h3>Books ${username} wants</h3>
   % endif
 
-  ${books_common.books_list(want)}
+  % if len(want) > 0:
+    ${books_common.books_list(want)}
+  % else:
+    <div class="bad_news">
+      % if current_user:
+      You don't
+      % else:
+      ${username} doesn't
+      % endif
+      want any books :,(
+    </div>
+  % endif
 
   % if current_user:
-      <h3>Your feedbacks</h3>
+      <h3>Your feedback</h3>
   % else:
-      <h3>${username}'s feedbacks</h3>
+      <h3>${username}'s feedback</h3>
   % endif
 
   <ul>
-  % for f in request.context.feedbacks:
-      <li class="feedback">${common.render_feedback(f)}</li>
-  % endfor
+  % if len(request.context.feedbacks) > 0:
+    % for f in request.context.feedbacks:
+        <li class="feedback">${common.render_feedback(f)}</li>
+    % endfor
+  % else:
+    <div class="bad_news">
+      % if current_user:
+      You don't
+      % else:
+      ${username} doesn't
+      % endif
+      have any feedback :|
+    </div>
+  % endif
   </ul>
 </div>
 <div id="stuff_in_flux">
