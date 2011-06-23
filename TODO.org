@@ -3,7 +3,6 @@
 ** [website] WordPress and Blogger widgets (just an iframe really).
 ** [website] Save searches for each user.  Show last search in search bar.
 ** [website] Remove messages (hide them actually)
-** [website] Typo: Find books you own OR want
 ** [website] Add a "New Group" link somewhere
 ** [website] Don't hyperlink message subjects
 ** [website] Add an alt text for books without covers in offers
@@ -21,6 +20,7 @@
 ** [website] Completing a trade should remove (but not add) books.
 ** [website] Save searches for each user.  Show last search in search bar.
 ** [website] Who has completed an exchange?
+** [website] Typo: Find books you own OR want
 ** [android] About page
 ** [android] Mark books with owners in search.
 * Things that won't be done

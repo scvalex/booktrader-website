@@ -24,7 +24,7 @@
     <h2>Welcome to BookTrader</h2>
     <p>Here you can trade your books for fun and profit.</p>
     <div class="count">1.</div>
-    <div class="step">Find books you own and want</div>
+    <div class="step">Find books you own or want</div>
     <div class="count">2.</div>
     <div class="step">We match you with traders</div>
     <div class="count">3.</div>
