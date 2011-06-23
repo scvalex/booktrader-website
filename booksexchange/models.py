@@ -244,8 +244,11 @@ class User(Persistent):
 
     @property
     def feedbacks_score(self):
-        return int((float(len(filter(lambda f: f.rating, self.feedbacks))) /
-                    float(len(self.feedbacks))) * 100)
+        if len(self.feedbacks) == 0:
+            return 100
+        else:
+            return int((float(len(filter(lambda f: f.rating, self.feedbacks))) /
+                        float(len(self.feedbacks))) * 100)
             
         
     def __dict__(self):
