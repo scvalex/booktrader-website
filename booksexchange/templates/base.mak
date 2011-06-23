@@ -40,6 +40,10 @@
           href="${request.static_url('booksexchange:static/css/markdown.css')}"
           type="text/css" />
 
+    <link rel="stylesheet"
+          href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.4.custom.css')}"
+          type="text/css" />
+
     <script type="text/javascript"
             src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}">
     </script>
@@ -48,6 +52,9 @@
             src="${request.static_url('deform:static/scripts/deform.js')}">
     </script>
 
+    <script type="text/javascript"
+            src="${request.static_url('deform:static/scripts/jquery-ui-1.8.4.custom.min.js')}">
+    </script>
 
     ${self.head()}
 
@@ -96,7 +103,19 @@
       <div id="content">
 
         ${request.search_bar}
+        <script type="text/javascript">
+function setAC() {
+    $("#deformField1").autocomplete({
+        source: ("/autocomplete/" + $('#deformField4 option:selected').val())
+    });
+}
 
+setAC();
+
+$("#deformField1").autocomplete("option", {"delay": 400, "minLength": 1});
+
+$('#deformField4').change(setAC);
+        </script>
 
         <div id="inner">${next.body()}</div>
 

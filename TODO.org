@@ -3,8 +3,6 @@
 * Things that need to be done (TTNTBD)
 ** [website] Add the HTTPBadRequest redirection in production.
 ** [website] Who has completed an exchange?
-** [website] Short feedback next to user name.
-** [website] Long feedback when clicking the short one.
 ** [website] Completing a trade should remove (but not add) books.
 ** [website] WordPress and Blogger widgets (just an iframe really).
 ** [website] Save searches for each user.  Show last search in search bar.
@@ -13,3 +11,6 @@
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
 ** [android] Mark books with owners in search.
+* Things that have been done
+** [website] Short feedback next to user name.
+** [website] Long feedback when clicking the short one.

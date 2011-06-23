@@ -37,6 +37,7 @@ import deform
 import json
 import re
 import urllib
+import httplib
 
 from booksexchange.models      import *
 from booksexchange.schemas     import *

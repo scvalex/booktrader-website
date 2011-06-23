@@ -73,11 +73,17 @@ def lowercase_sub_username(user, default):
         return ' '.join(substrings(user.username))
     return default
 
+def ac_username(user, default):
+    if hasattr(user, 'username'):
+        return ' '.join([user.username[:i] for i in range(1, len(user.username) + 1)])
+    return default
+
 class Users(IndexFolder):
     def __init__(self):
         super(Users, self).__init__(email    = CatalogFieldIndex('email'),
                                     groups   = CatalogFieldIndex(groups_list),
-                                    username = CatalogTextIndex(lowercase_sub_username))
+                                    username = CatalogTextIndex(lowercase_sub_username),
+                                    ac_username = CatalogTextIndex(ac_username))
 
     def new_user(self, user):
         self[user.username] = user
@@ -491,12 +497,18 @@ def lowercase_group_description(group, default):
         return group.description.lower()
     return default
 
+def ac_group_name(group, default):
+    if hasattr(group, 'name'):
+        return ' '.join([group.name[:i] for i in range(1, len(group.name) + 1)])
+    return default
+
 
 class Groups(IndexFolder):
     def __init__(self):
         super(Groups, self).__init__(
             name        = CatalogTextIndex(lowercase_group_name),
-            description = CatalogTextIndex(lowercase_group_description))
+            description = CatalogTextIndex(lowercase_group_description),
+            ac_name     = CatalogTextIndex(ac_group_name))
 
 
 class Group(Persistent):
@@ -704,7 +716,7 @@ def appmaker(zodb_root):
     # Evolve each sub-DB if necessary
     evolmgr_users = ZODBEvolutionManager(zodb_root['app_root']['users'],
                         evolve_packagename='booksexchange.dbevol.users',
-                        sw_version=3, initial_db_version=0)
+                        sw_version=4, initial_db_version=0)
     evolve_to_latest(evolmgr_users)
 
     evolmgr_books = ZODBEvolutionManager(zodb_root['app_root']['books'],
@@ -719,7 +731,7 @@ def appmaker(zodb_root):
 
     evolmgr_groups = ZODBEvolutionManager(zodb_root['app_root']['groups'],
                         evolve_packagename='booksexchange.dbevol.groups',
-                        sw_version=1, initial_db_version=0)
+                        sw_version=2, initial_db_version=0)
     evolve_to_latest(evolmgr_groups)
 
     evolmgr_messages = ZODBEvolutionManager(zodb_root['app_root']['messages'],

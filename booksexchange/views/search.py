@@ -60,3 +60,38 @@ def search(context, request):
     return {'items': [i for i in items],
             'search_type':  query['type'],
             'error' : None}
+
+@view_config(context=App, name='autocomplete', renderer='json')
+def autocomplete(context, request):
+    if 'term' not in request.GET:
+        raise HTTPBadRequest('No term specified')
+
+    term = request.GET['term']
+
+
+    if len(request.subpath) != 1:
+        raise HTTPBadRequest('No search type specified')
+
+    search_type = request.subpath[0]
+
+    if search_type == 'books':
+        conn = httplib.HTTPConnection(request.registry.settings['google_autocomplete'])
+        conn.request('GET', request.registry.settings['google_query'] % term)
+
+        data = conn.getresponse().read()
+
+        # Removing the function
+        data = json.loads(data[data.find('['):-1])
+        
+        data = map(lambda x: x[0], data[1])
+        
+        return data
+    elif search_type == 'users':
+        count, res = context['users'].query(Contains('ac_username', term), limit=10)
+        return [u.username for u in res]
+    elif search_type == 'groups':
+        count, res = context['groups'].query(Contains('ac_name', term), limit=10)
+        return [g.name for g in res]
+    else:
+        raise HTTPBadRequest('Bad search type.')
+    
