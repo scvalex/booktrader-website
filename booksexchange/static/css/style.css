@@ -1191,7 +1191,7 @@ em {
   text-shadow: 1px 1px 1px #0f1d20;
 }
 
-.event .negative {
+.negative {
   color: red;
 }
 
@@ -1235,5 +1235,25 @@ em {
 }
 
 .red {
+  color: red;
+}
+
+.feedback .gravatar {
+  float: left;
+  margin-right: 0.3em;
+}
+
+.feedback {
+  clear: both;
+  padding: 0.3em;
+}
+
+.feedback .positive, .feedback .negative {
+  font-weight: bold;
+  color: green;
+  text-shadow: 1px 1px 1px white;
+}
+
+.feedback .negative {
   color: red;
 }

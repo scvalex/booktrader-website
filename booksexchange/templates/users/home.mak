@@ -39,7 +39,7 @@ username     = request.context.username
     %>
     
     <span class=${color}>
-      ${request.context.feedbacks_score}%
+      ${score}%
     </span> (${len(request.context.feedbacks)})
   </span>
 </h2>
@@ -92,6 +92,18 @@ username     = request.context.username
   % endif
 
   ${books_common.books_list(want)}
+
+  % if current_user:
+      <h3>Your feedbacks</h3>
+  % else:
+      <h3>${username}'s feedbacks</h3>
+  % endif
+
+  <ul>
+  % for f in request.context.feedbacks:
+      <li class="feedback">${common.render_feedback(f)}</li>
+  % endfor
+  </ul>
 </div>
 <div id="stuff_in_flux">
   <h3>History</h3>

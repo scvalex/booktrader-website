@@ -228,3 +228,13 @@
   % endif
 </%def>
   
+<%def name="render_feedback(feedback)">
+  ${gravatar(feedback.sender, size=40)}
+  % if feedback.rating:
+      <span class="positive">positive</span>
+  % else:
+      <span class="negative">negative</span>
+  % endif
+  <br/>
+  ${feedback.comment}
+</%def>
