@@ -5,6 +5,7 @@
 ** [website] Who has completed an exchange?
 ** [website] WordPress and Blogger widgets (just an iframe really).
 ** [website] Make sure that the website looks decent at 1024*768.
+** [website] Fix searches with unicode symbols.
 ** [android] About page
 ** [android] Finish messages
 ** [android] Degrade gracefully with WebView.
