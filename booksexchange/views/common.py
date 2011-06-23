@@ -22,6 +22,7 @@ from pyramid.httpexceptions    import (HTTPFound, HTTPForbidden,
                                        HTTPNotFound)
 from pyramid.response          import Response
 from pyramid.security          import remember, forget, authenticated_userid
+from pyramid.settings          import asbool
 from pyramid.traversal         import resource_path
 from pyramid.view              import view_config
 from pyramid.renderers         import render_to_response

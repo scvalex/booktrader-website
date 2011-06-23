@@ -109,14 +109,14 @@
   <% from booksexchange.models import HaveEvent, WantEvent, ExchangeEvent %>
   % if isinstance(event, HaveEvent):
     ${gravatar(event.owner, 100)}
-    ${book_link(event.book, book_cover(event.book))}
+    ${book_link(event.book, request.literal(capture(book_cover, event.book)))}
     <span class="user">${user_link(event.owner)}</span><br/>
     <span class="action">
       has ${book_link(event.book, event.book.title)}
     </span>
   % elif isinstance(event, WantEvent):
     ${gravatar(event.coveter, 100)}
-    ${book_link(event.book, book_cover(event.book))}
+    ${book_link(event.book, request.literal(capture(book_cover(event.book))))}
     <span class="user">${user_link(event.coveter)}</span><br/>
     <span class="action">
       wants ${book_link(event.book, event.book.title)}

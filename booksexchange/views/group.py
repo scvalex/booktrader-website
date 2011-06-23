@@ -116,10 +116,10 @@ def join_group(context, request):
             email_body = "Dear " + request.user.username + ",\n\n" + \
                          "To join group " + context.name +"," \
                          "please click visit this link: " + confirm_url + ".\n\n" + \
-                         "The BooksExchange team."
+                         "The BookTrader team."
 
 
-            send_email(email_body, 'BooksExchange group.',
+            send_email(email_body, 'BookTrader group.',
                        [data['email']], request.registry.settings)
 
             return {'form':None}

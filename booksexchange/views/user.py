@@ -103,6 +103,13 @@ def register_schema(users):
     def validate_user(node, value):
         colander.Length(min=2, max=200)(node, value)
 
+        if not re.match(r'^[a-zA-Z0-9]+$', value):
+            raise colander.Invalid(
+                node,
+                'The username must contain only letters, numbers and no space.')
+
+        raise Exception()
+    
         if value in users:
             raise colander.Invalid(node, '"' + value + '" is already taken.')
 
@@ -146,7 +153,7 @@ def register(context, request):
 
         context.new_user(new_user)
 
-        if request.registry.settings['confirm_email'] == 'true':
+        if asbool(request.registry.settings['confirm_email']):
             raise HTTPFound(location = request.resource_url(new_user, 'generate_token'))
         else:
             new_user.confirmed = True
@@ -171,10 +178,10 @@ def registration_token(context, request):
     email_body = "Dear " + context.username + ",\n\n" + \
                  "To activate your account " + \
                  "please click visit this link: " + confirm_url + ".\n\n" + \
-                 "The BooksExchange team."
+                 "The BookTrader team."
 
 
-    send_email(email_body, 'BooksExchange account activation.',
+    send_email(email_body, 'BookTrader account activation.',
                [context.email], request.registry.settings)
 
     return {'wrong_token': ('wrong' in request.params)}
@@ -190,7 +197,7 @@ def confirm_registration(context, request):
     token = request.params['token']
 
     if context.confirm(token):
-        request.session.flash('Your account was verified, enjoy BooksExchange!')
+        request.session.flash('Your account was verified, enjoy BookTrader!')
 
         raise HTTPFound(location = base_url(request),
                         headers  = remember(request, context.username))
