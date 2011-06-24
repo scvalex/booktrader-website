@@ -1301,3 +1301,7 @@ em {
 .groups_list .book_cover {
   margin-right: 1.5em;
 }
+
+.event .default_cover {
+  border: none;
+}
