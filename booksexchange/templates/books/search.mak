@@ -24,9 +24,13 @@
   <h2>Found ${total_items} books!</h2>
 
   % if request.user:
-       <% params['type'] = 'group_books' %>
        <p>
-         <a href="${request.resource_url(request.root, 'search', query=params)}">
+         <%
+         query = request.GET.copy()
+         query['type'] = 'group_books'
+         query['start_index'] = 0
+         %>
+         <a href="${request.resource_url(request.root, 'search', query=query)}">
            Show only books owned by people in my groups
          </a>
        </p>
