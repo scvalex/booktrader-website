@@ -494,6 +494,7 @@ h1 #logo {
   width: 70%;
   min-width: 950px;
   position:fixed;
+  height: 0;
 }
 
 .offer_info {
