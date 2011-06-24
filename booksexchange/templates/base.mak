@@ -69,7 +69,7 @@
         <div id="user">
           % if request.user is not None:
               logged in as
-              <a href="${request.resource_url(request.root['users'], 'cp')}">${request.user.username}</a>
+              <a href="${request.resource_url(request.user)}">${request.user.username}</a>
               &middot;
               % if request.user.unread:
                 <a class="unread" href="${request.resource_url(request.root['messages'], 'list')}">${len(request.user.unread)} unread</a>
