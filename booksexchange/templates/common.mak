@@ -95,6 +95,7 @@
 </%def>
 
 <%def name="render_events(events, *args)">
+  <div><div class="events_wrapper">
   % if args:
       <ul class="${args[0] + ' events'}">
   % else:
@@ -104,27 +105,30 @@
         <li class="event">${render_event(event)}</li>
     % endfor
   </ul>
+  </div>
+  <div class="events_fade"></div>
+  </div>
 </%def>
 
 <%def name="render_event(event)">
   <% from booksexchange.models import HaveEvent, WantEvent, ExchangeEvent %>
   % if isinstance(event, HaveEvent):
     ${gravatar(event.owner, 100)}
-    ${book_link(event.book, request.literal(capture(book_cover, event.book)))}
+    ${book_link(event.book, request.literal(capture(book_cover, event.book)))}<br/>
     <span class="user">${user_link(event.owner)}</span><br/>
     <span class="action">
       has ${book_link(event.book, event.book.title)}
     </span>
   % elif isinstance(event, WantEvent):
     ${gravatar(event.coveter, 100)}
-    ${book_link(event.book, request.literal(capture(book_cover(event.book))))}
+    ${book_link(event.book, request.literal(capture(book_cover(event.book))))}<br/>
     <span class="user">${user_link(event.coveter)}</span><br/>
     <span class="action">
       wants ${book_link(event.book, event.book.title)}
     </span>
   % elif isinstance(event, ExchangeEvent):
     ${gravatar(event.giver, 100)} 
-    ${gravatar(event.taker, 100)}
+    ${gravatar(event.taker, 100)}<br/>
     <span class="user">${user_link(event.giver)}</span>
     <span class="action">gave</span>
     <span class="user">${user_link(event.taker)}</span><br/>

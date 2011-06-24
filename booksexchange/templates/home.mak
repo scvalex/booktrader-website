@@ -33,6 +33,8 @@
     <div class="step last_step">Profit!</div>
   </div>
 
+  ${common.render_events(events.all[:15])}
+
   <div id="website">
     <h3>Self-Ref FTW!</h3>
     <img src="${request.static_url('booksexchange:static/img/website_sshot.png')}"
@@ -58,9 +60,6 @@
   </div>
 </div>
 
-<div id="stuff_in_flux">
-  ${common.render_events(events.all[:10])}
-</div>
 
 <%def name="title()">${parent.title()} - Home</%def>
 

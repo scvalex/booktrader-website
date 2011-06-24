@@ -74,6 +74,12 @@ strong {
   font-weight: bold;
 }
 
+#inner {
+  min-width: 950px;
+  width: 70%;
+  margin: 0 auto;
+}
+
 /* Header */
 
 #header {
@@ -942,9 +948,14 @@ a.blue_button {
   background-color: #50BB47;
   border-radius: 0.2em;
   -moz-border-radius: 0.2em;
-  float: left;
   padding: 1em;
-  width: 96%;
+  margin-bottom: 1em;
+}
+
+#welcome:after {
+  display:block;
+  clear: both;
+  content:  "";
 }
 
 #welcome h2 {
@@ -1037,8 +1048,7 @@ a.blue_button {
 /* User homepage */
 #real_stuff {
   clear:both;
-  float: left;
-  width: 65%;
+  margin: 0 auto;
 }
 
 #stuff_in_flux {
@@ -1141,16 +1151,41 @@ em {
   background-color: #32656f;
   border-radius: 0.2em;
   -moz-border-radius: 0.2em;
+  height: 200px;
 }
 
-.event:after {
+.events_wrapper {
+  clear: both;
+  overflow: hidden;
+  width: 100%;
+  background-color: #32656f;
+  border-radius: 0.2em;
+  -moz-border-radius: 0.2em;
+  float: left;
+}
+
+.events_fade {
+  float: left;
+  background-image: url('../img/events_fade.png');
+  width: 50px;
+  height: 200px;
+  margin-left: -50px;
+}
+
+.events {
+  width: 5000em;
+}
+
+.events:after {
   content: "";
   display: block;
   clear: both;
 }
 
 .event {
-  padding: 0.5em 0.5em 0 0.5em;
+  padding: 0.5em;
+  float: left;
+  width: 220px;
 }
 
 .event .pretty_date {
@@ -1166,16 +1201,7 @@ em {
 
 .event .book_cover {
   max-height: 100px;
-  float: left;
-  margin: 0 0.3em 0.3em 0;
-}
-
-.event .gravatar {
-  float: left;
-}
-
-.event .gravatar {
-  margin: 0 2px 0.3em 0;
+  max-width: 100px;
 }
 
 .event .user a, .offer_info span {
