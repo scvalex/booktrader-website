@@ -127,7 +127,7 @@
       wants ${book_link(event.book, event.book.title)}
     </span>
   % elif isinstance(event, ExchangeEvent):
-    ${gravatar(event.giver, 100)} 
+    ${gravatar(event.giver, 100)}
     ${gravatar(event.taker, 100)}<br/>
     <span class="user">${user_link(event.giver)}</span>
     <span class="action">gave</span>
@@ -192,7 +192,7 @@
 
 <%def name="groups_list(groups)">
   <table class="books_list">
-    % while len(groups) > 2:
+    % while len(groups) >= 2:
         <tr>
           <td>
             <% group = groups.pop() %>
