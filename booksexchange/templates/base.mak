@@ -23,6 +23,17 @@
 <html>
 
   <head>
+    <script type="text/javascript"
+            src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}">
+    </script>
+
+    <script type="text/javascript"
+            src="${request.static_url('deform:static/scripts/deform.js')}">
+    </script>
+
+    <script type="text/javascript"
+            src="${request.static_url('deform:static/scripts/jquery-ui-1.8.4.custom.min.js')}">
+    </script>
 
     <link rel="stylesheet"
           href="${request.static_url('booksexchange:static/css/reset.css')}"
@@ -37,24 +48,12 @@
           type="text/css" />
 
     <link rel="stylesheet"
-          href="${request.static_url('booksexchange:static/css/markdown.css')}"
-          type="text/css" />
-
-    <link rel="stylesheet"
           href="${request.static_url('deform:static/css/ui-lightness/jquery-ui-1.8.4.custom.css')}"
           type="text/css" />
 
-    <script type="text/javascript"
-            src="${request.static_url('deform:static/scripts/jquery-1.4.2.min.js')}">
-    </script>
-
-    <script type="text/javascript"
-            src="${request.static_url('deform:static/scripts/deform.js')}">
-    </script>
-
-    <script type="text/javascript"
-            src="${request.static_url('deform:static/scripts/jquery-ui-1.8.4.custom.min.js')}">
-    </script>
+    <link rel="stylesheet"
+          href="${request.static_url('booksexchange:static/css/markdown.css')}"
+          type="text/css" />
 
     ${self.head()}
 

@@ -1,7 +1,7 @@
 
 .md {
   margin:0;
-  pardding: 0;
+  padding: 0;
 }
 
 .md * {
@@ -30,6 +30,10 @@
 .md ol, .md dl, .md dir,
 .md menu {
   margin: 1.12em 0;
+}
+
+.md li {
+  display: list-item;
 }
 
 .md h5 {
@@ -107,6 +111,10 @@
 
 .md ol {
   list-style-type: decimal;
+}
+
+.md ul {
+  list-style: circle;
 }
 
 .md u, .md ins {

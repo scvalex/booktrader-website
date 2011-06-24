@@ -1296,3 +1296,8 @@ em {
 .feedback .negative {
   color: red;
 }
+
+
+.groups_list .book_cover {
+  margin-right: 1.5em;
+}
