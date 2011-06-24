@@ -191,7 +191,7 @@
 </%def>
 
 <%def name="groups_list(groups)">
-  <table class="books_list">
+  <table class="books_list groups_list">
     % while len(groups) >= 2:
         <tr>
           <td>

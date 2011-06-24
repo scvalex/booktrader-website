@@ -389,7 +389,7 @@ def accept_offer(context, request):
         for b in context.apples:
             if b.identifier in context.sender.owned:
                 del context.sender.owned[b.identifier]
-            if b.identifier in context.recipient.want:
+            if b.identifier in context.sender.want:
                 del context.sender.want[b.identifier]
 
         for b in context.oranges:
@@ -400,7 +400,6 @@ def accept_offer(context, request):
 
         request.root['users'].update(context.sender)
         request.root['users'].update(context.recipient)
-                
 
     raise HTTPFound(location = request.resource_url(context))
 
