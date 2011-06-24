@@ -174,7 +174,7 @@
           </td>
           <td class="blank"></td>
         </tr>
-    % endif
+    % endwhile
   </table>
 </%def>
 
@@ -212,7 +212,7 @@
           </td>
           <td class="blank"></td>
         </tr>
-    % endif
+    % endwhile
   </table>
 </%def>
 
