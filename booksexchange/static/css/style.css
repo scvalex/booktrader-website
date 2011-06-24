@@ -1282,6 +1282,12 @@ em {
   margin-right: 0.3em;
 }
 
+.feedback:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
 .feedback {
   clear: both;
   padding: 0.3em;
