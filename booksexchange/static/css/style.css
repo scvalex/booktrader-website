@@ -186,9 +186,8 @@ h1 #logo {
 /* Search bar */
 
 #search_bar {
-  margin-left:1em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  width: 950px;
+  margin: 0.5em auto;
 }
 
 #search_bar #deformField4 {
@@ -202,8 +201,6 @@ h1 #logo {
 
 #search_bar ul {
   display:block;
-  width:80%;
-  margin-left:10%;
 }
 
 #search_bar fieldset, #search_bar li {
@@ -224,7 +221,7 @@ h1 #logo {
   font-size: 1.1em;
   color: #1c393f;
   padding: 0.3em 0.3em;
-  width: 70%;
+  width: 780px;
   margin:0.5em 0;
   box-shadow: #6c898f 0 0 6px;
   -moz-box-shadow: #6c898f 0 0 6px;
