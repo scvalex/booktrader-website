@@ -154,7 +154,7 @@
 
 <%def name="users_list(users)">
   <table class="books_list">
-    % while len(users) > 2:
+    % while len(users) >= 2:
         <tr>
           <td>
             <% user = users.pop() %>
@@ -166,7 +166,7 @@
           </td>
         </tr>
     % endwhile
-    % if len(users) > 0:
+    % while len(users) > 0:
         <tr>
           <td>
             <% user = users.pop() %>
@@ -204,7 +204,7 @@
           </td>
         </tr>
     % endwhile
-    % if len(groups) > 0:
+    % while len(groups) > 0:
         <tr>
           <td>
             <% group = groups.pop() %>
