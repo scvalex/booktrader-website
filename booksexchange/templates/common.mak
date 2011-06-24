@@ -121,7 +121,7 @@
     </span>
   % elif isinstance(event, WantEvent):
     ${gravatar(event.coveter, 100)}
-    ${book_link(event.book, request.literal(capture(book_cover(event.book))))}<br/>
+    ${book_link(event.book, request.literal(capture(book_cover, event.book)))}<br/>
     <span class="user">${user_link(event.coveter)}</span><br/>
     <span class="action">
       wants ${book_link(event.book, event.book.title)}
