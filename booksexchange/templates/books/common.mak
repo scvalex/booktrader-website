@@ -191,10 +191,11 @@
 </%def>
 
 <%def name="paginate_url(i, books_per_page)">
-  <%
-  import urllib
-  query = request.GET
-  query['start_index'] = str(i * books_per_page)
-  return request.path + '?' + urllib.urlencode(query)
-  %>
+<%
+import urllib
+query = request.GET
+query['start_index'] = str(i * books_per_page)
+
+return request.path + '?' + urllib.urlencode(query)
+%>
 </%def>
