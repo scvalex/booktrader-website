@@ -1282,6 +1282,12 @@ em {
   margin-right: 0.3em;
 }
 
+.feedback:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
 .feedback {
   clear: both;
   padding: 0.3em;
@@ -1300,4 +1306,8 @@ em {
 
 .groups_list .book_cover {
   margin-right: 1.5em;
+}
+
+.event .default_cover {
+  border: none;
 }
